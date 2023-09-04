@@ -1,0 +1,8 @@
+div#canvas-container {
+  width: 100%;
+  height: 100vh;
+}
+div#canvas-container canvas.my-avatar {
+  width: 100%;
+  height: 100%;
+}/*# sourceMappingURL=model-eth.component.css.map */

@@ -1,0 +1,71 @@
+nav {
+  /* background-color: #5753c4; */
+  background-color: rgba(56, 53, 155, 0.7960784314);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+nav div.container-fluid a.navbar-brand img {
+  height: 100px;
+}
+nav div.container-fluid button {
+  /* background-color: #44a6c2; */
+  box-shadow: 0px 10px 14px -7px #ca5737;
+  background: linear-gradient(to bottom, #e08142 5%, #cf6537 100%);
+  background-color: #dd852d;
+  border-radius: 8px;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 20px;
+  font-weight: bold;
+  /* padding: 13px 32px; */
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #ca5837;
+}
+nav div.container-fluid button:hover {
+  background: linear-gradient(to bottom, #cf6537 5%, #dd852d 100%);
+  background-color: #cf6537;
+}
+
+main {
+  background-color: #38359b;
+}
+main div.container-fluid {
+  height: 100vh;
+}
+main div.container-fluid div.row {
+  padding-top: 126px;
+  background-image: url(./../../../assets/imgs/sfondo-modello-eth.png);
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+}
+main div.container-fluid div.row div.hero-img-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 95%;
+}
+@media screen and (min-width: 992px) {
+  main div.container-fluid div.row div.hero-img-container {
+    justify-content: end;
+    /* padding-left: $navbarLogoHeight * $navbarLogoProportion; */
+    padding-bottom: 100px;
+  }
+}
+main div.container-fluid div.row div.hero-img-container h3 {
+  font-family: "Roboto", sans-serif;
+  color: white;
+}
+main div.container-fluid div.row div.model-container {
+  height: 95%;
+}
+main div.container-fluid div.row div.blurred {
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
+  height: 5%;
+  align-self: flex-end;
+}/*# sourceMappingURL=landing-page.component.css.map */
