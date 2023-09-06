@@ -15,6 +15,9 @@ export class Web3Service {
   networkId: null | bigint;
   accounts: string[];
   address!: string;
+  /* polygonRpcUrl: string = 'https://polygon-rpc.com/'; */
+
+
 
   constructor() {
     this.web3 = null;
@@ -29,6 +32,10 @@ export class Web3Service {
       try {
         // Creazione di un'istanza di Web3 con Metamask
         this.web3 = new Web3(window.ethereum);
+        /* this.web3 = new Web3(this.polygonRpcUrl); */
+        console.log(window);
+        console.log(this.web3);
+
 
         // Richiedi l'accesso all'account Metamask
         await window.ethereum.enable();
@@ -41,6 +48,7 @@ export class Web3Service {
 
         // L'indirizzo dell'account collegato è disponibile in this.accounts[0]
         this.address = await this.accounts[0];
+
         console.log('Indirizzo dell\'account collegato:', this.address);
 
         this.getBalance(this.address);
@@ -65,12 +73,12 @@ export class Web3Service {
       console.log('Saldo ETH:', balanceInEther);
       return balanceInEther;
     } catch (error) {
-        console.error('Errore nel recupero del saldo:', error);
-        return null;
+      console.error('Errore nel recupero del saldo:', error);
+      return null;
     }
   }
 
-  async sendTransaction(to:string, value:string) {
+  async sendTransaction(to: string, value: string) {
     if (!this.web3) {
       console.error('Connessione non inizializzata.');
       return null;
