@@ -9,6 +9,11 @@ nav {
 nav div.container-fluid a.navbar-brand img {
   height: 100px;
 }
+@media screen and (max-width: 575px) {
+  nav div.container-fluid a.navbar-brand img {
+    height: 50px;
+  }
+}
 nav div.container-fluid button {
   /* background-color: #44a6c2; */
   box-shadow: 0px 10px 14px -7px #ca5737;
@@ -18,12 +23,17 @@ nav div.container-fluid button {
   display: inline-block;
   cursor: pointer;
   color: #ffffff;
-  font-family: Arial;
+  font-family: "Roboto", sans-serif;
   font-size: 20px;
-  font-weight: bold;
   /* padding: 13px 32px; */
   text-decoration: none;
   text-shadow: 0px 1px 0px #ca5837;
+}
+@media screen and (max-width: 575px) {
+  nav div.container-fluid button {
+    font-size: 15px;
+    font-weight: lighter;
+  }
 }
 nav div.container-fluid button:hover {
   background: linear-gradient(to bottom, #cf6537 5%, #dd852d 100%);
@@ -31,41 +41,159 @@ nav div.container-fluid button:hover {
 }
 
 main {
+  border-bottom: 1px solid #8686a1;
   background-color: #38359b;
 }
-main div.container-fluid {
+main div.hero-container {
   height: 100vh;
+  /* @media screen and (max-width: 575px){
+    height: 100%;
+  } */
 }
-main div.container-fluid div.row {
+main div.hero-container div.hero {
   padding-top: 126px;
   background-image: url(./../../../assets/imgs/sfondo-modello-eth.png);
   background-size: cover;
   background-position: center;
   height: 100%;
+  /*       @media screen and (max-width: 575px){
+          align-items: start;
+        } */
 }
-main div.container-fluid div.row div.hero-img-container {
+main div.hero-container div.hero div.hero-img-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  height: 95%;
+  justify-content: end;
 }
 @media screen and (min-width: 992px) {
-  main div.container-fluid div.row div.hero-img-container {
+  main div.hero-container div.hero div.hero-img-container {
     justify-content: end;
-    /* padding-left: $navbarLogoHeight * $navbarLogoProportion; */
+    align-items: center;
     padding-bottom: 100px;
   }
 }
-main div.container-fluid div.row div.hero-img-container h3 {
+@media screen and (max-width: 574px) {
+  main div.hero-container div.hero div.hero-img-container {
+    order: 2;
+    justify-content: center;
+  }
+}
+@media screen and (max-width: 991px) and (min-width: 575px) {
+  main div.hero-container div.hero div.hero-img-container {
+    order: 2;
+    justify-content: start;
+  }
+}
+main div.hero-container div.hero div.hero-img-container h3 {
   font-family: "Roboto", sans-serif;
   color: white;
+  align-self: flex-start;
 }
-main div.container-fluid div.row div.model-container {
-  height: 95%;
+main div.hero-container div.hero div.model-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-main div.container-fluid div.row div.blurred {
+@media screen and (max-width: 575px) {
+  main div.hero-container div.hero div.model-container {
+    order: 1;
+  }
+}
+@media screen and (min-width: 991px) {
+  main div.hero-container div.hero div.model-container {
+    height: 95%;
+  }
+}
+main div.hero-container div.hero div.model-container p {
+  color: white;
+}
+main div.hero-container div.hero div.blurred {
   -webkit-backdrop-filter: blur(5px);
           backdrop-filter: blur(5px);
   height: 5%;
   align-self: flex-end;
+}
+main div.content-container div.row-content div.finance, main div.content-container div.row-content div.nft, main div.content-container div.row-content div.strategy {
+  margin-bottom: 10px;
+}
+main div.content-container div.row-content div.finance p, main div.content-container div.row-content div.nft p, main div.content-container div.row-content div.strategy p {
+  /* color: #ea8d8d; */
+  color: #7675a1;
+  font-size: 2rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 100;
+}
+@media screen and (max-width: 575px) {
+  main div.content-container div.row-content div.finance p, main div.content-container div.row-content div.nft p, main div.content-container div.row-content div.strategy p {
+    font-size: 1.2rem;
+  }
+}
+main div.content-container div.row-content div.finance-img, main div.content-container div.row-content div.nft-img, main div.content-container div.row-content div.strategy-img {
+  margin-bottom: 100px;
+}
+main div.content-container div.row-content div.finance-img img, main div.content-container div.row-content div.nft-img img, main div.content-container div.row-content div.strategy-img img {
+  border-radius: 2rem;
+}
+@media screen and (max-width: 575px) {
+  main div.content-container div.row-content div.nft-img {
+    order: 2;
+  }
+}
+@media screen and (max-width: 575px) {
+  main div.content-container div.row-content div.nft {
+    order: 1;
+  }
+}
+@media screen and (max-width: 575px) {
+  main div.content-container div.row-content div.strategy {
+    order: 3;
+  }
+}
+@media screen and (max-width: 575px) {
+  main div.content-container div.row-content div.strategy-img {
+    order: 4;
+  }
+}
+
+footer {
+  background-color: #2f2c7e;
+}
+footer img.logo-footer-img {
+  height: 50%;
+}
+@media screen and (max-width: 991px) {
+  footer img.logo-footer-img {
+    height: 50%;
+  }
+}
+@media screen and (max-width: 767px) {
+  footer img.logo-footer-img {
+    align-self: center;
+  }
+}
+footer h5 {
+  font-family: "Roboto", sans-serif;
+  color: #dd852d;
+  font-weight: bold;
+}
+@media screen and (max-width: 991px) {
+  footer h5 {
+    font-size: 1.5rem;
+  }
+}
+footer ul {
+  list-style-type: none;
+}
+footer ul li {
+  font-family: "Roboto", sans-serif;
+  color: #8686a1;
+}
+@media screen and (max-width: 991px) {
+  footer ul li {
+    font-size: 1.5rem;
+  }
+}
+footer ul li a {
+  color: #8686a1;
+  text-decoration: none;
 }/*# sourceMappingURL=landing-page.component.css.map */

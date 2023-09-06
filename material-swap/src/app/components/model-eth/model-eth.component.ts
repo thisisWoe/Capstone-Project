@@ -10,7 +10,7 @@ import { AnimationMixer, AnimationAction, Clock } from 'three';
   templateUrl: './model-eth.component.html',
   styleUrls: ['./model-eth.component.scss']
 })
-export class ModelEthComponent implements AfterViewInit{
+export class ModelEthComponent implements AfterViewInit, OnInit {
   @ViewChild('canvas') private canvasRef!: ElementRef;
 
   renderer = new THREE.WebGLRenderer;
@@ -21,10 +21,15 @@ export class ModelEthComponent implements AfterViewInit{
   controls!: OrbitControls;
   mesh!: THREE.Object3D<THREE.Event>;
   light!: THREE.Object3D<THREE.Event>;
+  deviceWidth: number = 0;
 
   constructor() {
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(35, 800 / 640, 0.1, 1000)
+  }
+  ngOnInit(): void {
+    this.deviceWidth = window.innerWidth;
+    console.log("🚀 ~ file: model-eth.component.ts:42 ~ ModelEthComponent ~ ngAfterViewInit ~ this.deviceWidth:", this.deviceWidth)
   }
 
   ngAfterViewInit() {
@@ -66,7 +71,7 @@ export class ModelEthComponent implements AfterViewInit{
 
 
     this.camera.updateProjectionMatrix();
-    this.camera.position.set(-15, 10, 15);
+    this.camera.position.set(5, 0, 15);
     this.camera.lookAt(this.scene.position);
   }
 
@@ -93,19 +98,28 @@ export class ModelEthComponent implements AfterViewInit{
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
     } */
-    // Imposta la canvas come quadrata
-    const canvasSize = Math.min(this.canvas.clientWidth, this.canvas.clientHeight);
-    this.renderer.setSize(canvasSize, canvasSize);
+    if (this.deviceWidth < 992) {
+      const canvasSize = Math.max(this.canvas.clientWidth, this.canvas.clientHeight);
+      this.renderer.setSize(canvasSize, canvasSize);
+      this.canvas.style.maxWidth = '100%';
 
-    console.log('clientWidth', this.canvas.clientWidth);
-    console.log('clientHeight', this.canvas.clientHeight);
+      console.log('clientWidth', this.canvas.clientWidth);
+      console.log('clientHeight', this.canvas.clientHeight);
+    } else if((this.deviceWidth > 991)) {
+      // Imposta la canvas come quadrata
+      const canvasSize = Math.min(this.canvas.clientWidth, this.canvas.clientHeight);
+      this.renderer.setSize(canvasSize, canvasSize);
+
+      console.log('clientWidth', this.canvas.clientWidth);
+      console.log('clientHeight', this.canvas.clientHeight);
+    }
     const ambientLight = new THREE.AmbientLight(0xffffff, 5); // Luce ambientale
     this.scene.add(ambientLight);
   }
 
   configControls() {
     this.controls = new OrbitControls(this.camera, this.canvas);
-    this.controls.autoRotate = false;
+    this.controls.autoRotate = true;
     this.controls.enableZoom = false;
     this.controls.enablePan = true;
     this.controls.update();
@@ -119,13 +133,23 @@ export class ModelEthComponent implements AfterViewInit{
 
   createMesh() {
     const loader = new GLTFLoader();
-    loader.load('./../../../assets/3d-model/etherum.glb', (gltf) => {
+    loader.load('./../../../assets/3d-model/ethereum_logo.glb', (gltf) => {
       this.mesh = gltf.scene;
-      // Imposta la grandezza del modello
-      const grandezza: number = 2;
-      this.mesh.scale.set(grandezza, grandezza, grandezza);
-      // Posiziona il modello al centro della scena
-      this.mesh.position.set(0, -3, 0);
+
+
+      if (this.deviceWidth < 575) {
+        // Imposta la grandezza del modello
+        const grandezza: number = 3;
+        this.mesh.scale.set(grandezza, grandezza, grandezza);
+        // Posiziona il modello al centro della scena
+        this.mesh.position.set(0, -2, 0);
+      } else {
+        // Imposta la grandezza del modello
+        const grandezza: number = 2;
+        this.mesh.scale.set(grandezza, grandezza, grandezza);
+        // Posiziona il modello al centro della scena
+        this.mesh.position.set(0, 0, 0);
+      }
 
 
       this.scene.add(this.mesh);
