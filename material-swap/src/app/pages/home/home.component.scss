@@ -8,6 +8,9 @@ div.home-container{
     width: $sidebarWidth;
     border-right: 1px solid #8686a1;
     height: 100vh;
+    @media screen and (max-width: 960px) {
+      display: none;
+    }
     nav.sidebar{
       &>div.header{
         display: flex;
@@ -56,12 +59,39 @@ div.home-container{
     }
   }
   div.content-wrapper{
-    margin-left: $sidebarWidth;
-    main.main-container{
 
+    margin: 0 ($sidebarWidth + 70px) 0 $sidebarWidth;
+    width: 100%;
+    height: 100vh;
+    @media screen and (max-width: 1129px) and (min-width: 500px) {
+      margin: 0 $sidebarWidth 0 $sidebarWidth;
+    }
+    @media screen and (max-width: 960px) {
+      margin: 0 0 0 0;
+      width: 100%;
+    }
+    main.main-container{
+      width: 100%;
+      &>main-container{
+        &>div.row{
+
+        }
+      }
     }
   }
   div.aside-wrapper{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 100vh;
+    background-color: green;
+    width: $sidebarWidth + 70px;
+    @media screen and (max-width: 1129px) and (min-width: 500px) {
+      width: 300px;
+    }
+    @media screen and (max-width: 960px) {
+      display: none;
+    }
     aside.account-wrapper{
 
     }

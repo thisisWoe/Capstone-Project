@@ -11,6 +11,6 @@ export class HomeComponent implements OnInit {
 
   constructor(private marketSvc: MarketDataService) {}
   ngOnInit(): void {
-    this.marketSvc.getDataBTC('BTC', 'USD').subscribe();
+    /* this.marketSvc.getDataBTC('UNI', 'USD').subscribe(); */
   }
 }
