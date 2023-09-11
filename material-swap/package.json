@@ -27,6 +27,8 @@
     "bootstrap": "^5.2.3",
     "browser": "^0.2.6",
     "crypto-browserify": "^3.12.0",
+    "erc-20-abi": "^1.0.0",
+    "ethers": "^5.6.0",
     "https-browserify": "^1.0.0",
     "os-browserify": "^0.3.0",
     "rxjs": "~7.8.0",
@@ -35,7 +37,7 @@
     "three": "^0.156.0",
     "three-addons": "^1.2.0",
     "tslib": "^2.3.0",
-    "web3": "^4.1.1",
+    "web3": "^1.10.2",
     "zone.js": "~0.13.0"
   },
   "devDependencies": {
