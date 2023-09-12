@@ -84,7 +84,8 @@ div.home-container{
     top: 0px;
     right: 0px;
     height: 100vh;
-    background-color: green;
+    background-color: #38359b;
+    border-left: 1px solid #8686a1;
     width: $sidebarWidth + 70px;
     @media screen and (max-width: 1129px) and (min-width: 500px) {
       width: 300px;

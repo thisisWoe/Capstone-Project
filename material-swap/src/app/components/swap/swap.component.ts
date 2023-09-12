@@ -305,7 +305,7 @@ export class SwapComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     console.log(this.selectedItemFrom);
 
-    this.getQuote(10, '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', '0x82af49447d8a07e3bd95bd0d56f35241523fbab1', 'https://arbitrum.api.0x.org/swap/v1/');
+    //this.getQuote(10, '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', '0x82af49447d8a07e3bd95bd0d56f35241523fbab1', 'https://arbitrum.api.0x.org/swap/v1/');
     this.wallet$.subscribe((wallet) => {
       this.walletLogged = wallet;
       console.log("🚀 ~ file: swap.component.ts:29 ~ SwapComponent ~ this.wallet$.subscribe ~ wallet:", wallet)

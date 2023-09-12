@@ -9,7 +9,7 @@ import { MarketInterceptor } from './interceptors/market-data-interceptor/market
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

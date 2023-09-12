@@ -55,6 +55,30 @@ export class Web3Service {
     })
   }
 
+  switchNetwork(networkId: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (typeof window.ethereum !== "undefined") {
+        const web3 = new Web3();
+        const hex = web3.utils.toHex(networkId);
+        window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: hex }]
+        }).then(() => {
+          // Il cambio di rete è avvenuto con successo
+          resolve(true);
+        }).catch((error: any) => {
+          console.error("Errore durante il cambio di rete:", error);
+          // Il cambio di rete è fallito
+          resolve(false);
+        });
+      } else {
+        console.error("Metamask non è installato.");
+        // Metamask non è installato
+        resolve(false);
+      }
+    });
+  }
+
   getPrice_V2(amountToSwap:number, tokenAddressFrom:string, tokenAddressTo:string, networkZeroX:string): Observable<any> {
     console.log('Getting Price...');
     let amount = amountToSwap * 10 **18;

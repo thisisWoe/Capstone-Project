@@ -1,0 +1,44 @@
+<div class="metamask-wrapper">
+  <div class="btn-group">
+    <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
+      <select
+        class="form-select form-select-lg btn drop-btn"
+        aria-label="Large select example"
+        [(ngModel)]="Network_ID"
+        (ngModelChange)="onSelectNetworkChange($event)"
+        >
+        <option value="1" [value]="network.Ethereum.id">Ethereum</option>
+        <option value="2" [value]="network.Polygon.id">Polygon</option>
+        <option value="3" [value]="network.Binance.id">Binance</option>
+        <option value="3" [value]="network.Optimism.id">Optimism</option>
+        <option value="3" [value]="network.Fantom.id">Fantom</option>
+        <option value="3" [value]="network.Avalance.id">Avalance</option>
+        <option value="3" [value]="network.Arbitrum.id" selected>Arbitrum</option>
+      </select>
+      <!-- <button type="button" class="btn drop-btn" ngbDropdownToggle>Select Network</button>
+      <div class="dropdown-menu" ngbDropdownMenu style="background-color: #e08142b0 !important;">
+        <button class="dropdown-item" ngbDropdownItem>Ethereum</button>
+        <button class="dropdown-item" ngbDropdownItem>Polygon</button>
+        <button class="dropdown-item" ngbDropdownItem>Binance SC</button>
+        <button class="dropdown-item" ngbDropdownItem>Optimism</button>
+        <button class="dropdown-item" ngbDropdownItem>Fantom</button>
+        <button class="dropdown-item" ngbDropdownItem>Avalance</button>
+        <button class="dropdown-item" ngbDropdownItem>Arbitrum</button>
+      </div> -->
+    </div>
+    <button type="button" class="btn btn-connect" (click)="connectMetamask()" *ngIf="!walletLogged">
+      Connect
+      <img src="./../../../assets/imgs/metamask.png" alt="metamask">
+    </button>
+    <button type="button" class="btn btn-connect" *ngIf="walletLogged">
+      <img src="./../../../assets/imgs/metamask.png" alt="metamask">
+      <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4.89163 13.2687L9.16582 17.5427L18.7085 8" stroke="#adff2f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+
+
+
+</div>
