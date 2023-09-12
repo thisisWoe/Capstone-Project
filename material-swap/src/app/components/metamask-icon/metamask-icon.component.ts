@@ -82,8 +82,9 @@ export class MetamaskIconComponent implements OnInit {
       this.web3Svc.switchNetwork(stringId)
         .then(res => {
           console.log('Network Switched: ', res);
-
-          this.updateNetworkSubject(Number(id));
+          if (res) {
+            this.updateNetworkSubject(Number(id));
+          }
 
           if (!res) {
             this.Network_ID = this.network.Arbitrum.id;
