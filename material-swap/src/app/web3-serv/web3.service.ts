@@ -3,6 +3,7 @@ import { Contract, ethers } from 'ethers';
 import * as qs from 'qs';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
+import { BehaviorSubject, map } from 'rxjs';
 
 declare global {
   interface Window {
@@ -17,80 +18,39 @@ export class Web3Service {
   accounts = [];
   walletAddress!:string;
 
+  walletSubject = new BehaviorSubject<null | any>(null);
+  metamask$ = this.walletSubject.asObservable();
+  isLogged$ = this.metamask$.pipe(map(metamask => Boolean(metamask)));
+
 
   constructor() {
-    this.web3wallet = new Web3().setProvider(window.ethereum);
   }
 
-  checkConnection():boolean {
-    if (typeof window.ethereum !== "undefined") {
-      console.log(this.accounts);
-
-      try {
-        if (this.accounts.length < 1) {
-          console.log('Wallet not connected');
-          return false;
-        } else {
-          console.log('Wallet connected');
-          return true;
-        }
-      } catch (error) {
-        console.error('Something Wrong With Metamask :(');
-        return false;
-      }
-    } else {
-      console.log('MetaMask not installed');
-      return false;
-    }
-
-  }
-
-  async connect(): Promise<any | null> {
+  connect(): Promise<any | null> {
     return new Promise(async (resolve, reject) => {
     if (typeof window.ethereum !== "undefined") {
       try {
         console.log("connecting");
         if (window.ethereum) {
-          this.web3wallet = new Web3(window.ethereum.request({ method: "eth_requestAccounts" }));
-          this.web3wallet.setProvider(window.ethereum);
-          this.accounts = await this.web3wallet.eth.getAccounts();
-          this.walletAddress = this.accounts[0];
-          resolve(this.web3wallet);
-          /* let web3 = new Web3();
-          web3.setProvider(window.ethereum)
-          let accounts = await web3.eth.getAccounts(); */
-          /* if (accounts.length < 1) {
-            console.log('metamask is not connected.');
-            web3 = new Web3(window.ethereum.request({ method: "eth_requestAccounts" }));
-            web3.setProvider(window.ethereum);
-            accounts = await web3.eth.getAccounts();
-            console.log("🚀 ~ file: web3.service.ts:36 ~ Web3Service ~ connect ~ accounts:", accounts)
-            const walletAddress = accounts[0];
-            console.log('Indirizzo del wallet collegato:', walletAddress);
-          } else {
-            // MetaMask è collegato
-            console.log('metamask is connected.');
-            const walletAddress = accounts[0];
-            console.log('Indirizzo del wallet collegato:', walletAddress);
-          } */
+          this.web3wallet = new Web3(window.ethereum
+            .request({ method: "eth_requestAccounts" })
+            .then((res : string[]) => {
+              //aspetto che il client accetti di collegarsi
+              console.log(res);
+              this.web3wallet.setProvider(window.ethereum);
+              this.accounts = this.web3wallet.eth.getAccounts();
+              this.walletAddress = this.accounts[0];
+              this.walletSubject.next(this.web3wallet.eth.accounts.givenProvider)
+            }));
         } else {
           // MetaMask non è collegato
           console.log('MetaMask non è collegato');
-          resolve(null);
         }
-        /* const web3 = new Web3(window.ethereum.request({ method: "eth_requestAccounts" }));
-        web3.setProvider(window.ethereum);
-        console.log("🚀 ~ file: zero-x.service.ts:27 ~ ZeroXService ~ connect ~ web3:", web3) */
-        /* const accounts = await web3.eth.getAccounts();
-        const walletAddress = accounts[0];
-        console.log('Indirizzo del wallet collegato:', walletAddress); */
       } catch (error) {
         console.log(error);
-        reject(error);
       }
     } else {
       console.log("Please install MetaMask");
-      resolve(null);
     }
     })
   }
@@ -184,7 +144,7 @@ export class Web3Service {
       swapQuoteJSON.allowanceTarget,
       maxApproval,
     )
-      .send({ from: takerAddress })
+    .send({ from: takerAddress })
       .then((tx: any) => {
         console.log("tx: ", tx)
       });
@@ -197,3 +157,26 @@ export class Web3Service {
 
 
 }
+
+/*
+  checkConnection():boolean {
+    let logInfo:boolean = false;
+    if (typeof window.ethereum !== "undefined") {
+      console.log(this.accounts);
+
+      console.log(this.walletSubject);
+      this.isLogged$.subscribe((isLogged) => {
+        if (!isLogged) {
+          console.log('Wallet not connected');
+          logInfo = false;
+        } else {
+          console.log('Wallet connected');
+          logInfo = true;
+        }
+      })
+      return logInfo;
+    } else {
+      console.log('MetaMask not installed');
+      return false;
+    }
+  } */

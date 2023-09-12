@@ -79,7 +79,8 @@
           </div>
         </div>
         <div class="col-12 swap-btn pb-2">
-          <button #btnConnectSwap class="btn btn-primary w-100">Connect</button>
+          <button #btnConnectSwap class="btn btn-primary w-100" *ngIf="!walletLogged" (click)="connectMetamask()">Connect</button>
+          <button #btnConnectSwap class="btn btn-primary w-100" disabled *ngIf="walletLogged">Get Quotes</button>
         </div>
       </div>
     </div>

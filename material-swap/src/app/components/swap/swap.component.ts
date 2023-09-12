@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Web3Service } from 'src/app/web3-serv/web3.service';
 import Web3 from 'web3';
 
@@ -7,22 +8,29 @@ import Web3 from 'web3';
   templateUrl: './swap.component.html',
   styleUrls: ['./swap.component.scss']
 })
-export class SwapComponent implements AfterViewInit {
+export class SwapComponent implements AfterViewInit, OnInit {
   @ViewChild('swap') private swapRef!: ElementRef;
   swapElement!: HTMLDivElement;
   @ViewChild('btnConnectSwap') private swapBtnRef!: ElementRef;
   swapBtnElement!: HTMLButtonElement;
 
+  walletLogged: boolean = false;
+  wallet$: Observable<any>;
 
 
   constructor(private web3Svc: Web3Service) {
-
+    this.wallet$ = this.web3Svc.metamask$;
+  }
+  ngOnInit(): void {
+    //this.checkConnection();
+    this.wallet$.subscribe((wallet) => {
+      this.walletLogged = wallet;
+      console.log("🚀 ~ file: swap.component.ts:29 ~ SwapComponent ~ this.wallet$.subscribe ~ wallet:", wallet)
+    });
   }
 
   ngAfterViewInit(): void {
     this.setDimension();
-    this.checkConnection();
-    this.connectMetamask();
   }
 
   getSwapRef(): HTMLDivElement {
@@ -45,30 +53,11 @@ export class SwapComponent implements AfterViewInit {
 
     } else {
       console.log('nothing changed');
-
     }
-  }
-
-  checkConnection() {
-    console.log(this.web3Svc.checkConnection());
-
-
-    //this.web3Svc.checkConnection().then(connection => {
-    if (this.web3Svc.checkConnection() === true) {
-      const buttonSwap: HTMLButtonElement = this.getSwapBtnRef();
-      buttonSwap.textContent = 'Get Quotes';
-    } else {
-      const buttonSwap: HTMLButtonElement = this.getSwapBtnRef();
-      buttonSwap.textContent = 'Connect Metamask';
-    }
-    //})
   }
 
   connectMetamask() {
-    this.web3Svc.connect().then(web3 => {
-      console.log(web3);
-      console.log(web3.eth.getAccounts());
-    })
+    this.web3Svc.connect();
   }
 
 
