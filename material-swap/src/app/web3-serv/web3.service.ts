@@ -23,6 +23,9 @@ export class Web3Service {
   walletSubject = new BehaviorSubject<null | any>(null);
   metamask$ = this.walletSubject.asObservable();
 
+  ZERO_x_TARGET_subject = new BehaviorSubject<string>('https://arbitrum.api.0x.org/swap/v1/');
+  ZeroXtarget$ = this.ZERO_x_TARGET_subject.asObservable();
+
   constructor(private http: HttpClient) {
   }
 

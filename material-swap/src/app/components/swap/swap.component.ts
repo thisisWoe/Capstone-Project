@@ -1,3 +1,4 @@
+import { MetamaskIconComponent } from './../metamask-icon/metamask-icon.component';
 import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Web3Service } from 'src/app/web3-serv/web3.service';
@@ -17,7 +18,8 @@ export class SwapComponent implements AfterViewInit, OnInit {
   walletLogged: boolean = false;
   wallet$: Observable<any>;
 
-  inputValue: string = '10';
+  inputValue: string = '';
+  //ZERO_x_TARGET$: Observable<string>;
 
   cryptosList = [
     {//WBTC
@@ -297,18 +299,25 @@ export class SwapComponent implements AfterViewInit, OnInit {
   selectedItemFrom:any|null;
   selectedItemTo:any;
 
+  catchUrlToFetch$: Observable<string>;
+  targetUrlToFetch$: string = '';
+
 
   constructor(private web3Svc: Web3Service) {
     this.wallet$ = this.web3Svc.metamask$;
+    this.catchUrlToFetch$ = this.web3Svc.ZeroXtarget$;
+    //this.ZERO_x_TARGET$ = this.metamaskData.ZeroXtarget$;
   }
 
   ngOnInit(): void {
-    console.log(this.selectedItemFrom);
 
     //this.getQuote(10, '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', '0x82af49447d8a07e3bd95bd0d56f35241523fbab1', 'https://arbitrum.api.0x.org/swap/v1/');
     this.wallet$.subscribe((wallet) => {
       this.walletLogged = wallet;
-      console.log("🚀 ~ file: swap.component.ts:29 ~ SwapComponent ~ this.wallet$.subscribe ~ wallet:", wallet)
+    });
+
+    this.catchUrlToFetch$.subscribe((url) => {
+      this.targetUrlToFetch$ = url;
     });
   }
 
@@ -353,7 +362,7 @@ export class SwapComponent implements AfterViewInit, OnInit {
       amountTokenTo!.textContent = '0';
     } else {
       let amount = parseFloat(newValue);
-      this.getQuote(amount, '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', '0x82af49447d8a07e3bd95bd0d56f35241523fbab1', 'https://arbitrum.api.0x.org/swap/v1/');
+      this.getQuote(amount, '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', '0x82af49447d8a07e3bd95bd0d56f35241523fbab1', this.targetUrlToFetch$);
     }
   }
 
@@ -387,7 +396,10 @@ export class SwapComponent implements AfterViewInit, OnInit {
     this.web3Svc.getPrice_V2(amountToSwap, tokenAddressFrom, tokenAddressTo, networkZeroX).subscribe(quote => {
       console.log(quote);
       const amountTokenTo = document.querySelector('.outputTo');
-      amountTokenTo!.textContent = quote.grossPrice.slice(0, 12);
+      const grossPrice = quote.grossPrice;
+      const totalPrice = grossPrice*amountToSwap;
+      const totalString = totalPrice.toString();
+      amountTokenTo!.textContent = totalString.slice(0, 12);
     });
   }
 
