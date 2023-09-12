@@ -25,26 +25,23 @@
               <div class="row">
                 <div class="col-6">
                   <!-- <input #inputFrom type="text" class="input-from"> -->
-                  <form #inputFrom>
 
                     <div class="group input-from ms-3">
-                      <input #inputFrom type="text" required>
+                      <input #inputFrom type="text" required [(ngModel)]="inputValue" (ngModelChange)="onInputChange($event)" >
                       <span class="highlight"></span>
                       <span class="bar"></span>
                       <label>You pay</label>
                     </div>
 
-                  </form>
                 </div>
-                <div class="col-6 d-flex justify-content-end">
+                <div class="col-6 d-flex justify-content-end align-items-center">
                   <select
-                    class="select-from form-select form-select-lg mb-3"
+                    class="select-from form-select form-select-lg"
                     aria-label="Large select example"
+                    [(ngModel)]="selectedItemFrom"
+                    (ngModelChange)="onSelectFromChange($event)"
                     >
-                    <option selected>ETH</option>
-                    <option value="1">BTC</option>
-                    <option value="2">UNI</option>
-                    <option value="3">DAI</option>
+                    <option *ngFor="let item of cryptosList" [value]="item | json">{{item.name}}</option>
                   </select>
                 </div>
               </div>
@@ -58,20 +55,20 @@
             </div>
             <div class="col-12">
               <div class="row">
-                <div class="col-6">
+                <div class="col-6 d-flex align-items-center">
                   <span class="outputTo ms-3">
                     0
                   </span>
                 </div>
-                <div class="col-6 d-flex justify-content-end">
+                <div class="col-6 d-flex justify-content-end align-items-center">
                   <select
-                    class="select-from form-select form-select-lg mb-3"
+                    class="select-to form-select form-select-lg"
                     aria-label="Large select example"
+                    [(ngModel)]="selectedItemTo"
+                    (ngModelChange)="onSelectToChange($event)"
+                    disabled
                     >
-                    <option selected>ETH</option>
-                    <option value="1">BTC</option>
-                    <option value="2">UNI</option>
-                    <option value="3">DAI</option>
+                    <option class="options-to" *ngFor="let item of cryptosList" [value]="item">{{item.name}}</option>
                   </select>
                 </div>
               </div>
@@ -80,7 +77,7 @@
         </div>
         <div class="col-12 swap-btn pb-2">
           <button #btnConnectSwap class="btn btn-primary w-100" *ngIf="!walletLogged" (click)="connectMetamask()">Connect</button>
-          <button #btnConnectSwap class="btn btn-primary w-100" disabled *ngIf="walletLogged">Get Quotes</button>
+          <button #btnConnectSwap class="btn btn-primary w-100" *ngIf="walletLogged">Get Quotes</button>
         </div>
       </div>
     </div>

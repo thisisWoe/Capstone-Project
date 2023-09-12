@@ -3,7 +3,9 @@ import { Contract, ethers } from 'ethers';
 import * as qs from 'qs';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
+import { environment } from 'src/environments/environment.development';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 declare global {
   interface Window {
@@ -20,10 +22,8 @@ export class Web3Service {
 
   walletSubject = new BehaviorSubject<null | any>(null);
   metamask$ = this.walletSubject.asObservable();
-  isLogged$ = this.metamask$.pipe(map(metamask => Boolean(metamask)));
 
-
-  constructor() {
+  constructor(private http: HttpClient) {
   }
 
   connect(): Promise<any | null> {
@@ -55,7 +55,25 @@ export class Web3Service {
     })
   }
 
-  async getPrice() {
+  getPrice_V2(amountToSwap:number, tokenAddressFrom:string, tokenAddressTo:string, networkZeroX:string): Observable<any> {
+    console.log('Getting Price...');
+    let amount = amountToSwap * 10 **18;
+
+    const headers = {
+      '0x-api-key': environment.ZERO_x_API_KEY,
+    };
+
+    const params = new HttpParams()
+      .set('sellToken', tokenAddressFrom)
+      .set('buyToken', tokenAddressTo)
+      .set('sellAmount', amount.toString());
+
+    const url = `${networkZeroX}price`;
+
+    return this.http.get(url, { headers, params });
+  }
+
+/*   async getPrice() {
     console.log("Getting Price");
     let amount = 0.0001 * 10 ** 18;
     console.log("From amount WETH:", amount)
@@ -86,8 +104,7 @@ export class Web3Service {
     console.log('to amount DAI: ', swapPriceJSON.buyAmount / (10 ** 18));
     console.log('gas_estimate: ', swapPriceJSON.estimatedGas);
     return swapPriceJSON;
-
-  }
+  } */
 
   async getQuote() {
     console.log("Getting Quote");
@@ -157,6 +174,81 @@ export class Web3Service {
 
 
 }
+
+/* {
+  "chainId": 42161,
+  "price": "0.000622310081620646",
+  "grossPrice": "0.000623235586466549",
+  "estimatedPriceImpact": "0.132",
+  "value": "0",
+  "gasPrice": "100000000",
+  "gas": "1695731",
+  "estimatedGas": "1695731",
+  "protocolFee": "0",
+  "minimumProtocolFee": "0",
+  "buyTokenAddress": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+  "buyAmount": "201852498074473",
+  "grossBuyAmount": "202152694826290",
+  "sellTokenAddress": "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+  "sellAmount": "324360000000000000",
+  "grossSellAmount": "324360000000000000",
+  "sources": [
+      {
+          "name": "0x",
+          "proportion": "0"
+      },
+      {
+          "name": "Uniswap_V3",
+          "proportion": "1"
+      },
+      {
+          "name": "SushiSwap",
+          "proportion": "0"
+      },
+      {
+          "name": "Balancer_V2",
+          "proportion": "0"
+      },
+      {
+          "name": "Synapse",
+          "proportion": "0"
+      },
+      {
+          "name": "Curve_V2",
+          "proportion": "0"
+      },
+      {
+          "name": "GMX",
+          "proportion": "0"
+      },
+      {
+          "name": "Aave_V3",
+          "proportion": "0"
+      },
+      {
+          "name": "WOOFi",
+          "proportion": "0"
+      },
+      {
+          "name": "TraderJoe_V2_1",
+          "proportion": "0"
+      }
+  ],
+  "allowanceTarget": "0xdef1c0ded9bec7f1a1670819833240f027b25eff",
+  "sellTokenToEthRate": "1602.41199801038413233",
+  "buyTokenToEthRate": "1",
+  "expectedSlippage": null,
+  "auxiliaryChainData": {},
+  "fees": {
+      "zeroExFee": {
+          "feeType": "volume",
+          "feeToken": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+          "feeAmount": "300196751817",
+          "billingType": "on-chain"
+      }
+  }
+} */
+
 
 /*
   checkConnection():boolean {
