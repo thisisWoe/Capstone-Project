@@ -467,6 +467,9 @@ export class SwapComponent implements AfterViewInit, OnInit {
     }
   }
 
+  trySwap(amountToSwap:number, tokenAddressFrom:string, tokenAddressTo:string, networkZeroX:string){
+    this.web3Svc.trySwap_V2(amountToSwap, tokenAddressFrom, tokenAddressTo, networkZeroX)
+  }
 
 
 }
