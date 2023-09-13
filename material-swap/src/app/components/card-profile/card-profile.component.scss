@@ -1,0 +1,20 @@
+div.card-wrapper{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  div.card{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid white !important;
+    width: 80%;
+    height: 700px;
+    background-color: #1f1739;
+    overflow: hidden;
+    img{
+      width: 290px;
+      height: 290px;
+    }
+  }
+}

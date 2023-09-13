@@ -8,6 +8,7 @@ import { SwapComponent } from 'src/app/components/swap/swap.component';
 import { FormsModule } from '@angular/forms';
 import { MetamaskIconComponent } from './../../components/metamask-icon/metamask-icon.component';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { CardProfileComponent } from 'src/app/components/card-profile/card-profile.component';
 
 
 
@@ -16,7 +17,8 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
   declarations: [
     HomeComponent,
     SwapComponent,
-    MetamaskIconComponent
+    MetamaskIconComponent,
+    CardProfileComponent,
   ],
   imports: [
     CommonModule,

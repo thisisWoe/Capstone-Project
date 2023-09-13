@@ -6,10 +6,11 @@ import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MarketInterceptor } from './interceptors/market-data-interceptor/market-interceptor.interceptor';
+import { CardProfileComponent } from './components/card-profile/card-profile.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     BrowserModule,
