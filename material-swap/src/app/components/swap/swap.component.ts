@@ -1,6 +1,9 @@
 import { MetamaskIconComponent } from './../metamask-icon/metamask-icon.component';
 import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
+import { INetwork } from 'src/app/interfaces/Inetwork';
+import { ICryptoData } from 'src/app/interfaces/icrypto-data';
+import { ITokenAddressData } from 'src/app/interfaces/itoken-address-data';
 import { Web3Service } from 'src/app/web3-serv/web3.service';
 import Web3 from 'web3';
 
@@ -17,6 +20,14 @@ export class SwapComponent implements AfterViewInit, OnInit {
 
   walletLogged: boolean = false;
   wallet$: Observable<any>;
+
+  currentCryptoFrom!:ITokenAddressData;
+  currentCryptoTo!:ITokenAddressData;
+
+  networkString$: Observable<string | null>;
+  networkSwappable: string | null = null;
+  valueToFetch:boolean = false;
+  amount!:number;
 
   inputValue: string = '';
   //ZERO_x_TARGET$: Observable<string>;
@@ -306,6 +317,7 @@ export class SwapComponent implements AfterViewInit, OnInit {
   constructor(private web3Svc: Web3Service) {
     this.wallet$ = this.web3Svc.metamask$;
     this.catchUrlToFetch$ = this.web3Svc.ZeroXtarget$;
+    this.networkString$ = this.web3Svc.network$
     //this.ZERO_x_TARGET$ = this.metamaskData.ZeroXtarget$;
   }
 
@@ -318,6 +330,10 @@ export class SwapComponent implements AfterViewInit, OnInit {
 
     this.catchUrlToFetch$.subscribe((url) => {
       this.targetUrlToFetch$ = url;
+    });
+
+    this.networkString$.subscribe((network) => {
+      this.networkSwappable = network;
     });
   }
 
@@ -355,14 +371,28 @@ export class SwapComponent implements AfterViewInit, OnInit {
   onInputChange(newValue: string) {
     // Esegui azioni con il nuovo valore dell'input
     console.log('Nuovo valore dell\'input:', newValue);
+    if (newValue !== '' && newValue !== '0' && newValue !== '0.') {
+      this.valueToFetch = true;
+    } else {
+      this.valueToFetch = false;
+    }
     if (newValue === '0' || newValue === '0.') {
       console.log('waiting for valid input.');
-    } else if(newValue === '' || newValue === '0' || newValue === '0.'){
+    } else if(
+        newValue === '' ||
+        newValue === '0' ||
+        newValue === '0.' ||
+        !this.currentCryptoFrom === null ||
+        !this.currentCryptoFrom === undefined ||
+        !this.currentCryptoTo === null ||
+        !this.currentCryptoTo === undefined
+    ){
       const amountTokenTo = document.querySelector('.outputTo');
       amountTokenTo!.textContent = '0';
     } else {
       let amount = parseFloat(newValue);
-      this.getQuote(amount, '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', '0x82af49447d8a07e3bd95bd0d56f35241523fbab1', this.targetUrlToFetch$);
+      this.amount = amount;
+      this.getQuote(this.amount, this.currentCryptoFrom.tokenAddress, this.currentCryptoTo.tokenAddress, this.targetUrlToFetch$);
     }
   }
 
@@ -375,21 +405,41 @@ export class SwapComponent implements AfterViewInit, OnInit {
     }
 
     let allOptionsSelectTo = document.querySelectorAll('.options-to')
-    const elementArray = Array.from(allOptionsSelectTo);
-    elementArray.forEach(opt => {
+    const allOptSelToArray = Array.from(allOptionsSelectTo);
+    allOptSelToArray.forEach(opt => {
       if (opt.hasAttribute('disabled')) {
         opt.removeAttribute('disabled');
       }
     })
-    const newValueObj = JSON.parse(newValue);
-    const targetOption = elementArray.find(opt => opt.textContent === newValueObj.name);
+    const newValueObj : ICryptoData= JSON.parse(newValue);
+    console.log("🚀 ~ file: swap.component.ts:385 ~ SwapComponent ~ onSelectFromChange ~ newValueObj:", newValueObj)
+    const targetOption = allOptSelToArray.find(opt => opt.textContent === newValueObj.name);
     if (targetOption) {
       targetOption.setAttribute('disabled', 'true');
     }
 
+    const addressArray:ITokenAddressData[] = newValueObj.address;
+    console.log(this.networkSwappable);
+    const targetAddress:ITokenAddressData = <ITokenAddressData>addressArray.find(address => address.network_name === this.networkSwappable!.toLowerCase())
+    if (targetAddress) {
+      this.currentCryptoFrom = targetAddress;
+      console.log("🚀 ~ file: swap.component.ts:418 ~ SwapComponent ~ onSelectFromChange ~ this.currentCryptoFrom:", this.currentCryptoFrom)
+    }
+    if(this.currentCryptoFrom && this.currentCryptoTo && this.valueToFetch){
+      this.getQuote(this.amount, this.currentCryptoFrom.tokenAddress, this.currentCryptoTo.tokenAddress, this.targetUrlToFetch$);
+    }
   }
+
   onSelectToChange(newValue: string){
     console.log('Nuovo valore del select:', newValue);
+    const newValueObj : ICryptoData= JSON.parse(newValue);
+    const addressArray:ITokenAddressData[] = newValueObj.address;
+    console.log(this.networkSwappable);
+    const targetAddress:ITokenAddressData = <ITokenAddressData>addressArray.find(address => address.network_name === this.networkSwappable!.toLowerCase())
+    console.log("🚀 ~ file: swap.component.ts:427 ~ SwapComponent ~ onSelectToChange ~ targetAddress:", targetAddress)
+    if (targetAddress) {
+      this.currentCryptoTo = targetAddress;
+    }
   }
 
   getQuote(amountToSwap:number, tokenAddressFrom:string, tokenAddressTo:string, networkZeroX:string){
@@ -402,6 +452,21 @@ export class SwapComponent implements AfterViewInit, OnInit {
       amountTokenTo!.textContent = totalString.slice(0, 12);
     });
   }
+
+  hasNetworkWithTokenAddress(item: ICryptoData, targetNetwork: string): boolean {
+    if (targetNetwork !== null) {
+      let found = false;
+      item.address.forEach((address) => {
+        if(address.network_name === targetNetwork.toLowerCase() && address.tokenAddress !== ''){
+          found = true;
+        }
+      });
+      return found;
+    } else {
+      return false;
+    }
+  }
+
 
 
 }

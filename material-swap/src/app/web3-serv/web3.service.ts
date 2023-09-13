@@ -16,9 +16,9 @@ declare global {
   providedIn: 'root'
 })
 export class Web3Service {
-  web3wallet:any;
+  web3wallet: any;
   accounts = [];
-  walletAddress!:string;
+  walletAddress!: string;
 
   walletSubject = new BehaviorSubject<null | any>(null);
   metamask$ = this.walletSubject.asObservable();
@@ -26,35 +26,40 @@ export class Web3Service {
   ZERO_x_TARGET_subject = new BehaviorSubject<string>('https://arbitrum.api.0x.org/swap/v1/');
   ZeroXtarget$ = this.ZERO_x_TARGET_subject.asObservable();
 
+  targetNetworkSubject = new BehaviorSubject<string | null>(null);
+  network$ = this.targetNetworkSubject.asObservable();
+
+
   constructor(private http: HttpClient) {
+
   }
 
   connect(): Promise<any | null> {
     return new Promise(async (resolve, reject) => {
-    if (typeof window.ethereum !== "undefined") {
-      try {
-        console.log("connecting");
-        if (window.ethereum) {
-          this.web3wallet = new Web3(window.ethereum
-            .request({ method: "eth_requestAccounts" })
-            .then((res : string[]) => {
-              //aspetto che il client accetti di collegarsi
-              console.log(res);
-              this.web3wallet.setProvider(window.ethereum);
-              this.accounts = this.web3wallet.eth.getAccounts();
-              this.walletAddress = this.accounts[0];
-              this.walletSubject.next(this.web3wallet.eth.accounts.givenProvider)
-            }));
-        } else {
-          // MetaMask non è collegato
-          console.log('MetaMask non è collegato');
+      if (typeof window.ethereum !== "undefined") {
+        try {
+          console.log("connecting");
+          if (window.ethereum) {
+            this.web3wallet = new Web3(window.ethereum
+              .request({ method: "eth_requestAccounts" })
+              .then((res: string[]) => {
+                //aspetto che il client accetti di collegarsi
+                console.log(res);
+                this.web3wallet.setProvider(window.ethereum);
+                this.accounts = this.web3wallet.eth.getAccounts();
+                this.walletAddress = this.accounts[0];
+                this.walletSubject.next(this.web3wallet.eth.accounts.givenProvider)
+              }));
+          } else {
+            // MetaMask non è collegato
+            console.log('MetaMask non è collegato');
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        console.log("Please install MetaMask");
       }
-    } else {
-      console.log("Please install MetaMask");
-    }
     })
   }
 
@@ -82,9 +87,17 @@ export class Web3Service {
     });
   }
 
-  getPrice_V2(amountToSwap:number, tokenAddressFrom:string, tokenAddressTo:string, networkZeroX:string): Observable<any> {
+  getPrice_V2(amountToSwap: number, tokenAddressFrom: string, tokenAddressTo: string, networkZeroX: string): Observable<any> {
     console.log('Getting Price...');
-    let amount = amountToSwap * 10 **18;
+    let amount: number | string = 0;
+    if (amountToSwap > 999) {
+      let numAmount = amountToSwap * 10 ** 18;
+      amount = this.formatLargeNumber(numAmount);
+    } else {
+      amount = amountToSwap * 10 ** 18;
+    }
+    //let amount = number(amountToSwap * 10 ** 18);
+    console.log("🚀 ~ file: web3.service.ts:94 ~ Web3Service ~ getPrice_V2 ~ amount:", amount)
 
     const headers = {
       '0x-api-key': environment.ZERO_x_API_KEY,
@@ -93,45 +106,63 @@ export class Web3Service {
     const params = new HttpParams()
       .set('sellToken', tokenAddressFrom)
       .set('buyToken', tokenAddressTo)
-      .set('sellAmount', amount.toString());
+      .set('sellAmount', amount);
+
 
     const url = `${networkZeroX}price`;
 
     return this.http.get(url, { headers, params });
   }
 
-/*   async getPrice() {
-    console.log("Getting Price");
-    let amount = 0.0001 * 10 ** 18;
-    console.log("From amount WETH:", amount)
-
-    const params = {
-      sellToken: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',//Weth arbitrum
-      //sellToken: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',//Wmatic
-      //sellToken: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',//Wmatic mumbai
-      //buyToken: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',//dai arbitrum
-      buyToken: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',//wbtc arbitrum
-      //buyToken: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',//dai
-      //buyToken: '0xcB98A882261E900f68e3D4f514372a25Ab6Aa847',//matic mumbai
-      sellAmount: amount,
+  formatLargeNumber(num: number) {
+    const numStr = num.toString();
+    // Divido la notazione scientifica
+    const parts = numStr.split(/[eE]/);
+    if (parts.length === 2) {
+      // Se è una notazione scientifica
+      const significand = parts[0]; // Parte principale
+      const exponent = parseInt(parts[1]); // Esponente
+      const zerosToAdd = Math.max(0, exponent - significand.length + 1);
+      const formattedNumber = significand + '0'.repeat(zerosToAdd);
+      return formattedNumber;
+    } else {
+      //stringa originale se non è una notazione scientifica, restituisci la
+      return numStr;
     }
+  }
 
-    const headers = {
-      '0x-api-key': '5c4232b5-6441-4f21-9c0d-0025c6dc5db4'
-    };
+  /*   async getPrice() {
+      console.log("Getting Price");
+      let amount = 0.0001 * 10 ** 18;
+      console.log("From amount WETH:", amount)
 
-    //https://api.0x.org/swap/v1/price?sellToken=0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619&buyToken=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&sellAmount=10000000000000000
-    // Fetch the swap price.
-    const response = await fetch(`https://arbitrum.api.0x.org/swap/v1/price?${qs.stringify(params)}`, { headers });
+      const params = {
+        sellToken: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',//Weth arbitrum
+        //sellToken: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',//Wmatic
+        //sellToken: '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',//Wmatic mumbai
+        //buyToken: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',//dai arbitrum
+        buyToken: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',//wbtc arbitrum
+        //buyToken: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',//dai
+        //buyToken: '0xcB98A882261E900f68e3D4f514372a25Ab6Aa847',//matic mumbai
+        sellAmount: amount,
+      }
 
-    console.log("🚀 ~ file: zero-x.service.ts:57 ~ ZeroXService ~ getPrice ~ `https://api.0x.org/swap/v1/price?${qs.stringify(params)}`:", `https://api.0x.org/swap/v1/price?${qs.stringify(params)}`)
-    const swapPriceJSON = await response.json();
-    console.log("Price: ", swapPriceJSON);
+      const headers = {
+        '0x-api-key': '5c4232b5-6441-4f21-9c0d-0025c6dc5db4'
+      };
 
-    console.log('to amount DAI: ', swapPriceJSON.buyAmount / (10 ** 18));
-    console.log('gas_estimate: ', swapPriceJSON.estimatedGas);
-    return swapPriceJSON;
-  } */
+      //https://api.0x.org/swap/v1/price?sellToken=0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619&buyToken=0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174&sellAmount=10000000000000000
+      // Fetch the swap price.
+      const response = await fetch(`https://arbitrum.api.0x.org/swap/v1/price?${qs.stringify(params)}`, { headers });
+
+      console.log("🚀 ~ file: zero-x.service.ts:57 ~ ZeroXService ~ getPrice ~ `https://api.0x.org/swap/v1/price?${qs.stringify(params)}`:", `https://api.0x.org/swap/v1/price?${qs.stringify(params)}`)
+      const swapPriceJSON = await response.json();
+      console.log("Price: ", swapPriceJSON);
+
+      console.log('to amount DAI: ', swapPriceJSON.buyAmount / (10 ** 18));
+      console.log('gas_estimate: ', swapPriceJSON.estimatedGas);
+      return swapPriceJSON;
+    } */
 
   async getQuote() {
     console.log("Getting Quote");
@@ -188,7 +219,7 @@ export class Web3Service {
       swapQuoteJSON.allowanceTarget,
       maxApproval,
     )
-    .send({ from: takerAddress })
+      .send({ from: takerAddress })
       .then((tx: any) => {
         console.log("tx: ", tx)
       });

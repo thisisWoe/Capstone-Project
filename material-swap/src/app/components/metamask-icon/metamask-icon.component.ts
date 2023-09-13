@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { INetwork } from 'src/app/interfaces/Inetwork';
+import { INetworks } from 'src/app/interfaces/inetworks';
 import { Web3Service } from 'src/app/web3-serv/web3.service';
 import { environment } from 'src/environments/environment.development';
 
@@ -96,16 +98,16 @@ export class MetamaskIconComponent implements OnInit {
   }
 
   updateNetworkSubject(id: number) {
-    type Network = {
+    /* type Network = {
       id: number;
       ZERO_x_URL: string;
     };
 
     type Networks = {
-      [key: string]: Network;
-    };
+      [key: string]: INetwork;
+    }; */
 
-    const X: Networks = this.network;
+    const X: INetworks = this.network;
     /* const X: Networks = {
       Ethereum:
       {
@@ -151,6 +153,7 @@ export class MetamaskIconComponent implements OnInit {
         if (currentObj.id === id) {
           console.log(`Network with id ${id} found in ${key}.`);
           this.web3Svc.ZERO_x_TARGET_subject.next(currentObj.ZERO_x_URL);
+          this.web3Svc.targetNetworkSubject.next(key);
           /* console.log(this.web3Svc.ZeroXtarget$);
           console.log(this.web3Svc.ZERO_x_TARGET_subject); */
 
