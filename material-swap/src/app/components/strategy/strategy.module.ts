@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 
 import { StrategyRoutingModule } from './strategy-routing.module';
 import { StrategyComponent } from './strategy.component';
+import { ChartComponent } from '../chart/chart.component';
 
 
 @NgModule({
   declarations: [
-    StrategyComponent
+    StrategyComponent,
+    ChartComponent
   ],
   imports: [
     CommonModule,
