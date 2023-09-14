@@ -1,0 +1,276 @@
+@import "./../../../variables";
+div.swap-container {
+  width: $swapWidth;
+  height: $swapWidth;
+  background-image: url(./../../../assets/imgs/sfondo-swap2.png);
+  background-size: contain;
+  border-radius: 2rem;
+  @media screen and (max-width: 1349px) and (min-width: 1130px) {
+    width: $swapWidth/1.5;
+    height: $swapWidth/1.5;
+    //fino a qui niente altro da cambiare
+  }
+  @media screen and (max-width: 1129px) and (min-width: 500px) {
+    width: $swapWidth/2;
+    height: $swapWidth/2;
+  }
+  /* @media screen and (max-width: 960px) {
+    width: 100%;
+    height: 100%;
+  } */
+  & > div.row {
+    height: 100%;
+    div.swap-wrapper {
+      /* border: 1px solid black; */
+      border-radius: 2rem;
+      & > div.row {
+        height: 100%;
+        div.swap-top {
+          height: 16%;
+          & > div.row {
+            display: flex;
+            align-items: center;
+            & > div.svg-cont a {
+              color: white !important;
+              &:hover {
+                svg {
+                  padding: 10px;
+                  border: 1px solid #8686a1;
+                  background-color: #e08142;
+                  border-radius: 25%;
+                  max-height: 50px;
+                  path {
+                    fill: white !important;
+                  }
+                }
+              }
+              svg {
+                padding: 10px;
+                border: 1px solid #8686a1;
+                background-color: #8686a1;
+                border-radius: 25%;
+                max-height: 50px;
+                transition: background-color 0.5s ease;
+                path {
+                  fill: #626277 !important;
+                }
+              }
+            }
+            h5 {
+              color: $greyShadeText;
+            }
+          }
+        }
+        div.swap-from {
+          height: 33.5%;
+          display: flex;
+          justify-content: center;
+          & > div.row {
+            /* border: 1px solid black; */
+            border-radius: 2rem;
+            height: 100%;
+            width: 99%;
+            /* background-color: #281e49; */
+            background-color: #1f1739;
+            span {
+              color: $greyShadeText;
+            }
+            div.group {
+              position: relative;
+              /* margin-bottom:45px; */
+              input {
+                font-size: 3rem;
+                color: $greyShadeText;
+                /* padding: 10px 0 10px 5px; */
+                display: block;
+                width: 100px;
+                border: none;
+                border: none;
+                /* border-bottom:1px solid #757575; */
+                background-color: transparent;
+              }
+              input:focus {
+                outline: none;
+              }
+            }
+            select.select-from {
+              background-color: #150f26;
+              border: none;
+              border-radius: 3rem;
+              color: $greyShadeText;
+              width: 70%;
+              height: 100%;
+              height: 75px;
+              @media screen and (max-width: 960px) {
+                border-radius: 1.5rem;
+                height: 40px;
+              }
+              @media screen and (max-width: 1349px) {
+                border-radius: 1.5rem;
+                height: 40px;
+              }
+              & > option {
+                text-align: center;
+                background-color: #150f26 !important;
+                transition: background-color 0.3s ease;
+              }
+            }
+          }
+        }
+        div.swap-to {
+          height: 33.5%;
+          display: flex;
+          justify-content: center;
+          & > div.row {
+            /* border: 1px solid black; */
+            border-radius: 2rem;
+            height: 100%;
+            width: 99%;
+            background-color: #1f1739;
+            span.outputTo {
+              color: $greyShadeText;
+              font-size: 2rem;
+              @media screen and (max-width: 1399px) {
+                font-size: 1.5rem;
+              }
+            }
+            select.select-to {
+              background-color: #150f26;
+              border: none;
+              border-radius: 3rem;
+              color: $greyShadeText;
+              width: 70%;
+              height: 75px;
+              @media screen and (max-width: 960px) {
+                border-radius: 1.5rem;
+                height: 40px;
+              }
+              @media screen and (max-width: 1349px) {
+                border-radius: 1.5rem;
+                height: 40px;
+              }
+              & > option {
+                text-align: center;
+                background-color: #150f26 !important;
+                transition: background-color 0.3s ease;
+              }
+            }
+          }
+        }
+        div.swap-btn {
+          height: 16%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          & > button {
+            height: 90%;
+            border-radius: 2rem;
+            background-color: #e0814250;
+            border: none;
+            transition: background-color 0.5s ease-in-out;
+            &:hover{
+              background-color: #e08142;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+label {
+  color: $greyShadeText;
+  font-size: 18px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+/* active state */
+input:focus ~ label,
+input:valid ~ label {
+  top: -20px;
+  font-size: 14px;
+  color: $greyShadeText;
+}
+.bar {
+  position: relative;
+  display: block;
+  width: 300px;
+}
+.bar:before,
+.bar:after {
+  content: "";
+  height: 2px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: $greyShadeText;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+.bar:before {
+  left: 0%;
+}
+.bar:after {
+  right: 75%;
+}
+
+/* active state */
+input:focus ~ .bar:before,
+input:focus ~ .bar:after {
+  width: 20%;
+}
+
+/* HIGHLIGHTER ================================== */
+.highlight {
+  position: absolute;
+  height: 60%;
+  width: 100px;
+  top: 25%;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* active state */
+input:focus ~ .highlight {
+  -webkit-animation: inputHighlighter 0.3s ease;
+  -moz-animation: inputHighlighter 0.3s ease;
+  animation: inputHighlighter 0.3s ease;
+}
+
+/* ANIMATIONS ================ */
+@-webkit-keyframes inputHighlighter {
+  from {
+    background: #5264ae;
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}
+@-moz-keyframes inputHighlighter {
+  from {
+    background: #5264ae;
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}
+@keyframes inputHighlighter {
+  from {
+    background: #5264ae;
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}

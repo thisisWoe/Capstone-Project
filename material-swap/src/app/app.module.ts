@@ -10,7 +10,7 @@ import { CardProfileComponent } from './components/card-profile/card-profile.com
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

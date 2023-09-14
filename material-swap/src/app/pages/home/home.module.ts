@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { MetamaskIconComponent } from './../../components/metamask-icon/metamask-icon.component';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { CardProfileComponent } from 'src/app/components/card-profile/card-profile.component';
+import { ChartComponent } from 'src/app/components/chart/chart.component';
 
 
 
@@ -19,6 +20,7 @@ import { CardProfileComponent } from 'src/app/components/card-profile/card-profi
     SwapComponent,
     MetamaskIconComponent,
     CardProfileComponent,
+    ChartComponent
   ],
   imports: [
     CommonModule,
