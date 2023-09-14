@@ -73,7 +73,7 @@ div.card-wrapper {
           button {
             cursor: default;
             background-color: #1f1739b5;
-            border: 0.5px solid #38359b;
+            border: 0.5px solid rgb(56, 53, 155);
             width: 100%;
             text-align: start;
             color: white;
@@ -85,7 +85,7 @@ div.card-wrapper {
         }
       }
       p {
-        color: white;
+        color: rgb(255, 255, 255);
         //color: $greyShadeText;
       }
       p.ellipsis-text {
