@@ -1,6 +1,23 @@
 <div class="card-wrapper">
-  <div class="card">
+  <div class="card" (mouseover)="zoomAndMove($event)" (mouseout)="zoomAndMoveBack($event)">
     <img #animatedImg src="./../../../assets/imgs/metamask.png" alt="metamask-img">
-    <span>Check your details here!</span>
+    <span #caption class="caption">Check your details here!</span>
+    <div #infos class="infoContainer py-4" *ngIf="walletInfo">
+      <div class="macro-wallet">
+        <div class="info-walletWrapper my-4 px-2">
+          <p>Wallet Address</p>
+          <p class="ellipsis-text btn">{{accountConnected}}</p>
+        </div>
+      </div>
+      <div class="macro-token px-2">
+        <p class=" my-4">Token Balances</p>
+        <div class="infoWrapper my-4" *ngFor="let token of tokenInfoArray">
+          <button class="btn" *ngIf="token.formatBalance !== 0">{{token.tokenObj.name}}: {{token.formatBalance}}</button>
+        </div>
+      </div>
+    </div>
+    <div #infosConnect class="infoContainer" *ngIf="!walletInfo">
+      <button class="btn btn-connect-card py-3 px-4">Please connect Metamask</button>
+    </div>
   </div>
 </div>

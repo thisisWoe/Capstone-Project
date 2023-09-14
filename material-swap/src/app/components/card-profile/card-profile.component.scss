@@ -1,20 +1,108 @@
-div.card-wrapper{
+@import "./../../../_variables.scss";
+
+div.card-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
-  div.card{
+  div.card {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    border: 1px solid white !important;
+    border: 2px solid #be6dab;
+    border-radius: 2rem;
     width: 80%;
     height: 700px;
     background-color: #1f1739;
     overflow: hidden;
-    img{
+    position: relative;
+    @media screen and (max-width: 1129px) and (min-width: 500px) {
+      height: 600px;
+    }
+    img {
       width: 290px;
       height: 290px;
+      @media screen and (max-width: 1129px) and (min-width: 500px) {
+        width: 230px;
+        height: 230px;
+      }
+    }
+    span.caption {
+      color: $greyShadeText;
+      font-size: 1.5rem;
+      @media screen and (max-width: 1129px) and (min-width: 500px) {
+        font-size: 1.2rem;
+      }
+    }
+    div.infoContainer {
+      position: absolute;
+      top: 0px;
+      left: -500px;
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      justify-content: space-around;
+      height: 100%;
+      button.btn-connect-card{
+        margin-left: 28px;
+        //background-color: #be6dab;
+        background-color: #1f173986;
+        cursor: default;
+        border-radius: 2rem;
+        border: 2px solid #be6dab;
+        color: white;
+        @media screen and (max-width: 1129px) and (min-width: 500px) {
+          border: 1px solid #be6dab;
+          margin-left: 11px;
+          padding: 8px 12px !important;
+        }
+        &:hover{
+          background-color: #be6dab5a;
+        }
+      }
+      div.macro-wallet,
+      div.macro-token {
+        border: 2px solid #38359b;
+
+        border-radius: 2rem;
+        @media screen and (max-width: 1129px) and (min-width: 500px) {
+          width: 215px;
+          max-width: 215px;
+        }
+        div.infoWrapper {
+          button {
+            cursor: default;
+            background-color: #1f1739b5;
+            border: 0.5px solid #38359b;
+            width: 100%;
+            text-align: start;
+            color: white;
+            @media screen and (max-width: 1129px) and (min-width: 500px) {
+              width: 197px;
+              font-size: 0.7rem;
+            }
+          }
+        }
+      }
+      p {
+        color: white;
+        //color: $greyShadeText;
+      }
+      p.ellipsis-text {
+        background-color: #1f1739b5;
+        border: 0.5px solid #38359b;
+        cursor: default;
+        //background-color: #38359b;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 253px;
+        color: white;
+        @media screen and (max-width: 1129px) and (min-width: 500px) {
+          max-width: 197px;
+          font-size: 0.7rem;
+        }
+      }
     }
   }
 }
