@@ -17,6 +17,8 @@ export class ChartComponent {
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone) { }
 
   ngAfterViewInit() {
+
+    this.root = am5.Root.new('chartDiv');
     // Impostazione del tema animato per il grafico
     this.root.setThemes([
       am5themes_Animated.new(this.root)
@@ -34,14 +36,134 @@ export class ChartComponent {
     )
 
     // Definizione dei dati del grafico a candele
-    let data = [{
-      "date": new Date(2021, 0, 1).getTime(),
-      "open": 1200,
-      "high": 1205,
-      "low": 1198,
-      "close": 1202,
-      // Altri dati simili per ciascun punto nel grafico
-    }];
+    /* let dataProva = "2023-01-23T00:00:00.0000000Z";
+    let dataData = new Date(dataProva);
+    let timeStamp = dataData.getTime(); */
+    let data = [
+      {
+        "date": new Date(2021, 0, 1).getTime(),
+        //"date": timeStamp,
+        "open": 1200,
+        "high": 1810,
+        "low": 1198,
+        "close": 1800,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 2).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 3).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 4).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 5).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 6).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 7).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 8).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 9).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 10).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 11).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 12).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 13).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 14).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+      {
+        "date": new Date(2021, 0, 15).getTime(),
+        "open": 1250,
+        "high": 1300,
+        "low": 1000,
+        "close": 1050,
+        // Altri dati simili per ciascun punto nel grafico
+      },
+    ];
+    console.log(data);
+
 
     // Creazione dell'asse X del grafico
     let xAxis = chart.xAxes.push(
@@ -115,100 +237,100 @@ export class ChartComponent {
       });
     }
   }
-
-  /*   ngAfterViewInit() {
-      // Chart code goes in here
-      this.browserOnly(() => {
-        let root = am5.Root.new("chartdiv");
-
-        root.setThemes([am5themes_Animated.new(root)]);
-
-        let chart = root.container.children.push(
-          am5xy.XYChart.new(root, {
-            panY: false,
-            layout: root.verticalLayout,
-            wheelY: "zoomX",           // Abilita lo zoom sull'asse X usando la rotella del mouse
-            layout: root.verticalLayout, // Utilizza un layout verticale
-            maxtooltipDistance: 0      // Specifica la distanza massima per il tooltip (0 significa senza limite)
-          })
-        );
-
-        // Define data
-        let data = [
-          {
-            category: "Research",
-            value1: 1000,
-            value2: 588
-          },
-          {
-            category: "Marketing",
-            value1: 1200,
-            value2: 1800
-          },
-          {
-            category: "Sales",
-            value1: 850,
-            value2: 1230
-          }
-        ];
-
-        // Create Y-axis
-        let yAxis = chart.yAxes.push(
-          am5xy.ValueAxis.new(root, {
-            renderer: am5xy.AxisRendererY.new(root, {})
-          })
-        );
-
-        // Create X-Axis
-        let xAxis = chart.xAxes.push(
-          am5xy.CategoryAxis.new(root, {
-            renderer: am5xy.AxisRendererX.new(root, {}),
-            categoryField: "category"
-          })
-        );
-        xAxis.data.setAll(data);
-
-        // Create series
-        let series1 = chart.series.push(
-          am5xy.ColumnSeries.new(root, {
-            name: "Series",
-            xAxis: xAxis,
-            yAxis: yAxis,
-            valueYField: "value1",
-            categoryXField: "category"
-          })
-        );
-        series1.data.setAll(data);
-
-        let series2 = chart.series.push(
-          am5xy.ColumnSeries.new(root, {
-            name: "Series",
-            xAxis: xAxis,
-            yAxis: yAxis,
-            valueYField: "value2",
-            categoryXField: "category"
-          })
-        );
-        series2.data.setAll(data);
-
-        // Add legend
-        let legend = chart.children.push(am5.Legend.new(root, {}));
-        legend.data.setAll(chart.series.values);
-
-        // Add cursor
-        chart.set("cursor", am5xy.XYCursor.new(root, {}));
-
-        this.root = root;
-      });
-    }
-
-    ngOnDestroy() {
-      // Clean up chart when the component is removed
-      this.browserOnly(() => {
-        if (this.root) {
-          this.root.dispose();
-        }
-      });
-    } */
-
 }
+
+/*   ngAfterViewInit() {
+    // Chart code goes in here
+    this.browserOnly(() => {
+      let root = am5.Root.new("chartdiv");
+
+      root.setThemes([am5themes_Animated.new(root)]);
+
+      let chart = root.container.children.push(
+        am5xy.XYChart.new(root, {
+          panY: false,
+          layout: root.verticalLayout,
+          wheelY: "zoomX",           // Abilita lo zoom sull'asse X usando la rotella del mouse
+          layout: root.verticalLayout, // Utilizza un layout verticale
+          maxtooltipDistance: 0      // Specifica la distanza massima per il tooltip (0 significa senza limite)
+        })
+      );
+
+      // Define data
+      let data = [
+        {
+          category: "Research",
+          value1: 1000,
+          value2: 588
+        },
+        {
+          category: "Marketing",
+          value1: 1200,
+          value2: 1800
+        },
+        {
+          category: "Sales",
+          value1: 850,
+          value2: 1230
+        }
+      ];
+
+      // Create Y-axis
+      let yAxis = chart.yAxes.push(
+        am5xy.ValueAxis.new(root, {
+          renderer: am5xy.AxisRendererY.new(root, {})
+        })
+      );
+
+      // Create X-Axis
+      let xAxis = chart.xAxes.push(
+        am5xy.CategoryAxis.new(root, {
+          renderer: am5xy.AxisRendererX.new(root, {}),
+          categoryField: "category"
+        })
+      );
+      xAxis.data.setAll(data);
+
+      // Create series
+      let series1 = chart.series.push(
+        am5xy.ColumnSeries.new(root, {
+          name: "Series",
+          xAxis: xAxis,
+          yAxis: yAxis,
+          valueYField: "value1",
+          categoryXField: "category"
+        })
+      );
+      series1.data.setAll(data);
+
+      let series2 = chart.series.push(
+        am5xy.ColumnSeries.new(root, {
+          name: "Series",
+          xAxis: xAxis,
+          yAxis: yAxis,
+          valueYField: "value2",
+          categoryXField: "category"
+        })
+      );
+      series2.data.setAll(data);
+
+      // Add legend
+      let legend = chart.children.push(am5.Legend.new(root, {}));
+      legend.data.setAll(chart.series.values);
+
+      // Add cursor
+      chart.set("cursor", am5xy.XYCursor.new(root, {}));
+
+      this.root = root;
+    });
+  }
+
+  ngOnDestroy() {
+    // Clean up chart when the component is removed
+    this.browserOnly(() => {
+      if (this.root) {
+        this.root.dispose();
+      }
+    });
+  } */
+
