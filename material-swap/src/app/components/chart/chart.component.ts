@@ -8,6 +8,7 @@ import * as am5xy from '@amcharts/amcharts5/xy';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import { IXYChartSettings } from '@amcharts/amcharts5/xy';
 import { IChartData } from 'src/app/interfaces/ichart-data';
+import am5themes_Dark from "@amcharts/amcharts5/themes/Dark";
 
 @Component({
   selector: 'app-chart',
@@ -20,7 +21,7 @@ export class ChartComponent {
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone, private mktSvc: MarketDataService) { }
 
   ngOnInit() {
-    this.getPeriodData('BTC', 'USD', '2023-09-10', '2023-09-15')
+    //this.getPeriodData('BTC', 'USD', '2023-09-10', '2023-09-15')
     /* this.mktSvc.getPeriodData('BTC', 'USD', '2023-09-15', '2023-09-16').subscribe(data => {
       console.log(data);
 
@@ -51,11 +52,16 @@ export class ChartComponent {
   }
 
   ngAfterViewInit() {
+    const grafico = <HTMLDivElement>document.querySelector('#chartDiv');
+    const widthCh = grafico.offsetWidth;
+    console.log("widthCh:", widthCh)
 
     this.root = am5.Root.new('chartDiv');
     // Impostazione del tema animato per il grafico
     this.root.setThemes([
-      am5themes_Animated.new(this.root)
+      //https://www.amcharts.com/docs/v5/concepts/themes/#Modifying_default_theme
+      am5themes_Animated.new(this.root),
+      am5themes_Dark.new(this.root),
     ])
 
     // Creazione dell'oggetto "chart" che rappresenta il grafico principale
@@ -74,119 +80,143 @@ export class ChartComponent {
     let dataData = new Date(dataProva);
     let timeStamp = dataData.getTime(); */
     let data = [
-  /*     {
-        "date": new Date(2021, 0, 1).getTime(),
-        //"date": timeStamp,
-        "open": 1200,
-        "high": 1810,
-        "low": 1198,
-        "close": 1800,
+          {
+            "date": new Date(2021, 0, 1).getTime(),
+            //"date": timeStamp,
+            "open": 1200,
+            "high": 1810,
+            "low": 1198,
+            "close": 1800,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 2).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 3).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 4).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 5).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 6).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 7).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 8).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 9).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 10).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 11).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 12).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 13).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+          {
+            "date": new Date(2021, 0, 14).getTime(),
+            "open": 1250,
+            "high": 1300,
+            "low": 1000,
+            "close": 1050,
+            // Altri dati simili per ciascun punto nel grafico
+          },
+/*       {
+        'close': 26610.980813233607,
+        'date': new Date(2023, 8, 14).getTime(),
+        'high': 27000.557887177958,
+        'low': 26000.810285885258,
+        'open': 26200.5626358898
         // Altri dati simili per ciascun punto nel grafico
       },
       {
-        "date": new Date(2021, 0, 2).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
+        'close': 26000.980813233607,
+        'date': new Date(2023, 8, 13).getTime(),
+        'high': 26662.557887177958,
+        'low': 25900.810285885258,
+        'open': 26532.5626358898
         // Altri dati simili per ciascun punto nel grafico
       },
       {
-        "date": new Date(2021, 0, 3).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
+        'close': 26603.980813233607,
+        'date': new Date(2023, 8, 12).getTime(),
+        'high': 26662.557887177958,
+        'low': 26464.810285885258,
+        'open': 26532.5626358898
         // Altri dati simili per ciascun punto nel grafico
       },
-      {
-        "date": new Date(2021, 0, 4).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      },
-      {
-        "date": new Date(2021, 0, 5).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      },
-      {
-        "date": new Date(2021, 0, 6).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      },
-      {
-        "date": new Date(2021, 0, 7).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      },
-      {
-        "date": new Date(2021, 0, 8).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      },
-      {
-        "date": new Date(2021, 0, 9).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      },
-      {
-        "date": new Date(2021, 0, 10).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      },
-      {
-        "date": new Date(2021, 0, 11).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      },
-      {
-        "date": new Date(2021, 0, 12).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      },
-      {
-        "date": new Date(2021, 0, 13).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      },
-      {
-        "date": new Date(2021, 0, 14).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
-        // Altri dati simili per ciascun punto nel grafico
-      }, */
       {
         'close': 26603.980813233607,
         'date': 1694736000000,
@@ -194,19 +224,22 @@ export class ChartComponent {
         'low': 26464.810285885258,
         'open': 26532.5626358898
         // Altri dati simili per ciascun punto nel grafico
-      },
+      }, */
     ];
-    console.log(data);
 
 
     // Creazione dell'asse X del grafico
     let xAxis = chart.xAxes.push(
       am5xy.DateAxis.new(this.root, {
         tooltipDateFormat: "MMM d, yyyy",
-        renderer: am5xy.AxisRendererX.new(this.root, {}),
-        baseInterval: { timeUnit: "day", count: 1 }
+        renderer: am5xy.AxisRendererX.new(this.root, {
+          stroke: am5.color(0xffffff),
+        }),
+        baseInterval: { timeUnit: "day", count: 1 },
       })
     );
+
+    //xAxis.get('renderer').labels.template.adapters.add('fill') = am5.color("red");
 
     // Creazione dell'asse Y del grafico
     var yAxis = chart.yAxes.push(
@@ -226,25 +259,38 @@ export class ChartComponent {
         lowValueYField: "low",
         valueYField: "close",
         valueXField: "date",
-        tooltip: am5.Tooltip.new(this.root, {}) // Impostazione del tooltip per la serie
+
+        // Impostazione del tooltip per la serie
+        /* tooltip: am5.Tooltip.new(this.root, {
+          width: widthCh/5,
+          height: (widthCh/5)/1.8,
+        }) */
       })
     );
 
     // Impostazione dei colori per le candele in base alla loro variazione
     series.columns.template.states.create("riseFromOpen", {
       //interno candela +
-      fill: am5.color(0xbe6dab),
+      fill: am5.color(0xdd826d),
       //bordo candela +
-      stroke: am5.color(0xbe6dab)
+      stroke: am5.color(0xdd826d)
     });
     series.columns.template.states.create("dropFromOpen", {
       //interno candela -
-      fill: am5.color('#1f1739'),
+      fill: am5.color(0x645bbd),
       //bordo candela -
-      stroke: am5.color('rgb(255, 255, 255)')
+      stroke: am5.color(0x645bbd)
     });
     // Personalizzazione del testo del tooltip
-    series.get("tooltip")!.label.set("text", "[bold]{valueX.formatDate()}[/]\nOpen: {openValueY}\nHigh: {highValueY}\nLow: {lowValueY}\nClose: {valueY}")
+    /* series.get("tooltip")!.label
+      .set(
+        "text",
+        "[bold]{valueX.formatDate()}[/]\nOpen: {openValueY}\nHigh: {highValueY}\nLow: {lowValueY}\nClose: {valueY}"
+      )
+
+    series.get("tooltip")!.label
+      .set("fontSize", 5) */
+
 
     // Impostazione dei dati per la serie del grafico a candele
     series.data.setAll(data);
@@ -323,7 +369,7 @@ export class ChartComponent {
         valueYField: "close",
         valueXField: "date",
         // Impostazione del tooltip per la serie
-        tooltip: am5.Tooltip.new(this.root, {})
+        /* tooltip: am5.Tooltip.new(this.root, {}) */
       })
     );
     return series;
@@ -399,9 +445,8 @@ export class ChartComponent {
     });
   }
 
-  getPeriodData(coin1: string, coin2: string, startYYYY_MM_DD: string, endYYYY_MM_DD: string){
+  getPeriodData(coin1: string, coin2: string, startYYYY_MM_DD: string, endYYYY_MM_DD: string) {
     this.mktSvc.getPeriodData(coin1, coin2, startYYYY_MM_DD, endYYYY_MM_DD).subscribe(data => {
-      console.log(data);
       const arrayTransformed = <IChartData[]>this.mktSvc.transformData(data);
       console.log("arrayTransformed:", arrayTransformed)
     })

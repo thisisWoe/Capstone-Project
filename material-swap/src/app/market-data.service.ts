@@ -56,7 +56,7 @@ export class MarketDataService {
     }; */
     return this.http.get<ICoinApiData[]>(url, { params })
       .pipe(tap(data => {
-        console.log(data);
+        //console.log(data);
 
       }));
   }
@@ -90,9 +90,6 @@ export class MarketDataService {
 
   transformData(data: ICoinApiData | ICoinApiData[]): IChartData | IChartData[] {
     if (Array.isArray(data)) {
-      console.log("data service:", data)
-      console.log('è un array');
-
       const arrayTransformed: IChartData[] = [];
       data.forEach((objData) => {
 
@@ -113,7 +110,6 @@ export class MarketDataService {
       });
       return arrayTransformed;
     } else {
-      console.log('non è un array');
       let toTransformDate0_1 = data.time_period_start;
       let toTransformDate0_2 = new Date(toTransformDate0_1);
       let timeStampTransformed0_3 = toTransformDate0_2.getTime();
