@@ -1,3 +1,4 @@
+import { MarketDataService } from 'src/app/market-data.service';
 import { Component, Inject, NgZone, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -16,7 +17,38 @@ import { IChartData } from 'src/app/interfaces/ichart-data';
 export class ChartComponent {
   private root!: am5.Root;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone) { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone, private mktSvc: MarketDataService) { }
+
+  ngOnInit() {
+    this.getPeriodData('BTC', 'USD', '2023-09-10', '2023-09-15')
+    /* this.mktSvc.getPeriodData('BTC', 'USD', '2023-09-15', '2023-09-16').subscribe(data => {
+      console.log(data);
+
+
+    }) */
+    /* this.mktSvc.getDataNow('UNI', 'USD').subscribe(data => {
+      console.log('UNI', data);
+      const singleObj = data[0];
+      this.mktSvc.transformData(singleObj);
+    }) */
+    /* this.mktSvc.getDataNow('LINK', 'USD').subscribe(data => {
+      console.log('LINK', data);
+
+    }) */
+    /* this.mktSvc.getDataNow('BAL', 'USD').subscribe(data => {
+      console.log('BAL', data);
+
+    }) */
+    /* this.mktSvc.getDataNow('DAI', 'USD').subscribe(data => {
+      console.log('DAI', data);
+
+    }) */
+    /* this.mktSvc.getDataNow('SYN', 'USD').subscribe(data => {
+      console.log('SYN', data);
+
+    }) */
+    /* this.getTodayData('BTC', 'USD'); */
+  }
 
   ngAfterViewInit() {
 
@@ -42,7 +74,7 @@ export class ChartComponent {
     let dataData = new Date(dataProva);
     let timeStamp = dataData.getTime(); */
     let data = [
-      {
+  /*     {
         "date": new Date(2021, 0, 1).getTime(),
         //"date": timeStamp,
         "open": 1200,
@@ -154,13 +186,13 @@ export class ChartComponent {
         "low": 1000,
         "close": 1050,
         // Altri dati simili per ciascun punto nel grafico
-      },
+      }, */
       {
-        "date": new Date(2021, 0, 15).getTime(),
-        "open": 1250,
-        "high": 1300,
-        "low": 1000,
-        "close": 1050,
+        'close': 26603.980813233607,
+        'date': 1694736000000,
+        'high': 26662.557887177958,
+        'low': 26464.810285885258,
+        'open': 26532.5626358898
         // Altri dati simili per ciascun punto nel grafico
       },
     ];
@@ -297,8 +329,8 @@ export class ChartComponent {
     return series;
   }
 
-  colorCandleSettings(series: am5xy.CandlestickSeries, bodyPlus:string|number, bodyMinus:string|number, borderPlus?:string|number, borderMinus?:string|number){
-    if(borderPlus && borderMinus){
+  colorCandleSettings(series: am5xy.CandlestickSeries, bodyPlus: string | number, bodyMinus: string | number, borderPlus?: string | number, borderMinus?: string | number) {
+    if (borderPlus && borderMinus) {
       series.columns.template.states.create("riseFromOpen", {
         fill: am5.color(bodyPlus),
         stroke: am5.color(borderPlus)
@@ -319,18 +351,18 @@ export class ChartComponent {
     }
   }
 
-  tooltip(series: am5xy.CandlestickSeries){
+  tooltip(series: am5xy.CandlestickSeries) {
     series.get("tooltip")!.label.set("text", "[bold]{valueX.formatDate()}[/]\nOpen: {openValueY}\nHigh: {highValueY}\nLow: {lowValueY}\nClose: {valueY}")
   }
 
-  setPointer(chart: am5xy.XYChart, xAxis: am5xy.DateAxis<am5xy.AxisRenderer>){
+  setPointer(chart: am5xy.XYChart, xAxis: am5xy.DateAxis<am5xy.AxisRenderer>) {
     chart.set("cursor", am5xy.XYCursor.new(this.root, {
       behavior: "zoomXY",
       xAxis: xAxis
     }));
   }
 
-  confirmSetting(arrayData: IChartData[], xAxis: am5xy.DateAxis<am5xy.AxisRenderer>, yAxis: am5xy.ValueAxis<am5xy.AxisRenderer>, series: am5xy.CandlestickSeries){
+  confirmSetting(arrayData: IChartData[], xAxis: am5xy.DateAxis<am5xy.AxisRenderer>, yAxis: am5xy.ValueAxis<am5xy.AxisRenderer>, series: am5xy.CandlestickSeries) {
     // Impostazione dei dati per la serie del grafico a candele
     series.data.setAll(arrayData);
 
@@ -352,5 +384,26 @@ export class ChartComponent {
         f();
       });
     }
+  }
+
+
+
+  //dati
+  getTodayData(coin1: string, coin2: string) {
+    this.mktSvc.getDataNow(coin1, coin2).subscribe(data => {
+      console.log('dati trasformati', data);
+      const singleObj = data[0];
+      const singleObjTransformed = <IChartData>this.mktSvc.transformData(singleObj);
+      console.log("singleObjTransformed:", singleObjTransformed)
+
+    });
+  }
+
+  getPeriodData(coin1: string, coin2: string, startYYYY_MM_DD: string, endYYYY_MM_DD: string){
+    this.mktSvc.getPeriodData(coin1, coin2, startYYYY_MM_DD, endYYYY_MM_DD).subscribe(data => {
+      console.log(data);
+      const arrayTransformed = <IChartData[]>this.mktSvc.transformData(data);
+      console.log("arrayTransformed:", arrayTransformed)
+    })
   }
 }
