@@ -7,6 +7,7 @@ import { tap } from 'rxjs';
 import { MarketResponse } from './interfaces/market-response';
 import { ICoinApiData } from './interfaces/icoin-api-data';
 import { IChartData } from './interfaces/ichart-data';
+import { IPricingBackend } from './interfaces/ipricing-backend';
 
 @Injectable({
   providedIn: 'root'
@@ -61,6 +62,21 @@ export class MarketDataService {
       }));
   }
 
+  //POST pricing nel backend
+  saveDataBackend(data: ICoinApiData | ICoinApiData[]){
+    const body = {
+      pricingset: this.transformDataforBackend(this.transformDataforChart(data))
+    }
+    const url = environment.API_BACKEND+environment.POST_PRICING_BLOCK;
+    console.log("body:", body)
+
+    return this.http.post(url, body)
+      .pipe(tap(res => {
+        console.log("res:", res)
+      }));
+  }
+
+  //ricevo dati di un PAIR di oggi
   getDataNow(coin1: string, coin2: string) {
     const now = new Date();
     const year = now.getUTCFullYear();
@@ -87,8 +103,8 @@ export class MarketDataService {
 
   }
 
-
-  transformData(data: ICoinApiData | ICoinApiData[]): IChartData | IChartData[] {
+  //trasformo i dati per i grafici (partendo da res di coinAPI)
+  transformDataforChart(data: ICoinApiData | ICoinApiData[]): IChartData | IChartData[] {
     if (Array.isArray(data)) {
       const arrayTransformed: IChartData[] = [];
       data.forEach((objData) => {
@@ -125,10 +141,89 @@ export class MarketDataService {
     }
   }
 
+  //trasformo da dati per chart a dati per backend
+  transformDataforBackend(data: IChartData | IChartData[]): IPricingBackend | IPricingBackend[] {
+    if (Array.isArray(data)) {
+      const arrayPricingBackend: IPricingBackend[] = [];
+      data.forEach(pricing => {
+        const millisecondsDate = pricing.date;
+        const date = new Date(millisecondsDate);
+        const year = date.getFullYear();
+        const month = String(date.getMonth()+1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const fullDate: string = `${year}-${month}-${day}`;
 
+        const newPricing: IPricingBackend = {
+          date: fullDate,
+          open: pricing.open,
+          high: pricing.high,
+          low: pricing.low,
+          close: pricing.close
+        };
+        arrayPricingBackend.push(newPricing);
+      });
+      return arrayPricingBackend;
+    } else {
+      const millisecondsDate = data.date;
+      const date = new Date(millisecondsDate);
+      const year = date.getFullYear();
+      const month = String(date.getMonth()).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const fullDate: string = `${year}-${month}-${day}`;
 
+      const newPricing: IPricingBackend = {
+        date: fullDate,
+        open: data.open,
+        high: data.high,
+        low: data.low,
+        close: data.close
+      };
+      return newPricing;
+    }
+  }
 
+  //trasformo da dati per backend a dati per chart
+  transformDatafromBEforChart(data: IPricingBackend | IPricingBackend[]):IChartData | IChartData[] {
+    if (Array.isArray(data)) {
+      const arrayPricingForChart: IChartData[] = [];
+      data.forEach(pricing => {
+        const parts = pricing.date.split('-');
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) -1;
+        const day = parseInt(parts[2], 10);
 
+        const dateMillisends = new Date(year, month, day).getTime();
+
+        const newPricing: IChartData = {
+          date: dateMillisends,
+          open: pricing.open,
+          high: pricing.high,
+          low: pricing.low,
+          close: pricing.close
+        };
+
+        arrayPricingForChart.push(newPricing);
+      });
+      return arrayPricingForChart;
+    } else {
+      const parts = data.date.split('-');
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const day = parseInt(parts[2], 10);
+
+        const dateMillisends = new Date(year, month, day).getTime();
+
+        const newPricing: IChartData = {
+          date: dateMillisends,
+          open: data.open,
+          high: data.high,
+          low: data.low,
+          close: data.close
+        };
+
+        return newPricing;
+    }
+  }
 
 
 }

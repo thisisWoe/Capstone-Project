@@ -13,8 +13,9 @@ export const environment = {
   //ZERO_x_URL_GOERLI: 'https://goerli.api.0x.org/swap/v1/',
   //ZERO_x_URL_CELO: 'https://celo.api.0x.org/swap/v1/',
 
-
-
+  //backend
+  API_BACKEND: 'http://localhost:8080/api/',
+  POST_PRICING_BLOCK: 'pricingblock/new',
 
 
 };

@@ -1,6 +1,7 @@
 import { MetamaskIconComponent } from './../metamask-icon/metamask-icon.component';
 import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/auth.service';
 import { INetwork } from 'src/app/interfaces/Inetwork';
 import { ICryptoData } from 'src/app/interfaces/icrypto-data';
 import { ITokenAddressData } from 'src/app/interfaces/itoken-address-data';
@@ -314,7 +315,7 @@ export class SwapComponent implements AfterViewInit, OnInit {
   targetUrlToFetch$: string = '';
 
 
-  constructor(private web3Svc: Web3Service) {
+  constructor(private web3Svc: Web3Service, private authSvc: AuthService) {
     this.wallet$ = this.web3Svc.metamask$;
     this.catchUrlToFetch$ = this.web3Svc.ZeroXtarget$;
     this.networkString$ = this.web3Svc.network$
@@ -322,6 +323,7 @@ export class SwapComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
+
 
     //this.getQuote(10, '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', '0x82af49447d8a07e3bd95bd0d56f35241523fbab1', 'https://arbitrum.api.0x.org/swap/v1/');
     this.wallet$.subscribe((wallet) => {

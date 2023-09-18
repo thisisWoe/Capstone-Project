@@ -1,3 +1,4 @@
+import { ICoinApiData } from './../../interfaces/icoin-api-data';
 import { AfterViewInit, Component, ElementRef, Inject, NgZone, PLATFORM_ID, ViewChild } from '@angular/core';
 import { NgbAlertModule, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
@@ -30,6 +31,18 @@ export class StrategyComponent implements AfterViewInit{
     const root = am5.Root.new("chartDivPieTarget");
     this.chartSvc.pieSetAllChart(root);
     this.resizePieChart();
+
+    /* this.mktSvc.getPeriodData('WBTC', 'USD', '2023-06-11', '2023-09-19').subscribe(data => {
+      console.log("data:", data)
+      const dataFromChart = this.mktSvc.transformDataforChart(data);
+      const dataForBackend = this.mktSvc.transformDataforBackend(dataFromChart);
+      console.log("dataForBackend:", dataForBackend)
+      this.mktSvc.saveDataBackend(data).subscribe(res => {
+        console.log("res:", res)
+
+      });
+    }); */
+
   }
 
   resizeCandleChart(){
