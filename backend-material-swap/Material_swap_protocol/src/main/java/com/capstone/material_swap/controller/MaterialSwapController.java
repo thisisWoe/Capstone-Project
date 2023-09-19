@@ -39,8 +39,10 @@ public class MaterialSwapController {
 	@PostMapping("/asset/new")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<?> createAsset(@RequestBody Asset a){
-		String response = mSvc.addAsset(a);
-		return new ResponseEntity<String>(response, HttpStatus.OK);
+		Asset response = mSvc.addAsset(a);
+		//return new ResponseEntity<Asset>(response, HttpStatus.OK);
+		ResponseEntity<Asset> resp = new ResponseEntity<Asset>(response, HttpStatus.OK);
+		return resp;
 	}
 	
 	@PostMapping("/objnetowrk/new")

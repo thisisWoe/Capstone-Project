@@ -51,14 +51,14 @@ public class MaterialSwapService {
 	@Autowired @Qualifier("objNetworkBean") private ObjectProvider<ObjNetwork> objNetworkProvider;
 	@Autowired @Qualifier("pricingBean") private ObjectProvider<Pricing> pricingProvider;
 	
-	public String addAsset(Asset assetInEntrance) {
+	public Asset addAsset(Asset assetInEntrance) {
 		Asset asset = assetProvider.getObject();
 		asset.setImgUrl(assetInEntrance.getImgUrl());
 		asset.setName(assetInEntrance.getName());
 		
 		System.out.println(asset.toString());
 		AssetRepo.save(asset);
-		return "Asset successfully created. Please set networks.";
+		return asset;
 	}
 	
 	public String addObjectNetwork(ObjNetwork object) {
@@ -72,7 +72,7 @@ public class MaterialSwapService {
 		
 		System.out.println(obj.toString());
 		
-		return "Obj network successfully created and added to asset addresses.";
+		return "Asset and networks respectively successfully created and added.";
 	}
 	
 	public String addStrategy(Strategy strategyInEntrance) {
