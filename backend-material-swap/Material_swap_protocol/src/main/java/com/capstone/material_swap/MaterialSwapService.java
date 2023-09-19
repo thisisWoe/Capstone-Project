@@ -106,6 +106,7 @@ public class MaterialSwapService {
 					strategy.setSimulation(strategyInEntrance.isSimulation());
 					strategy.setName(strategyInEntrance.getName());
 					strategy.setUser(user);
+					strategy.setStart(strategyInEntrance.getStart());
 					//strategy.setAssetAllocations(controlPercentage);
 					StrategyRepo.save(strategy);
 					
@@ -129,6 +130,7 @@ public class MaterialSwapService {
 				strategy.setSimulation(strategyInEntrance.isSimulation());
 				strategy.setName(strategyInEntrance.getName());
 				strategy.setUser(user);
+				strategy.setStart(strategyInEntrance.getStart());
 				//strategy.setAssetAllocations(controlPercentage);
 				StrategyRepo.save(strategy);
 				
@@ -220,6 +222,7 @@ public class MaterialSwapService {
 			strDto.setUser(strategy.getUser());
 			strDto.setSimulation(strategy.isSimulation());
 			strDto.setAssetAllocations(newAllocation);
+			strDto.setStart(strategy.getStart());
 			
 			return strDto;
 		} else {

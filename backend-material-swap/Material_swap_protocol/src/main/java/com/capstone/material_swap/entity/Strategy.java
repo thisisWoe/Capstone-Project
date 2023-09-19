@@ -1,5 +1,6 @@
 package com.capstone.material_swap.entity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +39,8 @@ public class Strategy {
 	private boolean simulation;
 	@OneToMany(mappedBy = "strategy")
 	private Set<AssetAllocation> assetAllocations;
+	@Column(nullable = false)
+	private LocalDate start;
 	
 
 }

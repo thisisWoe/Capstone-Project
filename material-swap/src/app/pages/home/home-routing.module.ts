@@ -21,6 +21,7 @@ const routes: Routes = [
   children:[
     //{ path: '', component: SwapV2Component},
     { path: '', loadChildren: () => import('./../../components/swap-v2/swap-v2.module').then(m => m.SwapV2Module) },
+    { path: 'swap-v2', loadChildren: () => import('./../../components/swap-v2/swap-v2.module').then(m => m.SwapV2Module) },
     { path: 'strategy', loadChildren: () => import('./../../components/strategy/strategy.module').then(m => m.StrategyModule), canActivate: [AuthGuard]   },
     { path: 'auth', loadChildren: () => import('./../../components/auth/auth.module').then(m => m.AuthModule) },
     { path: 'signup', loadChildren: () => import('./../../components/signup/signup.module').then(m => m.SignupModule) },

@@ -1,0 +1,47 @@
+@import './../../../variables';
+
+div.page-container{
+  div.row{
+
+    div.strategy-infos{
+      background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      border: 1px solid white;
+      border-radius: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      h5{
+        color: $greyShadeText;
+        font-size: 2rem;
+      }
+      h6.strategy-quantities{
+        font-size: 3rem;
+        color: whitesmoke;
+      }
+    }
+    div.actionStrategy{
+      div.row{
+        height: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        @media screen and (max-width: 1440px){
+          flex-direction: row;
+        }
+        div.create-wrapper, div.edit-wrapper{
+          background-image: url(./../../../assets/imgs/chart-back.png);
+          border: 1px solid white;
+          border-radius: 2rem;
+          display: flex;
+          justify-content: center;
+          height: 40%;
+          align-items: center;
+          button{
+            height: 30%;
+            width: 50%;
+          }
+        }
+      }
+    }
+  }
+}

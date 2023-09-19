@@ -76,7 +76,22 @@ export class AuthService {
     console.log('You are logged.');
   }
 
-
+  sizingRouterApp():string{
+    const pageHeight = document.documentElement.clientHeight;
+    const header = <HTMLDivElement>document.querySelector('div.header');
+    let totalHeight = 0;
+    if (header) {
+      let headerOffsetHeight = header.offsetHeight;
+      if (headerOffsetHeight === 0) {
+        headerOffsetHeight = 100;
+      }
+      totalHeight = headerOffsetHeight +
+      parseInt(getComputedStyle(header).marginTop) +
+      parseInt(getComputedStyle(header).marginBottom);
+    }
+    const targetHeight:string = (pageHeight-totalHeight)+'px';
+    return targetHeight;
+  }
 
 
 

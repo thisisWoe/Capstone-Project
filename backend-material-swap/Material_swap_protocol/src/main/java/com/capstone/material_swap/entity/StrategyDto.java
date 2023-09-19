@@ -1,5 +1,6 @@
 package com.capstone.material_swap.entity;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import com.capstone.material_swap.payload.AssetAllocationDto;
@@ -20,4 +21,5 @@ public class StrategyDto {
 	private User user;
 	private boolean simulation;
 	private Set<AssetAllocationDto> assetAllocations;
+	private LocalDate start;
 }

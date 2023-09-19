@@ -1,1 +1,32 @@
-<p>dashboard works!</p>
+<div #pageContainer class="container-fluid page-container">
+  <div class="row">
+
+    <div #strategyInfos class="col-12 col-xxl-6 strategy-infos">
+      <h5>Active Strategy</h5>
+      <h6 class="strategy-quantities">{{strategies.length}}</h6>
+      <h5>Allocations</h5>
+      <p>grafico</p>
+      <h5 *ngIf="strategies.length >=1">Performance</h5>
+      <div class="real-strategy" *ngIf="notSimulatedStrategy !== null">
+        <p>{{notSimulatedStrategy.name}}</p>
+      </div>
+      <div class="simulations" *ngIf="simulatedStrategies.length >= 1">
+        <p *ngIf="!simulatedStrategiesProfitOrLoss">Loss</p>
+        <p *ngIf="simulatedStrategiesProfitOrLoss">Profit</p>
+      </div>
+    </div>
+
+    <div #actionStrategy class="col-12 col-xxl-6 actionStrategy">
+      <div class="row">
+        <!-- create -->
+        <div class="col-6 col-xxl-10 create-wrapper">
+          <button type="button" class="btn btn-secondary btn-lg">Create Strategy</button>
+        </div>
+        <!-- edit -->
+        <div class="col-6 col-xxl-10 edit-wrapper">
+          <button type="button" class="btn btn-secondary btn-lg">Edit Strategy</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
