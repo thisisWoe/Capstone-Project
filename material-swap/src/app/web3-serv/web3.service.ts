@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { RegisterDto } from '../interfaces/register-dto';
 
 declare global {
   interface Window {
@@ -217,6 +218,19 @@ export class Web3Service {
     // Perform the swap
     const receipt = await web3.eth.sendTransaction(swapQuoteJSON);
     console.log("receipt: ", receipt);
+  }
+
+  async signRegisterRequest(): Promise<string> {
+    const messageToSign = 'Are you sure to sign up to MaterialSwap? No sensitive data will be saved.';
+    try {
+      const accounts = await this.web3wallet.eth.getAccounts();
+      const signature = await this.web3wallet.eth.personal.sign(messageToSign, accounts[0]);
+      console.log('Firma riuscita:', signature);
+      return signature;
+    } catch (error) {
+      console.error('Errore durante la firma:', error);
+    }
+    return '';
   }
 
 

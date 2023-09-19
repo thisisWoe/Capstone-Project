@@ -47,7 +47,7 @@ public class AuthController {
     @PostMapping(value = {"/register", "/signup"})
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto){
         String response = authService.register(registerDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<String>(response, HttpStatus.CREATED);
     }
     
     // JSON inviato dal Client
