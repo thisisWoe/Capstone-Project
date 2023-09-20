@@ -1,7 +1,7 @@
 <div #adminPageContainer class="container-fluid page-container">
   <div class="row">
     <div class="col-12 col-xxl-6 add-asset-container">
-      <form [formGroup]="formAssetAndNetwork" >
+      <form [formGroup]="formAssetAndNetwork"  (ngSubmit)="listAsset()">
 
         <div class="input-group input-group-sm mb-3">
           <span class="input-group-text" id="inputGroup-sizing-sm">Token Symbol</span>
@@ -25,43 +25,40 @@
             >
           </div>
 
-          <select (change)="onChangeNetworkToAdd($event)" class="form-select form-select-sm" aria-label="Small select example">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-          </select>
-
-
-          <div class="network-data-select" *ngFor="let net of networkToAdd">
             <select
-
+              #selectNetwork
+              (change)="onChangeNetworkToAdd($event)"
               class="form-select form-select-sm"
               aria-label="Small select example"
             >
+              <option value="" selected>Select Network</option>
               <ng-container *ngFor=" let network of networkAvailable">
-                <option>{{network}}</option>
+                <option [value]="network">{{network}}</option>
               </ng-container>
             </select>
-          </div>
+
 
 
         <div class="input-group input-group-sm mb-3">
           <span class="input-group-text" id="inputGroup-sizing-sm">Token Address</span>
           <input
+            (change)="onChangeTokenAddress($event)"
             type="text"
-            class="form-control"
+            class="form-control input-token-address"
             aria-label="Sizing example input"
             aria-describedby="inputGroup-sizing-sm"
             >
             <!-- formControlName="publicKey" -->
         </div>
+        <div class="row">
+          <div #networkCreation class="col-12 target-network-creation">
 
-        <button type="button" class="btn btn-secondary btn-lg">Add Address</button>
-        <button type="button" class="btn btn-secondary btn-lg">List Asset</button>
+          </div>
+        </div>
+        <div class="form-footer">
+          <button type="button" class="btn btn-secondary btn-lg" (click)="createButtonNetwork()">Add Address</button>
+          <button type="submit" class="btn btn-secondary btn-lg">List Asset</button>
+        </div>
       </form>
     </div>
     <div class="col-12 col-xxl-6 add-pricing-container">

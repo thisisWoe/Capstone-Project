@@ -8,6 +8,7 @@ import { MarketResponse } from './interfaces/market-response';
 import { ICoinApiData } from './interfaces/icoin-api-data';
 import { IChartData } from './interfaces/ichart-data';
 import { IPricingBackend } from './interfaces/ipricing-backend';
+import { IAssetDto } from './interfaces/iasset-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -225,6 +226,9 @@ export class MarketDataService {
     }
   }
 
-
+  //crud asset e network
+  addAsset(asset: IAssetDto){
+    return this.http.post<IAssetDto>(environment.API_BACKEND+'asset/new', asset);
+  }
 
 }
