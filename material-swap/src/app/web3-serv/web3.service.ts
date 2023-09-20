@@ -92,10 +92,39 @@ export class Web3Service {
     console.log('Getting Price...');
     let amount: number | string = 0;
     if (amountToSwap > 999) {
-      let numAmount = amountToSwap * 10 ** 18;
-      amount = this.formatLargeNumber(numAmount);
+      //test
+      if (tokenAddressFrom ===
+        '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' ||
+        '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6' ||
+        '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c' ||
+        '0x68f180fcce6836688e9084f035309e29bf0a2095' ||
+        '0x321162Cd933E2Be498Cd2267a90534A804051b11' ||
+        '0x408d4cd0adb7cebd1f1a1c33a0ba2098e1295bab' ||
+        '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f'
+        ) {
+          let numAmount = amountToSwap * 10 ** 8;
+          amount = this.formatLargeNumber(numAmount);
+      } else {
+        let numAmount = amountToSwap * 10 ** 18;
+        amount = this.formatLargeNumber(numAmount);
+      }
     } else {
-      amount = amountToSwap * 10 ** 18;
+
+      if (tokenAddressFrom ===
+        '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' ||
+        '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6' ||
+        '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c' ||
+        '0x68f180fcce6836688e9084f035309e29bf0a2095' ||
+        '0x321162Cd933E2Be498Cd2267a90534A804051b11' ||
+        '0x408d4cd0adb7cebd1f1a1c33a0ba2098e1295bab' ||
+        '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f'
+        ) {
+          amount = amountToSwap * 10 ** 8;
+      } else {
+        amount = amountToSwap * 10 ** 18;
+      }
+
+
     }
     //let amount = number(amountToSwap * 10 ** 18);
     console.log("🚀 ~ file: web3.service.ts:94 ~ Web3Service ~ getPrice_V2 ~ amount:", amount)
@@ -140,7 +169,25 @@ export class Web3Service {
       amount = this.formatLargeNumber(numAmount);
     } else {
     } */
-    let amount = amountToSwap * 10 ** 18;
+    //test
+    let amount = 0;
+    if (tokenAddressFrom ===
+      '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' ||
+      '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6' ||
+      '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c' ||
+      '0x68f180fcce6836688e9084f035309e29bf0a2095' ||
+      '0x321162Cd933E2Be498Cd2267a90534A804051b11' ||
+      '0x408d4cd0adb7cebd1f1a1c33a0ba2098e1295bab' ||
+      '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f'
+      ){
+        amount = amountToSwap * 10 ** 8;
+      } else {
+        amount = amountToSwap * 10 ** 18;
+      }
+
+      //let amount = amountToSwap * 10 ** 18;
+
+
 
     console.log("🚀 ~ file: web3.service.ts:233 ~ Web3Service ~ getQuote_V2 ~ takerAddress:", takerAddress)
     console.log("🚀 ~ file: web3.service.ts:233 ~ Web3Service ~ getQuote_V2 ~ networkZeroX:", networkZeroX)

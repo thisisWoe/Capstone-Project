@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { INetwork } from 'src/app/interfaces/Inetwork';
 import { IAssetDto } from 'src/app/interfaces/iasset-dto';
 import { ICryptoData } from 'src/app/interfaces/icrypto-data';
+import { IObjInEntrance } from 'src/app/interfaces/iobj-in-entrance';
 import { ITokenAddressData } from 'src/app/interfaces/itoken-address-data';
 import { MarketDataService } from 'src/app/market-data.service';
 import { Web3Service } from 'src/app/web3-serv/web3.service';
@@ -23,8 +24,8 @@ export class SwapV2Component {
   walletLogged: boolean = false;
   wallet$: Observable<any>;
 
-  currentCryptoFrom!:ITokenAddressData;
-  currentCryptoTo!:ITokenAddressData;
+  currentCryptoFrom!:IObjInEntrance;
+  currentCryptoTo!:IObjInEntrance;
 
   networkString$: Observable<string | null>;
   networkSwappable: string | null = null;
@@ -415,16 +416,16 @@ export class SwapV2Component {
         opt.removeAttribute('disabled');
       }
     })
-    const newValueObj : ICryptoData= JSON.parse(newValue);
+    const newValueObj : IAssetDto= JSON.parse(newValue);
     console.log("🚀 ~ file: swap.component.ts:385 ~ SwapComponent ~ onSelectFromChange ~ newValueObj:", newValueObj)
     const targetOption = allOptSelToArray.find(opt => opt.textContent === newValueObj.name);
     if (targetOption) {
       targetOption.setAttribute('disabled', 'true');
     }
 
-    const addressArray:ITokenAddressData[] = newValueObj.address;
+    const addressArray:IObjInEntrance[] = newValueObj.addresses;
     console.log(this.networkSwappable);
-    const targetAddress:ITokenAddressData = <ITokenAddressData>addressArray.find(address => address.network_name === this.networkSwappable!.toLowerCase())
+    const targetAddress:IObjInEntrance = <IObjInEntrance>addressArray.find(address => address.networkName === this.networkSwappable!.toLowerCase())
     if (targetAddress) {
       this.currentCryptoFrom = targetAddress;
       console.log("🚀 ~ file: swap.component.ts:418 ~ SwapComponent ~ onSelectFromChange ~ this.currentCryptoFrom:", this.currentCryptoFrom)
@@ -436,10 +437,10 @@ export class SwapV2Component {
 
   onSelectToChange(newValue: string){
     console.log('Nuovo valore del select:', newValue);
-    const newValueObj : ICryptoData= JSON.parse(newValue);
-    const addressArray:ITokenAddressData[] = newValueObj.address;
+    const newValueObj : IAssetDto= JSON.parse(newValue);
+    const addressArray:IObjInEntrance[] = newValueObj.addresses;
     console.log(this.networkSwappable);
-    const targetAddress:ITokenAddressData = <ITokenAddressData>addressArray.find(address => address.network_name === this.networkSwappable!.toLowerCase())
+    const targetAddress:IObjInEntrance = <IObjInEntrance>addressArray.find(address => address.networkName === this.networkSwappable!.toLowerCase())
     console.log("🚀 ~ file: swap.component.ts:427 ~ SwapComponent ~ onSelectToChange ~ targetAddress:", targetAddress)
     if (targetAddress) {
       this.currentCryptoTo = targetAddress;
@@ -457,11 +458,11 @@ export class SwapV2Component {
     });
   }
 
-  hasNetworkWithTokenAddress(item: ICryptoData, targetNetwork: string): boolean {
-    if (targetNetwork !== null) {
+  hasNetworkWithTokenAddress(item: IAssetDto, targetNetwork: string): boolean {
+    if (item && item.addresses && targetNetwork !== null) {
       let found = false;
-      item.address.forEach((address) => {
-        if(address.network_name === targetNetwork.toLowerCase() && address.tokenAddress !== ''){
+      item.addresses.forEach((address) => {
+        if(address.networkName === targetNetwork.toLowerCase() && address.tokenAddress !== ''){
           found = true;
         }
       });
@@ -478,7 +479,7 @@ export class SwapV2Component {
   getAssetData(){
 
     this.mktSvc.getAllAssetAndNetworks().subscribe(data =>{
-      /* this.cryptosList = data; */
+      this.cryptosList = data;
 
     })
   }

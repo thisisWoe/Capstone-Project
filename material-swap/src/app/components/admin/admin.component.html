@@ -1,68 +1,54 @@
 <div #adminPageContainer class="container-fluid page-container">
-  <div class="row">
-    <div class="col-12 col-xxl-6 add-asset-container">
-      <form [formGroup]="formAssetAndNetwork"  (ngSubmit)="listAsset()">
+  <div class="row justify-content-around">
+    <div class="col-12 col-xxl-5 add-asset-container">
+      <h5 class="title-listing">List New Asset</h5>
+      <form [formGroup]="formAssetAndNetwork" (ngSubmit)="listAsset()" class="mb-3">
 
         <div class="input-group input-group-sm mb-3">
           <span class="input-group-text" id="inputGroup-sizing-sm">Token Symbol</span>
-          <input
-            type="text"
-            class="form-control"
-            aria-label="Sizing example input"
-            aria-describedby="inputGroup-sizing-sm"
-            formControlName="name"
-            >
-          </div>
+          <input type="text" class="form-control" aria-label="Sizing example input"
+            aria-describedby="inputGroup-sizing-sm" formControlName="name">
+        </div>
 
-          <div class="input-group input-group-sm mb-3">
-            <span class="input-group-text" id="inputGroup-sizing-sm">Token Image URL</span>
-            <input
-              type="text"
-              class="form-control"
-              aria-label="Sizing example input"
-              aria-describedby="inputGroup-sizing-sm"
-              formControlName="imgUrl"
-            >
-          </div>
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Token Image URL</span>
+          <input type="text" class="form-control" aria-label="Sizing example input"
+            aria-describedby="inputGroup-sizing-sm" formControlName="imgUrl">
+        </div>
 
-            <select
-              #selectNetwork
-              (change)="onChangeNetworkToAdd($event)"
-              class="form-select form-select-sm"
-              aria-label="Small select example"
-            >
-              <option value="" selected>Select Network</option>
-              <ng-container *ngFor=" let network of networkAvailable">
-                <option [value]="network">{{network}}</option>
-              </ng-container>
-            </select>
+        <select #selectNetwork (change)="onChangeNetworkToAdd($event)" class="form-select form-select-sm mb-3"
+          aria-label="Small select example">
+          <option value="" selected>Select Network</option>
+          <ng-container *ngFor=" let network of networkAvailable">
+            <option [value]="network">{{network}}</option>
+          </ng-container>
+        </select>
 
 
 
         <div class="input-group input-group-sm mb-3">
           <span class="input-group-text" id="inputGroup-sizing-sm">Token Address</span>
-          <input
-            (change)="onChangeTokenAddress($event)"
-            type="text"
-            class="form-control input-token-address"
-            aria-label="Sizing example input"
-            aria-describedby="inputGroup-sizing-sm"
-            >
-            <!-- formControlName="publicKey" -->
+          <input (change)="onChangeTokenAddress($event)" type="text" class="form-control input-token-address"
+            aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+          <!-- formControlName="publicKey" -->
         </div>
-        <div class="row">
-          <div #networkCreation class="col-12 target-network-creation">
-
-          </div>
-        </div>
-        <div class="form-footer">
-          <button type="button" class="btn btn-secondary btn-lg" (click)="createButtonNetwork()">Add Address</button>
-          <button type="submit" class="btn btn-secondary btn-lg">List Asset</button>
+        <div class="form-footer mb-3 d-flex justify-content-end">
+          <button type="button" class="btn btn-secondary btn-lg" (click)="createButtonNetwork()">Add address</button>
+          <button type="submit" class="btn btn-secondary btn-lg ms-2">List asset</button>
+          <button class="btn btn-lg clear ms-2" (click)="clear()">Clear</button>
         </div>
       </form>
-    </div>
-    <div class="col-12 col-xxl-6 add-pricing-container">
+      <div class="row">
+        <div #networkCreation class="col-12 target-network-creation">
 
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-xxl-5 add-pricing-container">
+      <h5 class="title-listing">Edit Asset</h5>
+      <form [formGroup]="formEditAsset"  class="mb-3">
+
+      </form>
     </div>
   </div>
 </div>

@@ -1,13 +1,89 @@
-div.page-container {
-  div.row{
-    div.add-asset-container{
-      border: 1px solid white;
-      border-radius: 2rem;
-    }
-    div.add-pricing-container{
-      border: 1px solid white;
-      border-radius: 2rem;
+@import "./../../../variables";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
+div.page-container {
+  font-family: 'Roboto', sans-serif;
+  overflow-y: scroll;
+  div.row {
+    h5.title-listing {
+      color: #e08142;
+      align-self: center;
+      font-size: 2rem;
+    }
+    div.add-asset-container {
+      border: 1px solid white;
+      border-radius: 2rem;
+      display: flex;
+      flex-direction: column;
+      background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      background-size: cover;
+      height: 650px;
+      max-height: 650px;
+      /* align-items: center; */
+      form {
+        border-bottom: 1px solid #be6dab;
+        input {
+          font-size: 1rem;
+          border: 1px solid #be6dab;
+          background-color: $backVioletBlack;
+          color: white;
+        }
+        span {
+          font-size: 1rem;
+          border: 1px solid #be6dab;
+          background-color: $backVioletBlack;
+          background-color: #be6dab5a;
+          color: white;
+        }
+        select{
+          font-size: 1rem;
+          border: 1px solid #be6dab;
+          background-color: $backVioletBlack;
+          background-color: #be6dab5a;
+          color: white;
+          option{
+            color: $backVioletBlack;
+          }
+        }
+        button{
+          background-color: $backVioletBlack;
+          color: white;
+          font-weight: bold;
+          border: 1px solid #be6dab;
+          border-radius: 2rem;
+          &:hover{
+            background-color: #be6dab5a;
+          }
+        }
+        button.clear{
+          background-color: #e08142;
+          color: $backVioletBlack;
+        }
+      }
+    }
+    div.add-pricing-container {
+      border: 1px solid white;
+      border-radius: 2rem;
     }
   }
 }
+
+div.toast{
+  border: #be6dab 1px solid;
+  div.toast-header{
+    background-color: #be6dab5a !important;
+  }
+  div.toast-body{
+    background-color: $backVioletBlack !important;
+  }
+}
+
+/* <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="display: inline-block; width: 33%;">
+  <div class="toast-header">
+    <strong class="me-auto">polygon</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+  <div class="toast-body" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;">
+    sdfsdf
+  </div>
+</div> */

@@ -17,6 +17,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
   @ViewChild('networkCreation', { static: true }) networkCreation!: ElementRef;
   @ViewChild('selectNetwork', { static: true }) selectNetwork!: ElementRef;
   formAssetAndNetwork!: FormGroup;
+  formEditAsset!: FormGroup;
   networkToAdd: number[] = [1];
   startValue: number = 1;
 
@@ -44,6 +45,8 @@ export class AdminComponent implements AfterViewInit, OnInit {
     'arbitrum'
   ];
 
+  allStoredAssets: IAssetDto[] = [];
+
   constructor(private authSvc: AuthService, private fb: FormBuilder, private mktSvc: MarketDataService) {
 
   }
@@ -52,6 +55,13 @@ export class AdminComponent implements AfterViewInit, OnInit {
       name: ['', Validators.required],
       imgUrl: ['', Validators.required],
     });
+    this.formEditAsset = this.fb.group({
+      assetId: ['', Validators.required],
+
+    })
+
+    this.getAssets();
+
   }
 
   ngAfterViewInit(): void {
@@ -126,11 +136,14 @@ export class AdminComponent implements AfterViewInit, OnInit {
     toastDiv.setAttribute('aria-live', 'assertive');
     toastDiv.setAttribute('aria-atomic', 'true');
     toastDiv.style.display = 'inline-block';
-    toastDiv.style.width = '33%';
+    toastDiv.style.width = '32%';
+    toastDiv.style.border = '1px solid #be6dab';
+    toastDiv.style.marginRight = '3px';
 
     // Creazione dell'elemento per l'intestazione del toast
     const toastHeader = document.createElement('div');
     toastHeader.classList.add('toast-header');
+    toastHeader.style.backgroundColor = '#be6dab5a';
 
     // Creazione dell'elemento per il nome della rete
     const strong = document.createElement('strong');
@@ -143,7 +156,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
     closeButton.classList.add('btn-close');
     closeButton.setAttribute('data-bs-dismiss', 'toast');
     closeButton.setAttribute('aria-label', 'Close');
-    closeButton.addEventListener('click', () =>{
+    closeButton.addEventListener('click', () => {
       const parentElement = closeButton.parentElement;
 
 
@@ -167,6 +180,8 @@ export class AdminComponent implements AfterViewInit, OnInit {
     const toastBody = document.createElement('div');
     toastBody.classList.add('toast-body');
     toastBody.textContent = newObj.tokenAddress;
+    toastBody.style.backgroundColor = '#1f1739';
+    toastBody.style.color = 'white';
 
     // Aggiunta degli elementi all'elemento principale del toast
     toastDiv.appendChild(toastHeader);
@@ -178,7 +193,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
     return toastDiv;
   }
 
-  listAsset(){
+  listAsset() {
     console.log(this.formAssetAndNetwork.value);
     this.newAsset = this.formAssetAndNetwork.value;
 
@@ -189,8 +204,8 @@ export class AdminComponent implements AfterViewInit, OnInit {
     this.formAssetAndNetwork.reset();
   }
 
-  addNetwork(asset:IAssetDto, ){
-    this.networks.forEach(network =>{
+  addNetwork(asset: IAssetDto,) {
+    this.networks.forEach(network => {
       network.asset = asset;
       console.log(network);
       this.mktSvc.addObjNetwork(network).subscribe(res => {
@@ -215,5 +230,36 @@ export class AdminComponent implements AfterViewInit, OnInit {
 
   }
 
+  clear() {
+    this.formAssetAndNetwork.reset();
+
+    const allToasts = document.querySelectorAll('.toast');
+    allToasts.forEach(el => {
+      el.remove();
+    });
+
+    this.networks = [];
+
+    this.networkAvailable = [
+      'ethereum',
+      'polygon',
+      'bsc',
+      'optimism',
+      'fantom',
+      'avalanche',
+      'arbitrum'
+    ];
+
+    const inputAddress = <HTMLInputElement>document.querySelector('.input-token-address');
+    inputAddress!.value = '';
+
+  }
+
+  getAssets(){
+    this.mktSvc.getAllAssetAndNetworks()
+    .subscribe(assets => {
+      this.allStoredAssets = assets;
+    })
+  }
 
 }
