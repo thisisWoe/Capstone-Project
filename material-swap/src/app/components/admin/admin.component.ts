@@ -1,10 +1,11 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/auth.service';
 import { IAssetDto } from 'src/app/interfaces/iasset-dto';
 import { IObjNetworkDto } from 'src/app/interfaces/iobj-network-dto';
 import { FormControl } from '@angular/forms';
 import { MarketDataService } from 'src/app/market-data.service';
+import anime from 'animejs';
 
 
 @Component({
@@ -16,6 +17,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
   @ViewChild('adminPageContainer', { static: true }) adminContainer!: ElementRef;
   @ViewChild('networkCreation', { static: true }) networkCreation!: ElementRef;
   @ViewChild('selectNetwork', { static: true }) selectNetwork!: ElementRef;
+  @ViewChild('assetTargetReceiver', { static: true }) assetTargetReceiver!: ElementRef;
   formAssetAndNetwork!: FormGroup;
   formEditAsset!: FormGroup;
   networkToAdd: number[] = [1];
@@ -47,6 +49,10 @@ export class AdminComponent implements AfterViewInit, OnInit {
 
   allStoredAssets: IAssetDto[] = [];
 
+  targetEdit:IAssetDto | null = null;
+
+  stringHTML = ``;
+
   constructor(private authSvc: AuthService, private fb: FormBuilder, private mktSvc: MarketDataService) {
 
   }
@@ -56,8 +62,10 @@ export class AdminComponent implements AfterViewInit, OnInit {
       imgUrl: ['', Validators.required],
     });
     this.formEditAsset = this.fb.group({
-      assetId: ['', Validators.required],
-
+      id: [null], // Puoi impostare il valore iniziale a null se non hai un valore predefinito
+      name: ['', Validators.required], // Aggiungi altri validatori, se necessario
+      imgUrl: ['', Validators.required], // Aggiungi altri validatori, se necessario
+      addresses: this.fb.array([]) // Puoi inizializzare un form array vuoto
     })
 
     this.getAssets();
@@ -190,6 +198,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
     const inputAddress = <HTMLInputElement>document.querySelector('.input-token-address');
     console.log("inputAddress:", inputAddress)
     inputAddress!.value = '';
+    this.getAssets();
     return toastDiv;
   }
 
@@ -202,6 +211,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
       this.addNetwork(data);
     });
     this.formAssetAndNetwork.reset();
+    this.getAssets();
   }
 
   addNetwork(asset: IAssetDto,) {
@@ -255,11 +265,193 @@ export class AdminComponent implements AfterViewInit, OnInit {
 
   }
 
-  getAssets(){
+  getAssets() {
     this.mktSvc.getAllAssetAndNetworks()
-    .subscribe(assets => {
-      this.allStoredAssets = assets;
+      .subscribe(assets => {
+        this.allStoredAssets = assets;
+
+        const assetTargetReceiver: HTMLDivElement = this.assetTargetReceiver.nativeElement;
+        assetTargetReceiver.innerHTML = '';
+        let targetAssetId:number | null | undefined = null;
+        this.allStoredAssets.forEach(asset => {
+          const assetWrapper = document.createElement('div');
+          assetWrapper.classList.add('asset-wrapper');
+          assetWrapper.classList.add('col-4');
+          assetWrapper.classList.add('d-flex');
+          assetWrapper.classList.add('flex-column');
+          assetWrapper.style.cursor = 'pointer';
+          assetWrapper.setAttribute('data-asset', asset.id!.toString());
+
+          assetWrapper.innerHTML =
+            `
+          <div class="asset-img">
+            <img src="${asset.imgUrl}" class="img-fluid rounded-circle" />
+          </div>
+          <div class="asset-name d-flex justify-content-center">
+            <p class="text-light mt-2">${asset.name}</p>
+          </div>
+        `;
+
+          assetWrapper.addEventListener('click', () => {
+            const p = assetWrapper.querySelector('p');
+            const pText = p?.textContent;
+            targetAssetId = Number(assetWrapper.getAttribute('data-asset'));
+            console.log("p?.textContent:", p?.textContent)
+
+            const allAssetWrapper = assetTargetReceiver.querySelectorAll('.asset-wrapper');
+            const assetWrapperArray = Array.from(allAssetWrapper) as HTMLDivElement[];
+            const aAWFiltered = assetWrapperArray.filter(el => {
+              const elP = el.querySelector('p');
+              return elP?.textContent !== pText;
+            });
+            anime({
+              targets: aAWFiltered,
+              delay: 0,
+              keyframes: [
+                {translateX: 600}
+              ],
+              duration: 500,
+              easing: 'linear',
+              loop: false
+            })
+            const remainAsset = <HTMLDivElement>assetWrapperArray.find(el => {
+              const elP = el.querySelector('p');
+              return elP?.textContent === pText;
+            });
+            anime({
+              targets: remainAsset,
+              delay: 0,
+              keyframes: [
+                {translateX: 600}
+              ],
+              duration: 1000,
+              easing: 'easeInElastic(1, .6)',
+              loop: false
+            })
+            setTimeout(() => {
+              console.log('ciao');
+              assetWrapperArray.forEach(el => {
+                el.remove();
+
+              })
+              this.createEditForm(targetAssetId!);
+            }, 2000);
+          })
+
+          const img = assetWrapper.querySelector('img');
+          img!.addEventListener('mouseover', () => {
+            img!.style.boxShadow = '0px 0px 28px 9px #BE6DAB';
+          })
+          img!.addEventListener('mouseleave', () => {
+            img!.style.boxShadow = 'none';
+          })
+          assetTargetReceiver.appendChild(assetWrapper);
+        });
+      })
+  }
+
+  createEditForm(id:number){
+
+    const spanS = 'style="font-size: 1rem; border: 1px solid #be6dab; background-color: #1f1739; background-color: #be6dab5a; color: white;"';
+    const inputS = 'style="font-size: 1rem; border: 1px solid #be6dab; background-color: #1f1739; color: white;"';
+    const buttonS = 'style="font-weight: bold; border: 1px solid #be6dab; background-color: #1f1739; border-radius: 2rem;"'
+    this.mktSvc.getSingleAsset(id).subscribe(data => {
+      const formParts =
+        `
+          <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm" ${spanS}>Token Symbol</span>
+            <input type="text" class="form-control" aria-label="Sizing example input"
+              aria-describedby="inputGroup-sizing-sm" formControlName="name" ${inputS} value="${data.name}">
+          </div>
+
+          <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm" ${spanS}>Token Image URL</span>
+            <input type="text" class="form-control" aria-label="Sizing example input"
+              aria-describedby="inputGroup-sizing-sm" formControlName="imgUrl" ${inputS} value="${data.imgUrl}">
+          </div>
+
+          <div class="row target-input-network">
+
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-submit-edit" ${buttonS}>Edit</button>
+          <button type="button" class="btn btn-primary btn-back-edit" ${buttonS} (click)="" >Back</button>
+        `;
+        const assetTargetReceiver: HTMLDivElement = this.assetTargetReceiver.nativeElement;
+        const form =
+        `
+          <form [formGroup]="formEditAsset" (ngSubmit)="submitEdit()" class="mb-3 edit-form">
+
+
+          </form>
+        `;
+        assetTargetReceiver.innerHTML = '';
+        assetTargetReceiver.innerHTML += form;
+        const formHtml = document.querySelector('.edit-form');
+        formHtml!.innerHTML = formParts;
+        const button = <HTMLButtonElement>document.querySelector('.btn-submit-edit');
+        button!.onmouseover = () => {
+          button!.style.backgroundColor = '#be6dab5a';
+        };
+        this.getSingleAsset(id);
     })
+
+  }
+
+  getSingleAsset(id:number){
+    this.stringHTML = ``;
+    const spanS = 'style="font-size: 0.7rem; border: 1px solid #be6dab; background-color: #1f1739; background-color: #be6dab5a; color: white;"';
+    const inputS = 'style="font-size: 0.7rem; border: 1px solid #be6dab; background-color: #1f1739; color: white;"';
+    const targetNetworkReceiver = document.querySelector('.target-input-network');
+    targetNetworkReceiver?.classList.add('mt-5')
+    this.mktSvc.getSingleAsset(id).subscribe(data => {
+      console.log("signle asset fetch:", data)
+
+      this.compileForm(id, this.formEditAsset, data)
+
+      data.addresses.forEach(address =>{
+        this.stringHTML =
+        `
+          <div class="col-6">
+            <div class="input-group input-group-sm mb-3 mt-3">
+              <span class="input-group-text" id="inputGroup-sizing-sm" ${spanS}>Network</span>
+              <input id="input-${address.networkName}" type="text" class="form-control" aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm" formControlName="name" ${inputS} value="${address.networkName}">
+            </div>
+
+            <div class="input-group input-group-sm mb-3">
+              <span class="input-group-text" id="inputGroup-sizing-sm" ${spanS}>Token Address</span>
+              <input id="input-${address.tokenAddress}" type="text" class="form-control" aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm" formControlName="imgUrl" ${inputS} value="${address.tokenAddress}">
+            </div>
+          </div>
+
+        `;
+        targetNetworkReceiver!.innerHTML += this.stringHTML;
+      })
+
+    })
+  }
+
+  compileForm(id:number, form: FormGroup<any>, data:IAssetDto){
+    const addressesFormArray = form.get('addresses') as FormArray;
+
+
+    data.addresses.forEach(objNetwork => {
+      const addressFormGroup = this.fb.group({
+        id: [objNetwork.id, Validators.required],
+        networkName: [objNetwork.networkName, Validators.required],
+        tokenAddress: [objNetwork.tokenAddress, Validators.required]
+      });
+      addressesFormArray.push(addressFormGroup);
+
+    });
+    console.log('edit form: ', form.value);
+  }
+
+  submitEdit(){
+    console.log(this.formEditAsset);
+
   }
 
 }

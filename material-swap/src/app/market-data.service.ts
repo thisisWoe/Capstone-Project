@@ -244,4 +244,8 @@ export class MarketDataService {
     return this.http.get<IAssetDto[]>(environment.API_BACKEND+'asset');
   }
 
+  getSingleAsset(id:number){
+    return this.http.get<IAssetDto>(environment.API_BACKEND+'asset/'+id);
+  }
+
 }

@@ -11,7 +11,7 @@ div.page-container {
       font-size: 2rem;
     }
     div.add-asset-container {
-      border: 1px solid white;
+      /* border: 1px solid white; */
       border-radius: 2rem;
       display: flex;
       flex-direction: column;
@@ -61,14 +61,38 @@ div.page-container {
         }
       }
     }
-    div.add-pricing-container {
-      border: 1px solid white;
+    div.edit-asset-container {
+      /* border: 1px solid white; */
       border-radius: 2rem;
+      overflow-x: hidden;
+      height: 650px;
+      max-height: 650px;
+      background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      background-size: cover;
+      h5.title-listing{
+        text-align: center;
+        div.asset-edit-container{
+          display: flex;
+          justify-content: center;
+          background-image: url(./../../../assets/imgs/chart-back-pie.png);
+          background-size: cover;
+          div.asset-wrapper{
+            border-radius: 50%;
+            div.asset-img{
+              img{
+                &:hover{
+                  box-shadow: 0px 0px 28px 9px #BE6DAB;
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
 
-div.toast{
+/* div.toast{
   border: #be6dab 1px solid;
   div.toast-header{
     background-color: #be6dab5a !important;
@@ -76,7 +100,7 @@ div.toast{
   div.toast-body{
     background-color: $backVioletBlack !important;
   }
-}
+} */
 
 /* <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="display: inline-block; width: 33%;">
   <div class="toast-header">

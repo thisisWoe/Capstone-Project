@@ -1,6 +1,6 @@
 <div #adminPageContainer class="container-fluid page-container">
   <div class="row justify-content-around">
-    <div class="col-12 col-xxl-5 add-asset-container">
+    <div class="col-12 col-xxl-5 add-asset-container mb-5">
       <h5 class="title-listing">List New Asset</h5>
       <form [formGroup]="formAssetAndNetwork" (ngSubmit)="listAsset()" class="mb-3">
 
@@ -44,11 +44,11 @@
         </div>
       </div>
     </div>
-    <div class="col-12 col-xxl-5 add-pricing-container">
+    <div class="col-12 col-xxl-5 edit-asset-container mb-5">
       <h5 class="title-listing">Edit Asset</h5>
-      <form [formGroup]="formEditAsset"  class="mb-3">
+      <div #assetTargetReceiver class="asset-edit-container row">
 
-      </form>
+      </div>
     </div>
   </div>
 </div>
