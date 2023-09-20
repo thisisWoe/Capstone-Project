@@ -12,6 +12,7 @@ import { BackendInterceptor } from './interceptors/backend.interceptor';
 @NgModule({
   declarations: [
     AppComponent,
+
   ],
   imports: [
     BrowserModule,

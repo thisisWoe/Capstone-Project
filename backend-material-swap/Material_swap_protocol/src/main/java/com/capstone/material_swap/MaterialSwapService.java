@@ -257,6 +257,31 @@ public class MaterialSwapService {
 			throw new MyAPIException(HttpStatus.BAD_REQUEST, "Asset not found.");
 		}
 	}
+
+	public Set<AssetDto> getAssets() {
+		Set<Asset> assets = (Set<Asset>) AssetRepo.findAll();
+		Set<AssetDto> assetDtos = new HashSet<AssetDto>();
+		assets.forEach(asset -> {
+			AssetDto assetDto = new AssetDto();
+				assetDto.setId(asset.getId());
+				assetDto.setName(asset.getName());
+				assetDto.setImgUrl(asset.getImgUrl());
+
+			Set<ObjNetworkDto> networkDto = new HashSet<ObjNetworkDto>();
+			Set<ObjNetwork> relativeNetworks = objNetworkRepo.findByAsset(asset);
+			relativeNetworks.forEach(obj -> {
+				ObjNetworkDto nDto = new ObjNetworkDto();
+					nDto.setId(obj.getId());
+					nDto.setNetworkName(obj.getNetworkName());
+					nDto.setTokenAddress(obj.getTokenAddress());
+				networkDto.add(nDto);
+			});
+
+			assetDto.setAddresses(networkDto);
+			assetDtos.add(assetDto);
+		});
+		return assetDtos;
+	}
 	
 	//lazy
 	public ObjNetwork getObjNetworkById(Long id) {

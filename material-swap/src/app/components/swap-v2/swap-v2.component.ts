@@ -2,8 +2,10 @@ import { MetamaskIconComponent } from './../metamask-icon/metamask-icon.componen
 import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { INetwork } from 'src/app/interfaces/Inetwork';
+import { IAssetDto } from 'src/app/interfaces/iasset-dto';
 import { ICryptoData } from 'src/app/interfaces/icrypto-data';
 import { ITokenAddressData } from 'src/app/interfaces/itoken-address-data';
+import { MarketDataService } from 'src/app/market-data.service';
 import { Web3Service } from 'src/app/web3-serv/web3.service';
 import Web3 from 'web3';
 
@@ -32,7 +34,7 @@ export class SwapV2Component {
   inputValue: string = '';
   //ZERO_x_TARGET$: Observable<string>;
 
-  cryptosList = [
+  cryptosList:any[] = [
     {//WBTC
       name: 'WBTC',
       img: '',
@@ -314,7 +316,7 @@ export class SwapV2Component {
   targetUrlToFetch$: string = '';
 
 
-  constructor(private web3Svc: Web3Service) {
+  constructor(private web3Svc: Web3Service, private mktSvc: MarketDataService) {
     this.wallet$ = this.web3Svc.metamask$;
     this.catchUrlToFetch$ = this.web3Svc.ZeroXtarget$;
     this.networkString$ = this.web3Svc.network$
@@ -322,6 +324,8 @@ export class SwapV2Component {
   }
 
   ngOnInit(): void {
+    this.getAssetData();
+
 
     //this.getQuote(10, '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', '0x82af49447d8a07e3bd95bd0d56f35241523fbab1', 'https://arbitrum.api.0x.org/swap/v1/');
     this.wallet$.subscribe((wallet) => {
@@ -469,5 +473,13 @@ export class SwapV2Component {
 
   trySwap(amountToSwap:number, tokenAddressFrom:string, tokenAddressTo:string, networkZeroX:string){
     this.web3Svc.trySwap_V2(amountToSwap, tokenAddressFrom, tokenAddressTo, networkZeroX)
+  }
+
+  getAssetData(){
+
+    this.mktSvc.getAllAssetAndNetworks().subscribe(data =>{
+      /* this.cryptosList = data; */
+
+    })
   }
 }

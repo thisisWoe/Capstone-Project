@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment.development';
 import { tap } from 'rxjs';
@@ -9,6 +9,7 @@ import { ICoinApiData } from './interfaces/icoin-api-data';
 import { IChartData } from './interfaces/ichart-data';
 import { IPricingBackend } from './interfaces/ipricing-backend';
 import { IAssetDto } from './interfaces/iasset-dto';
+import { IObjNetworkDto } from './interfaces/iobj-network-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -229,6 +230,18 @@ export class MarketDataService {
   //crud asset e network
   addAsset(asset: IAssetDto){
     return this.http.post<IAssetDto>(environment.API_BACKEND+'asset/new', asset);
+  }
+
+  addObjNetwork(network: IObjNetworkDto){
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post(environment.API_BACKEND+'objnetowrk/new', network, {
+      headers,
+      responseType: 'text'
+    });
+  }
+
+  getAllAssetAndNetworks(){
+    return this.http.get<IAssetDto[]>(environment.API_BACKEND+'asset');
   }
 
 }

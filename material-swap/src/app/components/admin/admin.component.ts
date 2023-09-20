@@ -40,7 +40,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
     'bsc',
     'optimism',
     'fantom',
-    'avalance',
+    'avalanche',
     'arbitrum'
   ];
 
@@ -184,9 +184,36 @@ export class AdminComponent implements AfterViewInit, OnInit {
 
     this.mktSvc.addAsset(this.newAsset).subscribe(data => {
       console.log("data:", data)
+      this.addNetwork(data);
     });
+    this.formAssetAndNetwork.reset();
   }
 
+  addNetwork(asset:IAssetDto, ){
+    this.networks.forEach(network =>{
+      network.asset = asset;
+      console.log(network);
+      this.mktSvc.addObjNetwork(network).subscribe(res => {
+        console.log("res:", res);
+        this.networks = [];
+        this.networkAvailable = [
+          'ethereum',
+          'polygon',
+          'bsc',
+          'optimism',
+          'fantom',
+          'avalanche',
+          'arbitrum'
+        ];
+        const allToasts = document.querySelectorAll('.toast');
+        allToasts.forEach(el => {
+          el.remove();
+        })
+      })
+    })
+
+
+  }
 
 
 }

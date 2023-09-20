@@ -97,6 +97,16 @@ public class MaterialSwapController {
 		ResponseEntity<AssetDto> resp = new ResponseEntity<AssetDto>(asset, HttpStatus.OK);
 		return resp;
 	}
+
+	@GetMapping("/asset")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<?> getAssets() {
+		Set<AssetDto> assets = mSvc.getAssets();
+		ResponseEntity<Set<AssetDto>> resp = new ResponseEntity<Set<AssetDto>>(assets, HttpStatus.OK);
+		return resp;
+	}
+
+
 	
 	@GetMapping("/objnetowrk/{id}")
 	@PreAuthorize("isAuthenticated()")
