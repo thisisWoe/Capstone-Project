@@ -18,6 +18,15 @@ div.page-container{
         font-size: 3rem;
         color: whitesmoke;
       }
+      div.chart-container{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        div.chart-wrapper{
+          width: 100%;
+        }
+      }
     }
     div.actionStrategy{
       div.row{
