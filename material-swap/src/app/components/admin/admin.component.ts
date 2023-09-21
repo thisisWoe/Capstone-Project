@@ -6,12 +6,13 @@ import { IObjNetworkDto } from 'src/app/interfaces/iobj-network-dto';
 import { FormControl } from '@angular/forms';
 import { MarketDataService } from 'src/app/market-data.service';
 import anime from 'animejs';
+import { NgbCalendar, NgbDate } from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.scss']
+  styleUrls: ['./admin.component.scss'],
 })
 export class AdminComponent implements AfterViewInit, OnInit {
   @ViewChild('adminPageContainer', { static: true }) adminContainer!: ElementRef;
@@ -53,8 +54,15 @@ export class AdminComponent implements AfterViewInit, OnInit {
 
   stringHTML = ``;
 
-  constructor(private authSvc: AuthService, private fb: FormBuilder, private mktSvc: MarketDataService) {
+  //datepicker
+  hoveredDate: NgbDate | null = null;
 
+	fromDate: NgbDate;
+	toDate: NgbDate | null = null;
+
+  constructor(private authSvc: AuthService, private fb: FormBuilder, private mktSvc: MarketDataService, calendar: NgbCalendar) {
+    this.fromDate = calendar.getToday();
+		this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
   }
   ngOnInit(): void {
     this.formAssetAndNetwork = this.fb.group({
@@ -523,6 +531,45 @@ export class AdminComponent implements AfterViewInit, OnInit {
       console.log("assetDto:", assetDto)
       this.back();
     })
+  }
+
+  onDateSelection(date: NgbDate) {
+		if (!this.fromDate && !this.toDate) {
+			this.fromDate = date;
+		} else if (this.fromDate && !this.toDate && date.after(this.fromDate)) {
+			this.toDate = date;
+		} else {
+			this.toDate = null;
+			this.fromDate = date;
+		}
+	}
+
+	isHovered(date: NgbDate) {
+		return (
+			this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate)
+		);
+	}
+
+	isInside(date: NgbDate) {
+		return this.toDate && date.after(this.fromDate) && date.before(this.toDate);
+	}
+
+	isRange(date: NgbDate) {
+		return (
+			date.equals(this.fromDate) ||
+			(this.toDate && date.equals(this.toDate)) ||
+			this.isInside(date) ||
+			this.isHovered(date)
+		);
+	}
+
+  confirmselectionDate(){
+    console.log("from:", this.fromDate);
+    console.log("to:", this.toDate);
+    const from = `${this.fromDate.year}-${this.fromDate.month}-${this.fromDate.day}`;
+    const to = `${this.toDate!.year}-${this.toDate!.month}-${this.toDate!.day}`;
+    console.log("from:", from)
+    console.log("to:", to)
   }
 
 }

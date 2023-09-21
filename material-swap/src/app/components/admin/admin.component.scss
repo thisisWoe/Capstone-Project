@@ -1,8 +1,8 @@
 @import "./../../../variables";
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 div.page-container {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   overflow-y: scroll;
   div.row {
     h5.title-listing {
@@ -35,27 +35,27 @@ div.page-container {
           background-color: #be6dab5a;
           color: white;
         }
-        select{
+        select {
           font-size: 1rem;
           border: 1px solid #be6dab;
           background-color: $backVioletBlack;
           background-color: #be6dab5a;
           color: white;
-          option{
+          option {
             color: $backVioletBlack;
           }
         }
-        button{
+        button {
           background-color: $backVioletBlack;
           color: white;
           font-weight: bold;
           border: 1px solid #be6dab;
           border-radius: 2rem;
-          &:hover{
+          &:hover {
             background-color: #be6dab5a;
           }
         }
-        button.clear{
+        button.clear {
           background-color: #e08142;
           color: $backVioletBlack;
         }
@@ -69,19 +69,19 @@ div.page-container {
       max-height: 650px;
       background-image: url(./../../../assets/imgs/chart-back-pie.png);
       background-size: cover;
-      h5.title-listing{
+      h5.title-listing {
         text-align: center;
-        div.asset-edit-container{
+        div.asset-edit-container {
           display: flex;
           justify-content: center;
           background-image: url(./../../../assets/imgs/chart-back-pie.png);
           background-size: cover;
-          div.asset-wrapper{
+          div.asset-wrapper {
             border-radius: 50%;
-            div.asset-img{
-              img{
-                &:hover{
-                  box-shadow: 0px 0px 28px 9px #BE6DAB;
+            div.asset-img {
+              img {
+                &:hover {
+                  box-shadow: 0px 0px 28px 9px #be6dab;
                 }
               }
             }
@@ -89,8 +89,85 @@ div.page-container {
         }
       }
     }
+    div.pricing-container {
+      border: 1px solid white;
+      border-radius: 2rem;
+      background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      background-size: cover;
+      h5 {
+        color: #e08142;
+        text-align: center;
+        font-size: 2rem;
+      }
+      div.row{
+
+      }
+    }
   }
 }
+.custom-day {
+  text-align: center;
+  padding: 0.185rem 0.25rem;
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+  color: white;
+}
+.custom-day.focused {
+  background-color: #be6dab;
+}
+.custom-day.range,
+.custom-day:hover {
+  background-color: #be6dab;
+  color: $backVioletBlack;
+  font-weight: bold;
+}
+.custom-day.faded {
+  background-color: #be6dab5a;
+}
+::ng-deep div.ngb-dp-arrow > button {
+  color: red;
+}
+::ng-deep div.ngb-dp-month-name {
+  background-color: #be6dab5a;
+  font-weight: bold;
+  color: white;
+}
+::ng-deep div.ngb-dp-header, ::ng-deep div.ngb-dp-weekdays{
+  background-color: #be6dab5a;
+
+}
+::ng-deep div.ngb-dp-weekday{
+  color: #e08142;
+}
+::ng-deep div.ngb-dp-week{
+  border-bottom: none;
+}
+::ng-deep div.ngb-dp-navigation-select form-select{
+  background-color: #e08142 !important;
+}
+ngb-datepicker{
+  border: 1px solid #be6dab;
+}
+/* ngb-dp-months */
+::ng-deep div.ngb-dp-months{
+  @media screen and (max-width: 1199px){
+    flex-direction: column;
+
+  }
+  @media screen and (max-width: 800px) and (min-width: 750px){
+    flex-direction: row;
+
+  }
+}
+/* .ngb-dp-month {
+  width: 100%;
+}
+::ng-deep .ngb-dp-weekdays,
+::ng-deep .ngb-dp-week {
+  justify-content: space-evenly;
+} */
+
 
 /* div.toast{
   border: #be6dab 1px solid;
