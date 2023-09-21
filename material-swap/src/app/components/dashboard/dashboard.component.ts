@@ -8,6 +8,12 @@ import * as am5 from '@amcharts/amcharts5';
 import * as am5xy from '@amcharts/amcharts5/xy';
 import { IXYChartSettings } from '@amcharts/amcharts5/xy';
 import { IChartData } from 'src/app/interfaces/ichart-data';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { NgbDateStruct, NgbCalendar, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { NavigationEvent } from "@ng-bootstrap/ng-bootstrap/datepicker/datepicker-view-model";
+import { StrategyDto } from "src/app/interfaces/strategy-dto";
+import { MarketDataService } from "src/app/market-data.service";
+import { IAssetDto } from "src/app/interfaces/iasset-dto";
 
 @Component({
   selector: 'app-dashboard',
@@ -29,16 +35,52 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
   simulatedStrategies: any = [];
   simulatedStrategiesProfitOrLoss: boolean = false;
+  allAssets: IAssetDto[] = [];
+
+  //form
+  formStrategy!: FormGroup;
+  currentStrategyToAdd: StrategyDto = {
+    name: "",
+    user: {
+      publicKey: ""
+    },
+    simulation: false,
+    assetAllocations: [],
+    start: ""
+  };
 
   //chart
   root!: am5.Root;
+  assetAllocations: { [key: string]: FormControl } = {};
 
 
-  constructor(private authSvc: AuthService) {
+  constructor(private authSvc: AuthService, private fb: FormBuilder, private calendar: NgbCalendar, private mktSvc: MarketDataService) {
+
   }
 
 
   ngOnInit(): void {
+    this.getAssets();
+    this.formStrategy = this.fb.group({
+      name: ['', Validators.required],
+      user: [this.readUser(), Validators.required],
+      start: ['', Validators.required],
+      simulation: [true, Validators.required],
+      amount: [0, Validators.required]
+    });
+
+
+    /* for (let i = 0; i < this.allAssets.length; i++) {
+      const asset = this.allAssets[i];
+      // Crea un FormControl per l'allocazione dell'asset.
+      const assetAllocationControl = new FormControl('', Validators.required);
+
+      // Aggiungi il nuovo FormControl al FormGroup con una chiave univoca.
+      this.formStrategy.addControl('assetAllocation_' + i, assetAllocationControl);
+    } */
+
+
+
     this.insertStrategyData();
   }
 
@@ -47,6 +89,12 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     this.buildChart(this.root);
     this.resizeStrategyInfos();
     this.resizePage();
+  }
+
+  readUser(): string {
+    const userString = localStorage.getItem('user');
+    const user = JSON.parse(userString!);
+    return user.username;
   }
 
   buildChart(root: am5.Root) {
@@ -173,6 +221,8 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       });
     }
     return chartData;
+
+
   }
 
   insertStrategyData() {
@@ -197,4 +247,91 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     const width = strategyInfosElement.offsetWidth;
     strategyInfosElement.style.height = width + 'px';
   }
+
+  addDaysToDate(dateString:string, daysToAdd:number) {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + daysToAdd);
+    return date.toISOString().slice(0, 10);
+  }
+
+  try() {
+    const datePlus1 = this.addDaysToDate(this.formatDate(this.formStrategy.value.start), 1);
+    this.formStrategy.value.start = this.formatDate(this.formStrategy.value.start);
+
+    this.currentStrategyToAdd.name = this.formStrategy.value.name;
+    this.currentStrategyToAdd.simulation = this.formStrategy.value.simulation;
+    this.currentStrategyToAdd.start = this.formStrategy.value.start;
+    this.currentStrategyToAdd.user = this.formStrategy.value.user;
+    console.log("this.currentStrategyToAdd:", this.currentStrategyToAdd)
+    const arrayAssetForStrategy:any = [];
+
+
+
+    this.allAssets.forEach(asset => {
+      const assetName = asset.name;
+      const targetInput = <HTMLInputElement>document.getElementById(`customRange${assetName}`);
+      let percentage:string|number = targetInput.value;
+      if (targetInput.value === ''){
+        percentage = 50;
+      }
+
+      //devo prendere i prezzi dal backend per quel determinato giorno (prima inseriscili)
+      //così posso riempire anche il buyValue
+      //inserire i controlli per le percentuali
+      //correggere l'amount (va calcolato: amountSTRATEGIA/100 * percentuale -> risultato/prezzo di quel giorno)
+
+
+      const objAllocation = {
+        percentage: percentage,
+        buyValue: 0,
+        amount: this.formStrategy.value.amount,
+        asset: {
+          id: asset.id
+        },
+        strategy: {
+          id:0
+        }
+      }
+      arrayAssetForStrategy.push(objAllocation);
+    })
+    console.log("arrayAssetForStrategy:", arrayAssetForStrategy)
+
+  }
+
+  formatDate(dateObj: { year: number, month: number, day: number }): string {
+    const { year, month, day } = dateObj;
+    const formattedMonth = month < 10 ? `0${month}` : `${month}`;
+    const formattedDay = day < 10 ? `0${day}` : `${day}`;
+    const formattedDate = `${year}-${formattedMonth}-${formattedDay}`;
+    console.log(formattedDate);
+    return formattedDate;
+  }
+
+  async getAssets() {
+    this.mktSvc.getAllAssetAndNetworks()
+      .subscribe(async assets => {
+        console.log("assets:", assets)
+        this.allAssets = assets;
+
+
+
+
+        /* for (let i = 0; i < this.allAssets.length; i++) {
+          const asset = this.allAssets[i];
+          // Crea un FormControl per l'allocazione dell'asset.
+          const assetAllocationControl = new FormControl('', Validators.required);
+
+          // Aggiungi il nuovo FormControl al FormGroup con una chiave univoca.
+          this.formStrategy.addControl('assetAllocation_' + i, assetAllocationControl);
+        } */
+        /* for (let i = 0; i < this.allAssets.length; i++) {
+          const asset = this.allAssets[i];
+          const assetAllocationControl = new FormControl({ id: asset.id, percentage: '' }, Validators.required);
+          this.formStrategy.addControl('assetAllocation_' + i, assetAllocationControl);
+        } */
+      });
+  }
+
+
+
 }

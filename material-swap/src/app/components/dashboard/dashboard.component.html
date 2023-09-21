@@ -26,7 +26,47 @@
           <h5>Create new strategy</h5>
         </div>
         <div class="col-12">
+          <form [formGroup]="formStrategy" (submit)="try()">
 
+            <div class="input-group input-group-sm mb-3">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+              <input type="text" class="form-control" aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm" formControlName="name">
+            </div>
+
+            <div class="col-12">
+              <div class="input-group">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="dp"
+                  formControlName="start"
+                  ngbDatepicker
+                  #d="ngbDatepicker"
+                />
+                <button class="btn btn-outline-secondary bi bi-calendar3" (click)="d.toggle()" type="button">Pick date</button>
+              </div>
+            </div>
+
+            <div class="input-group input-group-sm mb-3">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Amount</span>
+              <input type="number" class="form-control" aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm" formControlName="amount">
+            </div>
+            <!-- <ngb-datepicker #dp [(ngModel)]="model" (navigate)="onDateNavigate($event)"></ngb-datepicker> -->
+
+            <button class="btn stn-success" type="submit">try</button>
+
+            <div *ngFor="let asset of this.allAssets">
+              <label for="customRange{{ asset.name }}" class="form-label">{{ asset.name }}</label>
+              <input type="range" class="form-range" min="0" max="100" id="customRange{{ asset.name }}">
+            </div>
+            <!-- <div class="range-container" *ngFor="let asset of this.allAssets; let i = index">
+              <label for="customRange{{ i }}" class="form-label">{{ asset.name }}</label>
+              <input type="range" class="form-range" min="0" max="100" [formControlName]="'assetAllocation_' + i" id="customRange{{ i }}">
+            </div> -->
+
+          </form>
         </div>
       </div>
     </div>

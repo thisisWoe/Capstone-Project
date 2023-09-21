@@ -7,5 +7,6 @@ export interface StrategyDto {
     publicKey:string
   },
   simulation: boolean,
+  start:string,
   assetAllocations?: AssetAllocationDto[]
 }
