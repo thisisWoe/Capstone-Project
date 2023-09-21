@@ -3,10 +3,10 @@
 
 div.page-container {
   font-family: "Roboto", sans-serif;
-  @media screen and (max-height: 1200px) {
+  @media screen and (max-height: 1270px) {
     overflow-y: scroll;
   }
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   div.row {
     h5.title-listing {
       color: #e08142;
