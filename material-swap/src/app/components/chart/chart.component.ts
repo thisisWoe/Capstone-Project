@@ -439,15 +439,15 @@ export class ChartComponent {
     this.mktSvc.getDataNow(coin1, coin2).subscribe(data => {
       console.log('dati trasformati', data);
       const singleObj = data[0];
-      const singleObjTransformed = <IChartData>this.mktSvc.transformDataforChart(singleObj);
-      console.log("singleObjTransformed:", singleObjTransformed)
+      /* const singleObjTransformed = <IChartData>this.mktSvc.transformDataforChart(singleObj);
+      console.log("singleObjTransformed:", singleObjTransformed) */
     });
   }
 
   getPeriodData(coin1: string, coin2: string, startYYYY_MM_DD: string, endYYYY_MM_DD: string) {
     this.mktSvc.getPeriodData(coin1, coin2, startYYYY_MM_DD, endYYYY_MM_DD).subscribe(data => {
-      const arrayTransformed = <IChartData[]>this.mktSvc.transformDataforChart(data);
-      console.log("arrayTransformed:", arrayTransformed)
+      /* const arrayTransformed = <IChartData[]>this.mktSvc.transformDataforChart(data);
+      console.log("arrayTransformed:", arrayTransformed) */
     })
   }
 }

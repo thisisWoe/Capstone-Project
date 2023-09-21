@@ -53,27 +53,45 @@
 
     <div class="col-12 col-lg-11 pricing-container">
       <h5 class="my-3">Fetch pricing data</h5>
-      <div class="row">
-        <div class="col-12 col-xxl-8 mt-3 mb-5 d-flex justify-content-center">
-          <ngb-datepicker class="datepicker-item" #dp (dateSelect)="onDateSelection($event)" [displayMonths]="2" [dayTemplate]="t" outsideDays="hidden">
+      <div class="row r1">
+        <div class="date-wrapper order-2 order-lg-1 col-12 col-xxl-8 mt-3 mb-5 d-flex justify-content-center">
+          <ngb-datepicker class="datepicker-item" #dp (dateSelect)="onDateSelection($event)" [displayMonths]="2"
+            [dayTemplate]="t" outsideDays="hidden">
           </ngb-datepicker>
 
           <ng-template #t let-date let-focused="focused">
-            <span
-              class="custom-day"
-              [class.focused]="focused"
-              [class.range]="isRange(date)"
-              [class.faded]="isHovered(date) || isInside(date)"
-              (mouseenter)="hoveredDate = date"
-              (mouseleave)="hoveredDate = null"
-            >
+            <span class="custom-day" [class.focused]="focused" [class.range]="isRange(date)"
+              [class.faded]="isHovered(date) || isInside(date)" (mouseenter)="hoveredDate = date"
+              (mouseleave)="hoveredDate = null">
               {{ date.day }}
             </span>
           </ng-template>
         </div>
-        <div class="col-4 mt-3 mb-5">
-          select asset
-          <button class="btn btn-success" (click)="confirmselectionDate()">Confirm</button>
+        <div class="select-wrapper order-1 order-lg-2 col-12 col-xxl-4 mt-3 mb-5">
+          <!-- <select class="form-select form-select-sm mb-3" aria-label="Small select example">
+            <option value="" selected>Select Network</option>
+            <ng-container *ngFor=" let asset of allStoredAssets">
+              <img src="{{asset.imgUrl}}" alt="img url">
+              <option [value]="asset">
+                {{asset.name}}
+              </option>
+            </ng-container>
+          </select> -->
+          <div ngbDropdown placement="top-end" class="d-inline-block mb-5">
+            <button type="button" class="btn btn-outline-primary btn-select-asset" id="dropdownBasic1" ngbDropdownToggle>
+              Select asset
+            </button>
+            <div class="container-choice" ngbDropdownMenu aria-labelledby="dropdownBasic1">
+              <button ngbDropdownItem *ngFor=" let asset of allStoredAssets">
+                <a (click)="sendTokenToFetch(asset.name, asset.id!)">
+                  <img class="img-fluid" src="{{asset.imgUrl}}" alt="img url">
+                  <span>{{asset.name}}</span>
+                </a>
+              </button>
+            </div>
+          </div>
+
+          <button class="btn btn-success btn-confirm-fetch" (click)="getPricingData()">Confirm date & asset</button>
         </div>
       </div>
     </div>

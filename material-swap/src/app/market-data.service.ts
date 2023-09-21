@@ -65,17 +65,19 @@ export class MarketDataService {
   }
 
   //POST pricing nel backend
-  saveDataBackend(data: ICoinApiData | ICoinApiData[]){
+  saveDataBackend(data: ICoinApiData | ICoinApiData[], assetId: number) {
     const body = {
-      pricingset: this.transformDataforBackend(this.transformDataforChart(data))
+      pricingset: this.transformDataforBackend(this.transformDataforChart(data, assetId))
     }
-    const url = environment.API_BACKEND+environment.POST_PRICING_BLOCK;
+    const url = environment.API_BACKEND + environment.POST_PRICING_BLOCK;
     console.log("body:", body)
 
-    return this.http.post(url, body)
-      .pipe(tap(res => {
-        console.log("res:", res)
-      }));
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post(url, body, {
+      headers,
+      responseType: 'text' // Imposto responseType su 'text' per ottenere una risposta come stringa
+    })
+
   }
 
   //ricevo dati di un PAIR di oggi
@@ -106,7 +108,7 @@ export class MarketDataService {
   }
 
   //trasformo i dati per i grafici (partendo da res di coinAPI)
-  transformDataforChart(data: ICoinApiData | ICoinApiData[]): IChartData | IChartData[] {
+  transformDataforChart(data: ICoinApiData | ICoinApiData[], assetId: number): IChartData | IChartData[] {
     if (Array.isArray(data)) {
       const arrayTransformed: IChartData[] = [];
       data.forEach((objData) => {
@@ -120,7 +122,10 @@ export class MarketDataService {
           open: objData.rate_open,
           high: objData.rate_high,
           low: objData.rate_low,
-          close: objData.rate_close
+          close: objData.rate_close,
+          targetAsset: {
+            id: assetId
+          }
         }
 
         arrayTransformed.push(newObj);
@@ -137,7 +142,10 @@ export class MarketDataService {
         open: data.rate_open,
         high: data.rate_high,
         low: data.rate_low,
-        close: data.rate_close
+        close: data.rate_close,
+        targetAsset: {
+          id: assetId
+        }
       }
       return newObj;
     }
@@ -151,11 +159,14 @@ export class MarketDataService {
         const millisecondsDate = pricing.date;
         const date = new Date(millisecondsDate);
         const year = date.getFullYear();
-        const month = String(date.getMonth()+1).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const day = String(date.getDate()).padStart(2, '0');
         const fullDate: string = `${year}-${month}-${day}`;
 
         const newPricing: IPricingBackend = {
+          targetAsset: {
+            id: pricing.targetAsset.id
+          },
           date: fullDate,
           open: pricing.open,
           high: pricing.high,
@@ -178,20 +189,23 @@ export class MarketDataService {
         open: data.open,
         high: data.high,
         low: data.low,
-        close: data.close
+        close: data.close,
+        targetAsset: {
+          id: data.targetAsset.id
+        }
       };
       return newPricing;
     }
   }
 
   //trasformo da dati per backend a dati per chart
-  transformDatafromBEforChart(data: IPricingBackend | IPricingBackend[]):IChartData | IChartData[] {
+  transformDatafromBEforChart(data: IPricingBackend | IPricingBackend[]): IChartData | IChartData[] {
     if (Array.isArray(data)) {
       const arrayPricingForChart: IChartData[] = [];
       data.forEach(pricing => {
         const parts = pricing.date.split('-');
         const year = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10) -1;
+        const month = parseInt(parts[1], 10) - 1;
         const day = parseInt(parts[2], 10);
 
         const dateMillisends = new Date(year, month, day).getTime();
@@ -201,7 +215,10 @@ export class MarketDataService {
           open: pricing.open,
           high: pricing.high,
           low: pricing.low,
-          close: pricing.close
+          close: pricing.close,
+          targetAsset: {
+            id: pricing.targetAsset.id
+          }
         };
 
         arrayPricingForChart.push(newPricing);
@@ -209,47 +226,50 @@ export class MarketDataService {
       return arrayPricingForChart;
     } else {
       const parts = data.date.split('-');
-        const year = parseInt(parts[0], 10);
-        const month = parseInt(parts[1], 10);
-        const day = parseInt(parts[2], 10);
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10);
+      const day = parseInt(parts[2], 10);
 
-        const dateMillisends = new Date(year, month, day).getTime();
+      const dateMillisends = new Date(year, month, day).getTime();
 
-        const newPricing: IChartData = {
-          date: dateMillisends,
-          open: data.open,
-          high: data.high,
-          low: data.low,
-          close: data.close
-        };
+      const newPricing: IChartData = {
+        date: dateMillisends,
+        open: data.open,
+        high: data.high,
+        low: data.low,
+        close: data.close,
+        targetAsset: {
+          id: data.targetAsset.id
+        }
+      };
 
-        return newPricing;
+      return newPricing;
     }
   }
 
   //crud asset e network
-  addAsset(asset: IAssetDto){
-    return this.http.post<IAssetDto>(environment.API_BACKEND+'asset/new', asset);
+  addAsset(asset: IAssetDto) {
+    return this.http.post<IAssetDto>(environment.API_BACKEND + 'asset/new', asset);
   }
 
-  addObjNetwork(network: IObjNetworkDto){
+  addObjNetwork(network: IObjNetworkDto) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.post(environment.API_BACKEND+'objnetowrk/new', network, {
+    return this.http.post(environment.API_BACKEND + 'objnetowrk/new', network, {
       headers,
       responseType: 'text'
     });
   }
 
-  getAllAssetAndNetworks(){
-    return this.http.get<IAssetDto[]>(environment.API_BACKEND+'asset');
+  getAllAssetAndNetworks() {
+    return this.http.get<IAssetDto[]>(environment.API_BACKEND + 'asset');
   }
 
-  getSingleAsset(id:number){
-    return this.http.get<IAssetDto>(environment.API_BACKEND+'asset/'+id);
+  getSingleAsset(id: number) {
+    return this.http.get<IAssetDto>(environment.API_BACKEND + 'asset/' + id);
   }
 
-  editAssetAndNetwork(asset:any){
-    return this.http.put<IAssetDto>(environment.API_BACKEND+'asset/edit', asset);
+  editAssetAndNetwork(asset: any) {
+    return this.http.put<IAssetDto>(environment.API_BACKEND + 'asset/edit', asset);
   }
 
 }

@@ -3,6 +3,9 @@
 
 div.page-container {
   font-family: "Roboto", sans-serif;
+  @media screen and (max-height: 1200px) {
+    overflow-y: scroll;
+  }
   overflow-y: scroll;
   div.row {
     h5.title-listing {
@@ -90,7 +93,6 @@ div.page-container {
       }
     }
     div.pricing-container {
-      border: 1px solid white;
       border-radius: 2rem;
       background-image: url(./../../../assets/imgs/chart-back-pie.png);
       background-size: cover;
@@ -99,8 +101,55 @@ div.page-container {
         text-align: center;
         font-size: 2rem;
       }
-      div.row{
-
+      div.r1 {
+        & > div.date-wrapper {
+        }
+        & > div.select-wrapper {
+          display: flex;
+          flex-direction: column;
+          /* justify-content: end; */
+          @media screen and (min-width: 992px) {
+            flex-direction: column;
+            justify-content: start;
+          }
+          button.btn-select-asset {
+            background-color: $backVioletBlack;
+            color: white;
+            font-weight: bold;
+            border: 1px solid #be6dab;
+            border-radius: 2rem;
+            &:hover{
+              background-color: #be6dab5a;
+            }
+          }
+          button.btn-confirm-fetch{
+            font-weight: bold;
+            border-radius: 2rem;
+            background-color: #e08142;
+            color: $backVioletBlack;
+            border: #d56d27;
+          }
+          button {
+            width: 100%;
+          }
+          div.container-choice {
+            background-color: $backVioletBlack;
+            button {
+              a {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                img {
+                  height: 50px;
+                  border-radius: 50%;
+                }
+                span {
+                  color: white;
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -133,31 +182,29 @@ div.page-container {
   font-weight: bold;
   color: white;
 }
-::ng-deep div.ngb-dp-header, ::ng-deep div.ngb-dp-weekdays{
+::ng-deep div.ngb-dp-header,
+::ng-deep div.ngb-dp-weekdays {
   background-color: #be6dab5a;
-
 }
-::ng-deep div.ngb-dp-weekday{
+::ng-deep div.ngb-dp-weekday {
   color: #e08142;
 }
-::ng-deep div.ngb-dp-week{
+::ng-deep div.ngb-dp-week {
   border-bottom: none;
 }
-::ng-deep div.ngb-dp-navigation-select form-select{
+::ng-deep div.ngb-dp-navigation-select form-select {
   background-color: #e08142 !important;
 }
-ngb-datepicker{
+ngb-datepicker {
   border: 1px solid #be6dab;
 }
 /* ngb-dp-months */
-::ng-deep div.ngb-dp-months{
-  @media screen and (max-width: 1199px){
+::ng-deep div.ngb-dp-months {
+  @media screen and (max-width: 1199px) {
     flex-direction: column;
-
   }
-  @media screen and (max-width: 800px) and (min-width: 750px){
+  @media screen and (max-width: 800px) and (min-width: 750px) {
     flex-direction: row;
-
   }
 }
 /* .ngb-dp-month {
@@ -167,7 +214,6 @@ ngb-datepicker{
 ::ng-deep .ngb-dp-week {
   justify-content: space-evenly;
 } */
-
 
 /* div.toast{
   border: #be6dab 1px solid;

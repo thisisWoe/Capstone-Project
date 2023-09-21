@@ -60,6 +60,9 @@ export class AdminComponent implements AfterViewInit, OnInit {
 	fromDate: NgbDate;
 	toDate: NgbDate | null = null;
 
+  tokenToFetch:string | null = null;
+  tokenToFetchId:number | null = null;
+
   constructor(private authSvc: AuthService, private fb: FormBuilder, private mktSvc: MarketDataService, calendar: NgbCalendar) {
     this.fromDate = calendar.getToday();
 		this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
@@ -563,13 +566,52 @@ export class AdminComponent implements AfterViewInit, OnInit {
 		);
 	}
 
-  confirmselectionDate(){
+  confirmselectionDate():{from:string, to:string}{
     console.log("from:", this.fromDate);
     console.log("to:", this.toDate);
-    const from = `${this.fromDate.year}-${this.fromDate.month}-${this.fromDate.day}`;
-    const to = `${this.toDate!.year}-${this.toDate!.month}-${this.toDate!.day}`;
+    this.toDate!.day = this.toDate!.day;
+    const fromDate = new Date(`${this.fromDate.year}-${(this.fromDate.month.toString()).padStart(2, '0')}-${(this.fromDate.day.toString()).padStart(2, '0')}T00:00:00`);
+    const toDate = new Date(`${this.toDate!.year}-${(this.toDate!.month.toString()).padStart(2, '0')}-${(this.toDate!.day.toString()).padStart(2, '0')}T00:00:00`);
+    toDate.setDate(toDate.getDate() + 1);
+    toDate.setMonth(toDate.getMonth() + 1);
+    fromDate.setMonth(fromDate.getMonth() + 1);
+    const dayTo = (toDate.getDate().toString()).padStart(2, '0');
+    const monthTo = (toDate.getMonth().toString()).padStart(2, '0');
+    const dayFrom = (fromDate.getDate().toString()).padStart(2, '0');
+    const monthFrom = (fromDate.getMonth().toString()).padStart(2, '0');
+    console.log("fromDate:", fromDate)
+    console.log("toDate:", toDate)
+
+
+    let from = `${this.fromDate.year}-${monthFrom}-${dayFrom}`;
+    let to = `${this.toDate!.year}-${monthTo}-${dayTo}`;
+    //from = `${this.fromDate.year}-${(this.fromDate.month.toString()).padStart(2, '0')}-${(this.fromDate.day.toString()).padStart(2, '0')}`;
+    //to = `${this.toDate!.year}-${(this.toDate!.month.toString()).padStart(2, '0')}-${(this.toDate!.day.toString()).padStart(2, '0')}`;
     console.log("from:", from)
     console.log("to:", to)
+    return {from: from, to: to};
+  }
+
+  sendTokenToFetch(symbol:string, assetId:number){
+    this.tokenToFetch = symbol;
+    this.tokenToFetchId = assetId;
+    console.log("this.tokenToFetchId:", this.tokenToFetchId)
+    console.log("this.tokenToFetch:", this.tokenToFetch)
+  }
+
+  getPricingData(){
+    const date = this.confirmselectionDate();
+    const from = date.from;
+    const to = date.to;
+
+    /* this.mktSvc.getPeriodData(`${this.tokenToFetch}`,'USD', from, to)
+    .subscribe(data => {
+      console.log("data:", data)
+      this.mktSvc.saveDataBackend(data, this.tokenToFetchId!).subscribe(data => {
+        console.log("data:", data)
+
+      });
+    }); */
   }
 
 }

@@ -4,4 +4,7 @@ export interface IPricingBackend {
   high: number;
   low: number;
   close: number;
+  targetAsset: {
+    id:number
+  },
 }
