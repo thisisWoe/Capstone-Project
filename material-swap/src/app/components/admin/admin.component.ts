@@ -604,14 +604,14 @@ export class AdminComponent implements AfterViewInit, OnInit {
     const from = date.from;
     const to = date.to;
 
-    /* this.mktSvc.getPeriodData(`${this.tokenToFetch}`,'USD', from, to)
+    this.mktSvc.getPeriodData(`${this.tokenToFetch}`,'USD', from, to)
     .subscribe(data => {
       console.log("data:", data)
       this.mktSvc.saveDataBackend(data, this.tokenToFetchId!).subscribe(data => {
         console.log("data:", data)
 
       });
-    }); */
+    });
   }
 
 }
