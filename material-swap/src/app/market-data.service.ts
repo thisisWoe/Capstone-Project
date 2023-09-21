@@ -248,4 +248,8 @@ export class MarketDataService {
     return this.http.get<IAssetDto>(environment.API_BACKEND+'asset/'+id);
   }
 
+  editAssetAndNetwork(asset:any){
+    return this.http.put<IAssetDto>(environment.API_BACKEND+'asset/edit', asset);
+  }
+
 }

@@ -87,6 +87,14 @@ public class MaterialSwapController {
 		String response = mSvc.editStrategyAndNested(s);
 		return new ResponseEntity<String>(response, HttpStatus.OK);
 	}
+
+	@PutMapping("/asset/edit")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<?> editAssetAndNetwork(@RequestBody AssetDto a){
+		AssetDto asset = mSvc.editAssetAndNetwork(a);
+		ResponseEntity<AssetDto> resp = new ResponseEntity<AssetDto>(asset, HttpStatus.OK);
+		return resp;
+	}
 	
 	
 	//GET

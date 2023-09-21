@@ -610,6 +610,31 @@ public class MaterialSwapService {
 		return "Pricing block successfully saved.";
 	}
 	
+	public AssetDto editAssetAndNetwork(AssetDto assetDtoInEntrance) {
+		AssetDto res = new AssetDto();
+		if(AssetRepo.existsById(assetDtoInEntrance.getId())){
+			Asset asset = AssetRepo.getById(assetDtoInEntrance.getId());
+			asset.setName(assetDtoInEntrance.getName());
+			asset.setImgUrl(assetDtoInEntrance.getImgUrl());
+			AssetRepo.save(asset);
+
+			Set<ObjNetworkDto> networks = assetDtoInEntrance.getAddresses();
+			networks.forEach(obj -> {
+				if (objNetworkRepo.existsById(obj.getId())) {
+					ObjNetwork object = objNetworkRepo.getById(obj.getId());
+					object.setNetworkName(obj.getNetworkName());
+					object.setTokenAddress(obj.getTokenAddress());
+					objNetworkRepo.save(object);
+				} else {
+					throw new MyAPIException(HttpStatus.BAD_REQUEST, "Network not found.");
+				}
+			});
+			res = this.getAssetById(assetDtoInEntrance.getId());
+		} else {
+			throw new MyAPIException(HttpStatus.BAD_REQUEST, "Asset not found.");
+		}
+		return res;
+	}
 	
 	
 	

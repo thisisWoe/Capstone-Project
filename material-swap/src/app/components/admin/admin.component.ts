@@ -49,7 +49,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
 
   allStoredAssets: IAssetDto[] = [];
 
-  targetEdit:IAssetDto | null = null;
+  targetEdit: IAssetDto | null = null;
 
   stringHTML = ``;
 
@@ -272,7 +272,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
 
         const assetTargetReceiver: HTMLDivElement = this.assetTargetReceiver.nativeElement;
         assetTargetReceiver.innerHTML = '';
-        let targetAssetId:number | null | undefined = null;
+        let targetAssetId: number | null | undefined = null;
         this.allStoredAssets.forEach(asset => {
           const assetWrapper = document.createElement('div');
           assetWrapper.classList.add('asset-wrapper');
@@ -308,7 +308,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
               targets: aAWFiltered,
               delay: 0,
               keyframes: [
-                {translateX: 600}
+                { translateX: 600 }
               ],
               duration: 500,
               easing: 'linear',
@@ -322,7 +322,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
               targets: remainAsset,
               delay: 0,
               keyframes: [
-                {translateX: 600}
+                { translateX: 600 }
               ],
               duration: 1000,
               easing: 'easeInElastic(1, .6)',
@@ -350,7 +350,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
       })
   }
 
-  createEditForm(id:number){
+  createEditForm(id: number) {
 
     const spanS = 'style="font-size: 1rem; border: 1px solid #be6dab; background-color: #1f1739; background-color: #be6dab5a; color: white;"';
     const inputS = 'style="font-size: 1rem; border: 1px solid #be6dab; background-color: #1f1739; color: white;"';
@@ -360,13 +360,13 @@ export class AdminComponent implements AfterViewInit, OnInit {
         `
           <div class="input-group input-group-sm mb-3">
             <span class="input-group-text" id="inputGroup-sizing-sm" ${spanS}>Token Symbol</span>
-            <input type="text" class="form-control" aria-label="Sizing example input"
+            <input id="input-${data.name}" type="text" class="form-control" aria-label="Sizing example input"
               aria-describedby="inputGroup-sizing-sm" formControlName="name" ${inputS} value="${data.name}">
           </div>
 
           <div class="input-group input-group-sm mb-3">
             <span class="input-group-text" id="inputGroup-sizing-sm" ${spanS}>Token Image URL</span>
-            <input type="text" class="form-control" aria-label="Sizing example input"
+            <input id="input-${data.imgUrl}" type="text" class="form-control" aria-label="Sizing example input"
               aria-describedby="inputGroup-sizing-sm" formControlName="imgUrl" ${inputS} value="${data.imgUrl}">
           </div>
 
@@ -374,31 +374,39 @@ export class AdminComponent implements AfterViewInit, OnInit {
 
           </div>
 
-          <button type="submit" class="btn btn-primary btn-submit-edit" ${buttonS}>Edit</button>
-          <button type="button" class="btn btn-primary btn-back-edit" ${buttonS} (click)="" >Back</button>
+          <button type="button" class="btn btn-primary btn-submit-edit" ${buttonS} >Edit</button>
+          <button type="button" class="btn btn-primary btn-back-edit" ${buttonS} >Back</button>
         `;
-        const assetTargetReceiver: HTMLDivElement = this.assetTargetReceiver.nativeElement;
-        const form =
+      const assetTargetReceiver: HTMLDivElement = this.assetTargetReceiver.nativeElement;
+      const form =
         `
           <form [formGroup]="formEditAsset" (ngSubmit)="submitEdit()" class="mb-3 edit-form">
 
 
           </form>
         `;
-        assetTargetReceiver.innerHTML = '';
-        assetTargetReceiver.innerHTML += form;
-        const formHtml = document.querySelector('.edit-form');
-        formHtml!.innerHTML = formParts;
-        const button = <HTMLButtonElement>document.querySelector('.btn-submit-edit');
-        button!.onmouseover = () => {
-          button!.style.backgroundColor = '#be6dab5a';
-        };
-        this.getSingleAsset(id);
+      assetTargetReceiver.innerHTML = '';
+      assetTargetReceiver.innerHTML += form;
+      const formHtml = document.querySelector('.edit-form');
+      formHtml!.innerHTML = formParts;
+      const button = <HTMLButtonElement>document.querySelector('.btn-submit-edit');
+      button.addEventListener('click', () => {
+        /* this.submitEdit(); */
+        this.updateAsset();
+      })
+      const buttonBack = <HTMLButtonElement>document.querySelector('.btn-back-edit');
+      buttonBack.addEventListener('click', () => {
+        this.back();
+      })
+      button!.onmouseover = () => {
+        button!.style.backgroundColor = '#be6dab5a';
+      };
+      this.getSingleAsset(id);
     })
 
   }
 
-  getSingleAsset(id:number){
+  getSingleAsset(id: number) {
     this.stringHTML = ``;
     const spanS = 'style="font-size: 0.7rem; border: 1px solid #be6dab; background-color: #1f1739; background-color: #be6dab5a; color: white;"';
     const inputS = 'style="font-size: 0.7rem; border: 1px solid #be6dab; background-color: #1f1739; color: white;"';
@@ -409,19 +417,19 @@ export class AdminComponent implements AfterViewInit, OnInit {
 
       this.compileForm(id, this.formEditAsset, data)
 
-      data.addresses.forEach(address =>{
+      data.addresses.forEach(address => {
         this.stringHTML =
-        `
-          <div class="col-6">
+          `
+          <div class="col-6 div-addresses-${data.name}">
             <div class="input-group input-group-sm mb-3 mt-3">
               <span class="input-group-text" id="inputGroup-sizing-sm" ${spanS}>Network</span>
-              <input id="input-${address.networkName}" type="text" class="form-control" aria-label="Sizing example input"
+              <input data-id="${address.id}" id="input-${address.networkName}" type="text" class="form-control" aria-label="Sizing example input"
                 aria-describedby="inputGroup-sizing-sm" formControlName="name" ${inputS} value="${address.networkName}">
             </div>
 
             <div class="input-group input-group-sm mb-3">
               <span class="input-group-text" id="inputGroup-sizing-sm" ${spanS}>Token Address</span>
-              <input id="input-${address.tokenAddress}" type="text" class="form-control" aria-label="Sizing example input"
+              <input id="input-wallet-${address.networkName}" type="text" class="form-control" aria-label="Sizing example input"
                 aria-describedby="inputGroup-sizing-sm" formControlName="imgUrl" ${inputS} value="${address.tokenAddress}">
             </div>
           </div>
@@ -433,7 +441,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
     })
   }
 
-  compileForm(id:number, form: FormGroup<any>, data:IAssetDto){
+  compileForm(id: number, form: FormGroup<any>, data: IAssetDto) {
     const addressesFormArray = form.get('addresses') as FormArray;
 
 
@@ -449,9 +457,72 @@ export class AdminComponent implements AfterViewInit, OnInit {
     console.log('edit form: ', form.value);
   }
 
-  submitEdit(){
-    console.log(this.formEditAsset);
+  submitEdit(): {} {
+    const objectToPut: any = {
+      id: 0,
+      name : '',
+      imgUrl : '',
+      addresses : [],
+    }
+    this.allStoredAssets.forEach(asset => {
+      const inputElementName = <HTMLInputElement>document.getElementById(`input-${asset.name}`);
+      const inputElementImg = <HTMLInputElement>document.getElementById(`input-${asset.imgUrl}`);
+      const addresses = document.querySelectorAll(`.div-addresses-${asset.name}`);
+      const assetWrapperArray = Array.from(addresses) as HTMLDivElement[];
+      const objNetworksArray:any = [];
+      if (inputElementName && inputElementImg && addresses) {
+        console.log("inputElement trovato:", inputElementName.value)
+        console.log("inputElement trovato:", inputElementImg.value)
+        objectToPut.name = inputElementName.value;
+        objectToPut.imgUrl = inputElementImg.value;
+        assetWrapperArray.forEach(div => {
+          this.networkAvailable.forEach(net => {
+            const obj = {
+              /* asset: {id: 0}, */
+              id: 0,
+              networkName: '',
+              tokenAddress: ''
+            };
+            const elementNetwork = <HTMLInputElement>div.querySelector(`#input-${net}`);
+            const elementAddress = <HTMLInputElement>div.querySelector(`#input-wallet-${net}`);
+            if (elementNetwork && elementAddress) {
+              const elementId = elementNetwork.getAttribute('data-id');
+              obj.id = Number(elementId);
+              obj.networkName = elementNetwork!.value;
+              obj.tokenAddress = elementAddress!.value;
+              /* if(asset.id){
+                obj.asset = {id:asset.id}
+              } */
+              objNetworksArray.push(obj);
+            }
+          })
+        })
+        console.log("objNetworksArray:", objNetworksArray)
+        objectToPut.addresses = objNetworksArray;
+        objectToPut.id = asset.id;
+        console.log("objectToPut:", objectToPut)
+      } else {
+        console.log('nessun inputElement trovato');
+      }
+    })
+    return objectToPut;
 
+
+  }
+
+  back(){
+    const targetNetworkReceiver = document.querySelector('.asset-edit-container');
+    targetNetworkReceiver!.innerHTML = '';
+    this.getAssets();
+  }
+
+  updateAsset(){
+    const asset = this.submitEdit();
+    this.mktSvc.editAssetAndNetwork(asset)
+    .subscribe(assetDto => {
+      console.log("assetDto:", assetDto)
+      this.back();
+    })
   }
 
 }
