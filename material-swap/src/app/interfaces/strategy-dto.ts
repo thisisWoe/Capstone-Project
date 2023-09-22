@@ -8,5 +8,5 @@ export interface StrategyDto {
   },
   simulation: boolean,
   start:string,
-  assetAllocations?: AssetAllocationDto[]
+  assetAllocations: AssetAllocationDto[]
 }

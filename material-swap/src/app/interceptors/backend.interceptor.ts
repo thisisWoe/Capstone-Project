@@ -28,7 +28,6 @@ export class BackendInterceptor implements HttpInterceptor {
 
       //da qui
       return this.AuthService.user$.pipe(take(1), switchMap(user => {
-        console.log(user);
         if (!user) {
           return next.handle(request)
         }

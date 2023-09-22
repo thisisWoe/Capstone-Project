@@ -135,7 +135,8 @@ public class MaterialSwapService {
 				StrategyRepo.save(strategy);
 				
 				controlPercentage.forEach(all -> {
-					all.setStrategy(strategy);
+					//all.setStrategy(strategy);
+					all.setStrategy(StrategyRepo.getById(strategy.getId()));
 					this.addAllocation(all);					
 				});
 				return "Strategy successfully created. Please set allocations.";					
@@ -645,5 +646,16 @@ public class MaterialSwapService {
 		}
 	}
 	
-	
+	/* public String newStrategy(Strategy strategyInEntrance){
+		User u = strategyInEntrance.getUser();
+		String pKey = u.getPublicKey();
+		Optional<User> u2 = userRepo.findBypublicKey(pKey);
+		User user = u2.orElse(null);
+
+		Strategy strategy = strategyProvider.getObject();
+
+		if(){
+
+		}
+	} */
 }

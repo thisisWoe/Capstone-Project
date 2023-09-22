@@ -237,7 +237,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     strategyInfosElement.style.height = width + 'px';
   }
 
-  addDaysToDate(dateString:string, daysToAdd:number) {
+  addDaysToDate(dateString: string, daysToAdd: number) {
     const date = new Date(dateString);
     date.setDate(date.getDate() + daysToAdd);
     return date.toISOString().slice(0, 10);
@@ -269,9 +269,9 @@ export class DashboardComponent implements AfterViewInit, OnInit {
           this.currentStrategyToAdd.name = this.formStrategy.value.name;
           this.currentStrategyToAdd.simulation = this.formStrategy.value.simulation;
           this.currentStrategyToAdd.start = this.formStrategy.value.start;
-          this.currentStrategyToAdd.user = this.formStrategy.value.user;
+          this.currentStrategyToAdd.user.publicKey = this.formStrategy.value.user;
           console.log("this.currentStrategyToAdd:", this.currentStrategyToAdd)
-          const arrayAssetForStrategy:any = [];
+          const arrayAssetForStrategy: any = [];
 
 
 
@@ -280,55 +280,65 @@ export class DashboardComponent implements AfterViewInit, OnInit {
           this.allAssets.forEach(asset => {
             const assetName = asset.name;
             const targetInput = <HTMLInputElement>document.getElementById(`customRange${assetName}`);
-            let percentage:string|number = targetInput.value;
-            if (targetInput.value === ''){
+            let percentage: string | number = targetInput.value;
+            if (targetInput.value === '') {
               percentage = 50;
             }
             this.mktSvc.getPriceFromBEbyAsset(asset.id!)
-            .subscribe((data) => {
-              const objXday = data.find(objDay => {
-                return objDay.date === this.currentStrategyToAdd.start
-              });
-              console.log("objXday:", objXday)
+              .subscribe((data) => {
+                const objXday = data.find(objDay => {
+                  return objDay.date === this.currentStrategyToAdd.start
+                });
 
-              const percentageN = Number(percentage);
-              counter++;
-              totalPercentage += percentageN;
-              const calculateAmount = ((this.formStrategy.value.amount / 100)* Number(percentage));
-              const res = calculateAmount/objXday.open;
+                const percentageN = Number(percentage);
+                counter++;
+                totalPercentage += percentageN;
+                const calculateAmount = ((this.formStrategy.value.amount / 100) * Number(percentage));
+                const res = calculateAmount / objXday.open;
 
-              const objAllocation = {
-                percentage: percentage,
-                buyValue: objXday.open,
-                //amount: this.formStrategy.value.amount,
-                amount: res,
-                asset: {
-                  id: asset.id
-                },
-                strategy: {
-                  id:0
+                const objAllocation = {
+                  percentage: Number(percentage),
+                  buyValue: objXday.open,
+                  //amount: this.formStrategy.value.amount,
+                  amount: res,
+                  asset: {
+                    id: asset.id
+                  },
+                  strategy: {
+                    id: 1
+                  }
                 }
-              }
-              console.log("objAllocation:", objAllocation)
-              if (percentageN > 0) {
-                arrayAssetForStrategy.push(objAllocation);
-              }
-              console.log("totalPercentage:", totalPercentage)
-              if(totalPercentage > 100){
-                this.errorPercentage = true;
-                this.errorText = 'Sum of the percentages must be 100. Actual: '+totalPercentage+'%';
-              }
-              if (this.allAssets.length === counter && totalPercentage<=99) {
-                console.log("totalPercentage:", totalPercentage)
-                console.log("counter:", counter)
-                console.log("this.allAssets.length:", this.allAssets.length)
-                this.errorPercentage = true;
-                this.errorText = 'Sum of the percentages must be 100. Actual: '+totalPercentage+'%';
-              }
-            })
+                if (percentageN > 0) {
+                  arrayAssetForStrategy.push(objAllocation);
+                }
+                if (totalPercentage > 100) {
+                  this.errorPercentage = true;
+                  this.errorText = 'Sum of the percentages must be 100. Actual: ' + totalPercentage + '%';
+                }
+                if (this.allAssets.length === counter && totalPercentage <= 99) {
+                  this.errorPercentage = true;
+                  this.errorText = 'Sum of the percentages must be 100. Actual: ' + totalPercentage + '%';
+                }
+              })
 
           })
+          this.currentStrategyToAdd.assetAllocations = arrayAssetForStrategy;
+          console.log("this.currentStrategyToAdd.assetAllocations:", this.currentStrategyToAdd)
           console.log("arrayAssetForStrategy:", arrayAssetForStrategy)
+
+          /* this.mktSvc.postStrategy(this.currentStrategyToAdd)
+            .subscribe(data => {
+              console.log("data:", data)
+
+            }) */
+
+          setTimeout(() => {
+            this.mktSvc.postStrategy(this.currentStrategyToAdd)
+              .subscribe(data => {
+                console.log("data:", data)
+
+              })
+          }, 1000);
         }
       }
     }
@@ -351,12 +361,12 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       });
   }
 
-  onRangeChange(event: any, assetName:string) {
+  onRangeChange(event: any, assetName: string) {
     const targetInput = <HTMLInputElement>document.querySelector(`.customRange${assetName}`);
     targetInput.value = event.target.value;
   }
 
-  onTextChange(event: any, assetName:string) {
+  onTextChange(event: any, assetName: string) {
     const targetInput = <HTMLInputElement>document.getElementById(`customRange${assetName}`);
     targetInput.value = event.target.value;
 

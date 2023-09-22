@@ -10,6 +10,7 @@ import { IChartData } from './interfaces/ichart-data';
 import { IPricingBackend } from './interfaces/ipricing-backend';
 import { IAssetDto } from './interfaces/iasset-dto';
 import { IObjNetworkDto } from './interfaces/iobj-network-dto';
+import { StrategyDto } from './interfaces/strategy-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -275,6 +276,15 @@ export class MarketDataService {
   getPriceFromBEbyAsset(id: number) {
 
     return this.http.get<any[]>(environment.API_BACKEND+'pricing/all/'+id);
+  }
+
+  postStrategy(strategy:StrategyDto){
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    return this.http.post(environment.API_BACKEND + 'strategy/new', strategy, {
+      headers,
+      responseType: 'text'
+    });
   }
 
 }
