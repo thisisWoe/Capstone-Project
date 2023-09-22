@@ -1,43 +1,116 @@
-@import './../../../variables';
+@import "./../../../variables";
 
-div.page-container{
-  div.row{
-
-    div.strategy-infos{
+div.page-container {
+  @media screen and (max-width: 1399px) {
+    overflow-y: scroll;
+  }
+  div.row {
+    justify-content: space-around;
+    @media screen and (max-width: 991px) {
+      flex-direction: column;
+      align-items: center;
+    }
+    div.strategy-infos {
       background-image: url(./../../../assets/imgs/chart-back-pie.png);
-      border: 1px solid white;
       border-radius: 2rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      h5{
+      height: 100%;
+      h5 {
         color: $greyShadeText;
         font-size: 2rem;
       }
-      h6.strategy-quantities{
+      h5.title {
+        color: #e08142;
+      }
+      h6.strategy-quantities {
         font-size: 3rem;
         color: whitesmoke;
       }
-      div.chart-container{
+      div.chart-container {
         width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        div.chart-wrapper{
+        div.chart-wrapper {
           width: 100%;
+          height: 100%;
         }
       }
     }
-    div.actionStrategy{
-      div.row{
+    div.actionStrategy {
+      border-radius: 2rem;
+      background-image: url(./../../../assets/imgs/chart-back.png);
+      background-size: cover;
+      max-height: 100%;
+      @media screen and (max-width: 1399px) {
+        margin-top: 50px;
+      }
+      div.row {
         height: 100%;
         flex-direction: column;
         align-items: center;
-        justify-content: space-between;
-        @media screen and (max-width: 1440px){
+        justify-content: space-around;
+        margin: 0 !important;
+        @media screen and (max-width: 1440px) {
           flex-direction: row;
         }
-        div.create-wrapper, div.edit-wrapper{
+        h5 {
+          color: #e08142;
+          font-size: 2rem;
+          text-align: center;
+        }
+        button.btn-form-submit {
+          background-color: $backVioletBlack;
+          color: white;
+          font-weight: bold;
+          border: 1px solid #be6dab;
+          border-radius: 2rem;
+          width: 30%;
+          &:hover {
+            background-color: #be6dab5a;
+          }
+        }
+        input.form-control {
+          font-size: 1rem;
+          border: 1px solid #be6dab;
+          background-color: $backVioletBlack;
+          color: white;
+          &::placeholder {
+            color: $greyShadeText;
+          }
+        }
+        input.mini-form{
+          font-size: 1rem;
+          border: 1px solid #be6dab;
+          background-color: $backVioletBlack;
+          color: white;
+          border-radius: 1rem;
+        }
+        span.input-group-text,
+        button.bi-calendar3 {
+          font-size: 1rem;
+          border: 1px solid #be6dab;
+          background-color: $backVioletBlack;
+          background-color: #be6dab5a;
+          color: white;
+        }
+        img.img-asset-label {
+          max-height: 50px;
+          border-radius: 50%;
+          @media screen and (max-width: 1440px) {
+            max-height: 30px;
+          }
+        }
+        label.form-label{
+          @media screen and (max-width: 1440px) {
+            display: none;
+          }
+
+        }
+        div.create-wrapper,
+        div.edit-wrapper {
           background-image: url(./../../../assets/imgs/chart-back.png);
           border: 1px solid white;
           border-radius: 2rem;
@@ -45,7 +118,7 @@ div.page-container{
           justify-content: center;
           height: 40%;
           align-items: center;
-          button{
+          button {
             height: 30%;
             width: 50%;
           }

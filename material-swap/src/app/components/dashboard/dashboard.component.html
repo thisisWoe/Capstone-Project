@@ -2,7 +2,7 @@
   <div class="row">
 
     <div #strategyInfos class="col-12 col-xxl-5 strategy-infos">
-      <h5>Your strategies</h5>
+      <h5 class="title">Your strategies</h5>
       <h6 class="strategy-quantities">{{strategies.length}}</h6>
       <h5>Performance</h5>
       <div class="chart-container">
@@ -31,7 +31,7 @@
             <div class="input-group input-group-sm mb-3">
               <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
               <input type="text" class="form-control" aria-label="Sizing example input"
-                aria-describedby="inputGroup-sizing-sm" formControlName="name">
+                aria-describedby="inputGroup-sizing-sm" formControlName="name" placeholder="Your strategy">
             </div>
 
             <div class="col-12 mb-3">
@@ -54,25 +54,26 @@
                 aria-describedby="inputGroup-sizing-sm" formControlName="amount">
             </div>
 
-            <div class="alert alert-danger" role="alert" *ngIf="errorPercentage">
-              {{errorText}}
-            </div>
 
             <div class="row w-100 flex-row">
               <div *ngFor="let asset of this.allAssets; let i = index" class="col-6">
                 <div class="row flex-row">
-                  <div class="col-6">
-                    <label for="customRange{{ asset.name }}" class="form-label">{{ asset.name }}</label>
+                  <div class="col-4 col-xxl-6 d-flex justify-content-between align-items-center">
+                    <img src="{{asset.imgUrl}}" class="img-asset-label" alt="">
+                    <label for="customRange{{ asset.name }}" class="form-label text-light mb-0">{{ asset.name }}</label>
                   </div>
-                  <div class="col-6">
-                    <input (change)="onTextChange($event, asset.name)" [value]="0" class="customRange{{ asset.name }} img-fluid" step="0.01" type="number" id="customRange{{ asset.name }}_i">
+                  <div class="col-8 col-xxl-6">
+                    <input (change)="onTextChange($event, asset.name)" [value]="0" class="customRange{{ asset.name }} img-fluid mini-form" step="0.01" type="number" id="customRange{{ asset.name }}_i">
                   </div>
                 </div>
                 <input (change)="onRangeChange($event, asset.name)" type="range" class="form-range" min="0" max="100" step="0.01" [value]="0" id="customRange{{ asset.name }}">
               </div>
             </div>
 
-            <button class="btn btn-success" type="submit">try</button>
+            <button class="btn btn-success btn-form-submit mb-3" type="submit">Create</button>
+            <div class="alert alert-danger" role="alert" *ngIf="errorPercentage">
+              {{errorText}}
+            </div>
 
           </form>
         </div>

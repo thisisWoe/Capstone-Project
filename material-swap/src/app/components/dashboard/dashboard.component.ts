@@ -50,22 +50,6 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   };
   errorPercentage = false;
   errorText = '';
-  rangeValue1: number = 0;
-  textValue1: number = 0;
-  rangeValue2: number = 0;
-  textValue2: number = 0;
-  rangeValue3: number = 0;
-  textValue3: number = 0;
-  rangeValue4: number = 0;
-  textValue4: number = 0;
-  rangeValue5: number = 0;
-  textValue5: number = 0;
-  rangeValue6: number = 0;
-  textValue6: number = 0;
-  rangeValue7: number = 0;
-  textValue7: number = 0;
-  rangeValue8: number = 0;
-  textValue8: number = 0;
 
   //chart
   root!: am5.Root;
@@ -86,26 +70,13 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       simulation: [true, Validators.required],
       amount: [0, Validators.required]
     });
-
-
-    /* for (let i = 0; i < this.allAssets.length; i++) {
-      const asset = this.allAssets[i];
-      // Crea un FormControl per l'allocazione dell'asset.
-      const assetAllocationControl = new FormControl('', Validators.required);
-
-      // Aggiungi il nuovo FormControl al FormGroup con una chiave univoca.
-      this.formStrategy.addControl('assetAllocation_' + i, assetAllocationControl);
-    } */
-
-
-
     this.insertStrategyData();
   }
 
   ngAfterViewInit(): void {
     this.root = am5.Root.new("chartdiv");
     this.buildChart(this.root);
-    this.resizeStrategyInfos();
+    /* this.resizeStrategyInfos(); */
     this.resizePage();
   }
 
