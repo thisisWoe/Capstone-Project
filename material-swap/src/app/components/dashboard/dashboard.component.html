@@ -26,12 +26,12 @@
           <h5>Create new strategy</h5>
         </div>
         <div class="col-12">
-          <form [formGroup]="formStrategy" (submit)="try()">
+          <form [formGroup]="formStrategy" (submit)="postStrategy()">
 
             <div class="input-group input-group-sm mb-3">
-              <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
               <input type="text" class="form-control" aria-label="Sizing example input"
-                aria-describedby="inputGroup-sizing-sm" formControlName="name" placeholder="Your strategy">
+              aria-describedby="inputGroup-sizing-sm" formControlName="name" placeholder="Your strategy">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
             </div>
 
             <div class="col-12 mb-3">
@@ -49,9 +49,14 @@
             </div>
 
             <div class="input-group input-group-sm mb-3">
-              <span class="input-group-text" id="inputGroup-sizing-sm">Amount</span>
               <input type="number" class="form-control" aria-label="Sizing example input"
-                aria-describedby="inputGroup-sizing-sm" formControlName="amount">
+              aria-describedby="inputGroup-sizing-sm" formControlName="amount">
+              <span class="input-group-text" id="inputGroup-sizing-sm">Amount</span>
+            </div>
+
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" formControlName="simulation">
+              <label class="form-check-label" for="flexSwitchCheckDefault">Only for simulation?</label>
             </div>
 
 

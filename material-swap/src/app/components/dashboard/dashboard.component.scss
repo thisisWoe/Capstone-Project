@@ -95,6 +95,9 @@ div.page-container {
           background-color: $backVioletBlack;
           background-color: #be6dab5a;
           color: white;
+          width: 100px;
+          text-align: start;
+          padding-left: 5px;
         }
         img.img-asset-label {
           max-height: 50px;
@@ -108,6 +111,13 @@ div.page-container {
             display: none;
           }
 
+        }
+        label.form-check-label{
+          color: $greyShadeText;
+        }
+        .form-check-input[type="checkbox"]:checked {
+          background-color: #be6dab; /* Cambia il colore di sfondo quando è attivato (switched on) */
+          border-color: #be6dab; /* Cambia il colore del bordo quando è attivato */
         }
         div.create-wrapper,
         div.edit-wrapper {
@@ -126,4 +136,27 @@ div.page-container {
       }
     }
   }
+}
+div.alert-danger{
+  background-color: #c60298;
+  border: none;
+  border-left: 5px solid #be6dab;
+  color: white;
+  font-weight: bold;
+  font-size: larger;
+}
+::ng-deep div.ngb-dp-month,
+::ng-deep div.ngb-dp-header,
+::ng-deep div.ngb-dp-weekdays {
+  background-color: #be6dab84;
+}
+::ng-deep div.ngb-dp-weekday {
+  color: #e08142;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  background-color: #be6dab;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  background-color: #be6dab84;
 }
