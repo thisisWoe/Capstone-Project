@@ -12,5 +12,5 @@ import com.capstone.material_swap.security.entity.User;
 public interface IStrategyRepository extends CrudRepository<Strategy, Long>{
 	Strategy getById(Long id);
 	Set<Strategy> findByUser(User u);
-	
+	Set<Strategy> findAll();
 }

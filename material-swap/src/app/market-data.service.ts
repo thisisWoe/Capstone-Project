@@ -275,7 +275,7 @@ export class MarketDataService {
 
   getPriceFromBEbyAsset(id: number) {
 
-    return this.http.get<any[]>(environment.API_BACKEND+'pricing/all/'+id);
+    return this.http.get<IPricingBackend[]>(environment.API_BACKEND+'pricing/all/'+id);
   }
 
   postStrategy(strategy:StrategyDto){
@@ -287,4 +287,7 @@ export class MarketDataService {
     });
   }
 
+  getStrategies(publicKey: string){
+    return this.http.get<StrategyDto[]>(environment.API_BACKEND+'strategy/getbyuser/'+publicKey);
+  }
 }

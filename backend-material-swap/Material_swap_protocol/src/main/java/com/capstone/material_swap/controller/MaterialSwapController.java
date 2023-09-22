@@ -28,6 +28,7 @@ import com.capstone.material_swap.entity.StrategyDto;
 import com.capstone.material_swap.payload.AssetDto;
 import com.capstone.material_swap.payload.PricingDto;
 import com.capstone.material_swap.payload.PricingRequestPost;
+import com.capstone.material_swap.security.entity.User;
 
 @RestController
 @RequestMapping("/api")
@@ -140,6 +141,15 @@ public class MaterialSwapController {
 		
 		Set<PricingDto> pricinglist = mSvc.getAllPricingByAsset(a);
 		ResponseEntity<Set<PricingDto>> resp = new ResponseEntity<Set<PricingDto>>(pricinglist, HttpStatus.OK);
+		return resp;
+	}
+
+	@GetMapping("/strategy/getbyuser/{publickey}")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<?> getAllStrategiesByUser(@PathVariable String publickey) {
+		
+		Set<StrategyDto> strategyUser = mSvc.getAllStrategiesByUser(publickey);
+		ResponseEntity<Set<StrategyDto>> resp = new ResponseEntity<Set<StrategyDto>>(strategyUser, HttpStatus.OK);
 		return resp;
 	}
 	//test

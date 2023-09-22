@@ -1,6 +1,8 @@
 @import "./../../../variables";
 
 div.page-container {
+  //da togliere
+  overflow-y: scroll;
   @media screen and (max-width: 1399px) {
     overflow-y: scroll;
   }

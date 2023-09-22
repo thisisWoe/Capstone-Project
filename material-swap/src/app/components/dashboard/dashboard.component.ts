@@ -15,6 +15,7 @@ import { StrategyDto } from "src/app/interfaces/strategy-dto";
 import { MarketDataService } from "src/app/market-data.service";
 import { IAssetDto } from "src/app/interfaces/iasset-dto";
 import { forkJoin, map } from "rxjs";
+import { IPricingBackend } from "src/app/interfaces/ipricing-backend";
 
 @Component({
   selector: 'app-dashboard',
@@ -25,14 +26,12 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   @ViewChild('pageContainer', { static: true }) pageContainer!: ElementRef;
   @ViewChild('strategyInfos', { static: true }) strategyInfos!: ElementRef;
 
-  notSimulatedStrategy: any | null = {
+  /* notSimulatedStrategy: any | null = {
     name: 'notSimulatedStrategy',
     simulation: false
-  };
+  }; */
 
-  strategies: any[] = [
-    this.notSimulatedStrategy,
-  ];
+  strategies: StrategyDto[] = [];
 
   simulatedStrategies: any = [];
   simulatedStrategiesProfitOrLoss: boolean = false;
@@ -64,6 +63,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     this.getAssets();
+
     this.formStrategy = this.fb.group({
       name: ['', Validators.required],
       user: [this.readUser(), Validators.required],
@@ -71,12 +71,12 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       simulation: [false, Validators.required],
       amount: [0, Validators.required]
     });
-    this.insertStrategyData();
+
   }
 
   ngAfterViewInit(): void {
     this.root = am5.Root.new("chartdiv");
-    this.buildChart(this.root);
+    this.getAllStrategiesByUserLogged();
     /* this.resizeStrategyInfos(); */
     this.resizePage();
   }
@@ -87,7 +87,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     return user.username;
   }
 
-  buildChart(root: am5.Root) {
+  buildChart(root: am5.Root , chartData:any) {
     root.setThemes([
       am5themes_Animated.new(root),
       am5themes_Dark.new(root)
@@ -99,7 +99,8 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       })
     );
 
-    let data = this.generateChartData();
+    //let data = this.generateChartData();
+    let data = chartData;
 
     let yAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
@@ -125,7 +126,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       am5xy.SmoothedXLineSeries.new(root, {
         xAxis: xAxis,
         yAxis: yAxis,
-        valueYField: "visits",
+        valueYField: "value",
         valueXField: "date",
         tooltip: am5.Tooltip.new(root, {
           labelText: "{valueX.formatDate()}: {valueY}",
@@ -190,42 +191,142 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
   }
 
-  generateChartData() {
-    let chartData = [];
-    let firstDate = new Date();
-    firstDate.setDate(firstDate.getDate() - 150);
-    let visits = -40;
-    let b = 0.6;
-    for (var i = 0; i < 150; i++) {
-      let newDate = new Date(firstDate);
-      newDate.setHours(0, 0, 0);
-      newDate.setDate(newDate.getDate() + i);
-      if (i > 80) {
-        b = 0.4;
+  fromDateStringToTimestamp(date: string): Date {
+    const dateString = date;
+    const dateParts = dateString.split("-");
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1;
+    const day = parseInt(dateParts[2]);
+    const dateObj = new Date(year, month, day);
+    return dateObj;
+  }
+
+
+generateChartData() {
+  let strategyExample = this.strategies[0];
+  console.log("strategyExample:", strategyExample);
+
+  let chartData: { date: Date; value: number; }[] = [];
+  const allocations = strategyExample.assetAllocations;
+
+  // Creiamo un array di observable per le chiamate HTTP
+  const observables = allocations.map(asset => {
+    const amount = asset.amount;
+    return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
+      map(pricing => {
+        const objPrice = pricing.map(pricePerDay => ({
+          date: this.fromDateStringToTimestamp(pricePerDay.date),
+          value: pricePerDay.open * amount
+        }));
+        return objPrice;
+      })
+    );
+  });
+
+  // Usiamo forkJoin per attendere il completamento di tutte le chiamate
+  forkJoin(observables).subscribe(pricesArray => {
+    // Combina i risultati in un unico array
+    const allObjPrice = pricesArray.reduce((accumulator, currentPrices) => {
+      return accumulator.concat(currentPrices);
+    }, []);
+
+    // Usa la stessa logica di riduzione che hai usato prima
+    chartData = allObjPrice.reduce((accumulator:any, currentObjPrice) => {
+      const existingObjPrice:any = accumulator.find((obj: {date: Date, value: number;}) => obj.date.getTime() === currentObjPrice.date.getTime());
+
+      if (existingObjPrice) {
+        existingObjPrice.value += currentObjPrice.value;
+      } else {
+        accumulator.push({ date: currentObjPrice.date, value: currentObjPrice.value });
       }
-      visits += Math.round((Math.random() < b ? 1 : -1) * Math.random() * 10);
+      return accumulator;
+    }, []);
+    this.buildChart(this.root, chartData);
+    console.log("chartData:", chartData);
+  });
 
-      chartData.push({
-        date: newDate.getTime(),
-        visits: visits
+  return chartData;
+}
+
+/*   generateChartData() {
+    let strategyExample = this.strategies[0];
+    console.log("strategyExample:", strategyExample)
+
+    let chartData: { date: Date; value: number; }[] = [];
+    console.log("chartData:", chartData)
+
+
+    const allocations = strategyExample.assetAllocations;
+    const allObjPrice: {
+      date: Date;
+      //price * amount
+      value: number;
+    }[] = [];
+    //per ogni allocation
+    allocations.forEach((asset) => {
+      //quantità di asset detenuto
+      const amount = asset.amount;
+
+      this.mktSvc.getPriceFromBEbyAsset(asset.asset.id)
+        //tutti i pricing dell'asset singolo
+        .subscribe(pricing => {
+          //per ogni pricing (1 pricing/giorno)
+          pricing.forEach(pricePerDay => {
+            //mi creo l'oggetto che tiene traccia di data e prezzo
+            const objPrice = {
+              date: this.fromDateStringToTimestamp(pricePerDay.date),
+              //price * amount
+              value: pricePerDay.open * amount
+            }
+            //lo salvo nell'array contenente tutti gli objPrice
+            allObjPrice.push(objPrice);
+          })
+          //finito il foreach, filtro allObjPrice e gli oggetti con la stessa data gli sommo il value
+          const reducedObjPrice = allObjPrice.reduce((accumulator:{date: Date, value: number;}[], currentObjPrice) => {
+            const existingObjPrice: any = accumulator.find((obj: {date: Date, value: number;}) => obj.date.getTime() === currentObjPrice.date.getTime());
+
+            if (existingObjPrice) {
+              // Se esiste un oggetto con la stessa data, somma il valore
+              existingObjPrice.value += currentObjPrice.value;
+            } else {
+              // Altrimenti, aggiungi un nuovo oggetto all'accumulator
+              accumulator.push({ date: currentObjPrice.date, value: currentObjPrice.value });
+            }
+            return accumulator;
+          }, []);
+          chartData = reducedObjPrice;
+        })
       });
-    }
+      console.log("chartData:", chartData)
     return chartData;
+  } */
+  /*     let starterValue = 0;
+      let assets: any = []; */
+  /* strategyExample.assetAllocations.forEach((asset) => {
+    this.mktSvc.getPriceFromBEbyAsset(asset.asset.id)
+      .subscribe((prices: any) => {
+        console.log("price:", prices)
+        prices.forEach((element: { open: any; date: string | number | Date; }) => {
+          const $price = element.open * assets.amount;
+          const date = <string>element.date;
+          const dateParts = date.split("-");
+          const year = parseInt(dateParts[0]);
+          const month = parseInt(dateParts[1]) - 1;
+          const day = parseInt(dateParts[2]);
+          const dateObj = new Date(year, month, day);
 
+          chartData.push({
+            date: dateObj,
+            visits: $price
+          });
+        });
+      })
+  }) */
 
-  }
+  /* console.log("chartData:", chartData)
 
-  insertStrategyData() {
-    if (this.strategies.length > 0) {
-      this.strategies.forEach(strategy => {
-        if (strategy.simulation === true) {
-          this.simulatedStrategies.push(strategy);
-        } else {
-          this.notSimulatedStrategy = strategy;
-        }
-      });
-    }
-  }
+  return chartData; */
+
 
   resizePage() {
     const pageContainer = this.pageContainer.nativeElement;
@@ -244,99 +345,99 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     return date.toISOString().slice(0, 10);
   }
 
-/*   try() {
-    console.log("this.formStrategy.value:", this.formStrategy.value)
+  /*   try() {
+      console.log("this.formStrategy.value:", this.formStrategy.value)
 
-    if (this.errorPercentage) {
-      this.errorPercentage = false;
-      this.errorText = '';
-    }
-    if (this.formStrategy.value.name === '') {
-      this.errorPercentage = true;
-      this.errorText = 'Please enter a name for this strategy.';
-    } else {
-      if (this.formStrategy.value.start === '') {
+      if (this.errorPercentage) {
+        this.errorPercentage = false;
+        this.errorText = '';
+      }
+      if (this.formStrategy.value.name === '') {
         this.errorPercentage = true;
-        this.errorText = 'Please choose a date.';
+        this.errorText = 'Please enter a name for this strategy.';
       } else {
-        const datePlus1 = this.addDaysToDate(this.formatDate(this.formStrategy.value.start), 1);
-        this.formStrategy.value.start = this.formatDate(this.formStrategy.value.start);
-        if (this.formStrategy.value.amount === 0) {
+        if (this.formStrategy.value.start === '') {
           this.errorPercentage = true;
-          this.errorText = 'Please select amount.';
-
+          this.errorText = 'Please choose a date.';
         } else {
+          const datePlus1 = this.addDaysToDate(this.formatDate(this.formStrategy.value.start), 1);
+          this.formStrategy.value.start = this.formatDate(this.formStrategy.value.start);
+          if (this.formStrategy.value.amount === 0) {
+            this.errorPercentage = true;
+            this.errorText = 'Please select amount.';
 
-          this.currentStrategyToAdd.name = this.formStrategy.value.name;
-          this.currentStrategyToAdd.simulation = this.formStrategy.value.simulation;
-          this.currentStrategyToAdd.start = this.formStrategy.value.start;
-          this.currentStrategyToAdd.user.publicKey = this.formStrategy.value.user;
-          console.log("this.currentStrategyToAdd:", this.currentStrategyToAdd)
-          const arrayAssetForStrategy: any = [];
+          } else {
+
+            this.currentStrategyToAdd.name = this.formStrategy.value.name;
+            this.currentStrategyToAdd.simulation = this.formStrategy.value.simulation;
+            this.currentStrategyToAdd.start = this.formStrategy.value.start;
+            this.currentStrategyToAdd.user.publicKey = this.formStrategy.value.user;
+            console.log("this.currentStrategyToAdd:", this.currentStrategyToAdd)
+            const arrayAssetForStrategy: any = [];
 
 
 
-          let totalPercentage = 0;
-          let counter = 0;
-          this.allAssets.forEach(asset => {
-            const assetName = asset.name;
-            const targetInput = <HTMLInputElement>document.getElementById(`customRange${assetName}`);
-            let percentage: string | number = targetInput.value;
-            if (targetInput.value === '') {
-              percentage = 50;
-            }
-            this.mktSvc.getPriceFromBEbyAsset(asset.id!)
-              .subscribe((data) => {
-                const objXday = data.find(objDay => {
-                  return objDay.date === this.currentStrategyToAdd.start
-                });
+            let totalPercentage = 0;
+            let counter = 0;
+            this.allAssets.forEach(asset => {
+              const assetName = asset.name;
+              const targetInput = <HTMLInputElement>document.getElementById(`customRange${assetName}`);
+              let percentage: string | number = targetInput.value;
+              if (targetInput.value === '') {
+                percentage = 50;
+              }
+              this.mktSvc.getPriceFromBEbyAsset(asset.id!)
+                .subscribe((data) => {
+                  const objXday = data.find(objDay => {
+                    return objDay.date === this.currentStrategyToAdd.start
+                  });
 
-                const percentageN = Number(percentage);
-                counter++;
-                totalPercentage += percentageN;
-                const calculateAmount = ((this.formStrategy.value.amount / 100) * Number(percentage));
-                const res = calculateAmount / objXday.open;
+                  const percentageN = Number(percentage);
+                  counter++;
+                  totalPercentage += percentageN;
+                  const calculateAmount = ((this.formStrategy.value.amount / 100) * Number(percentage));
+                  const res = calculateAmount / objXday.open;
 
-                const objAllocation = {
-                  percentage: Number(percentage),
-                  buyValue: objXday.open,
-                  //amount: this.formStrategy.value.amount,
-                  amount: res,
-                  asset: {
-                    id: asset.id
-                  },
-                  strategy: {
-                    id: 1
+                  const objAllocation = {
+                    percentage: Number(percentage),
+                    buyValue: objXday.open,
+                    //amount: this.formStrategy.value.amount,
+                    amount: res,
+                    asset: {
+                      id: asset.id
+                    },
+                    strategy: {
+                      id: 1
+                    }
                   }
-                }
-                if (percentageN > 0) {
-                  arrayAssetForStrategy.push(objAllocation);
-                }
-                if (totalPercentage > 100) {
-                  this.errorPercentage = true;
-                  this.errorText = 'Sum of the percentages must be 100. Actual: ' + totalPercentage + '%';
-                }
-                if (this.allAssets.length === counter && totalPercentage <= 99) {
-                  this.errorPercentage = true;
-                  this.errorText = 'Sum of the percentages must be 100. Actual: ' + totalPercentage + '%';
-                }
-              })
+                  if (percentageN > 0) {
+                    arrayAssetForStrategy.push(objAllocation);
+                  }
+                  if (totalPercentage > 100) {
+                    this.errorPercentage = true;
+                    this.errorText = 'Sum of the percentages must be 100. Actual: ' + totalPercentage + '%';
+                  }
+                  if (this.allAssets.length === counter && totalPercentage <= 99) {
+                    this.errorPercentage = true;
+                    this.errorText = 'Sum of the percentages must be 100. Actual: ' + totalPercentage + '%';
+                  }
+                })
 
-          })
-          this.currentStrategyToAdd.assetAllocations = arrayAssetForStrategy;
-          console.log("this.currentStrategyToAdd.assetAllocations:", this.currentStrategyToAdd)
-          console.log("arrayAssetForStrategy:", arrayAssetForStrategy)
-          setTimeout(() => {
-            this.mktSvc.postStrategy(this.currentStrategyToAdd)
-              .subscribe(data => {
-                console.log("data:", data)
+            })
+            this.currentStrategyToAdd.assetAllocations = arrayAssetForStrategy;
+            console.log("this.currentStrategyToAdd.assetAllocations:", this.currentStrategyToAdd)
+            console.log("arrayAssetForStrategy:", arrayAssetForStrategy)
+            setTimeout(() => {
+              this.mktSvc.postStrategy(this.currentStrategyToAdd)
+                .subscribe(data => {
+                  console.log("data:", data)
 
-              })
-          }, 1000);
+                })
+            }, 1000);
+          }
         }
       }
-    }
-  } */
+    } */
 
   postStrategy() {
     console.log("this.formStrategy.value:", this.formStrategy.value)
@@ -346,34 +447,16 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       this.errorText = '';
     }
     if (this.formStrategy.value.name === '') {
-      /* this.formStrategy.reset();
-      this.formStrategy.value.user = this.readUser();
-      this.formStrategy.value.name = '';
-      this.formStrategy.value.amount = 0;
-      this.formStrategy.value.simulation = false;
-      this.formStrategy.value.start = ''; */
       this.errorPercentage = true;
       this.errorText = 'Please enter a name for this strategy.';
     } else {
       if (this.formStrategy.value.start === '') {
-        /* this.formStrategy.reset();
-        this.formStrategy.value.user = this.readUser();
-        this.formStrategy.value.name = '';
-        this.formStrategy.value.amount = 0;
-        this.formStrategy.value.simulation = false;
-        this.formStrategy.value.start = ''; */
         this.errorPercentage = true;
         this.errorText = 'Please choose a date.';
       } else {
         const datePlus1 = this.addDaysToDate(this.formatDate(this.formStrategy.value.start), 1);
         this.formStrategy.value.start = this.formatDate(this.formStrategy.value.start);
         if (this.formStrategy.value.amount === 0) {
-          /* this.formStrategy.reset();
-          this.formStrategy.value.user = this.readUser();
-          this.formStrategy.value.name = '';
-          this.formStrategy.value.amount = 0;
-          this.formStrategy.value.simulation = false;
-          this.formStrategy.value.start = ''; */
           this.errorPercentage = true;
           this.errorText = 'Please select amount.';
         } else {
@@ -398,12 +481,12 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
                 const percentageN = Number(percentage);
                 const calculateAmount = ((this.formStrategy.value.amount / 100) * Number(percentage));
-                const res = calculateAmount / objXday.open;
+                const res = calculateAmount / objXday!.open;
                 const assetId: number = asset.id || 0;
 
                 return {
                   percentage: Number(percentage),
-                  buyValue: objXday.open,
+                  buyValue: objXday!.open,
                   amount: res,
                   asset: {
                     id: assetId
@@ -418,34 +501,22 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
           forkJoin(observables).subscribe(assetAllocations => {
             const filteredAssetAllocations = assetAllocations.filter(allocation => allocation.percentage > 0);
-            /* if (totalPercentage > 100) {
-              this.errorPercentage = true;
-              this.errorText = 'Sum of the percentages must be 100. Actual: ' + totalPercentage + '%';
-            }
-            if (this.allAssets.length === counter && totalPercentage <= 99) {
-              this.errorPercentage = true;
-              this.errorText = 'Sum of the percentages must be 100. Actual: ' + totalPercentage + '%';
-            } */
             let totalPercentage = 0;
             filteredAssetAllocations.forEach(all => {
               const perc = all.percentage;
               totalPercentage += perc;
             })
             if (totalPercentage > 100 || totalPercentage <= 99) {
-              /* this.formStrategy.reset();
-              this.formStrategy.value.user = this.readUser();
-              this.formStrategy.value.name = '';
-              this.formStrategy.value.amount = 0;
-              this.formStrategy.value.simulation = false;
-              this.formStrategy.value.start = ''; */
               this.errorPercentage = true;
               this.errorText = 'Sum of the percentages must be 100. Actual: ' + totalPercentage + '%';
             } else {
               this.currentStrategyToAdd.assetAllocations = filteredAssetAllocations;
               this.mktSvc.postStrategy(this.currentStrategyToAdd).subscribe(data => {
                 console.log("data:", data);
+                this.formStrategy.reset();
               });
             }
+
           });
         }
       }
@@ -478,6 +549,17 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     const targetInput = <HTMLInputElement>document.getElementById(`customRange${assetName}`);
     targetInput.value = event.target.value;
 
+  }
+  getAllStrategiesByUserLogged() {
+
+
+
+    this.mktSvc.getStrategies(this.readUser())
+      .subscribe(data => {
+        console.log("data:", data)
+        this.strategies = data;
+        this.generateChartData();
+      })
   }
 
 }

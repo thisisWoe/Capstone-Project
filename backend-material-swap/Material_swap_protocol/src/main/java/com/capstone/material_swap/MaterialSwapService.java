@@ -646,16 +646,66 @@ public class MaterialSwapService {
 		}
 	}
 	
-	/* public String newStrategy(Strategy strategyInEntrance){
-		User u = strategyInEntrance.getUser();
-		String pKey = u.getPublicKey();
-		Optional<User> u2 = userRepo.findBypublicKey(pKey);
-		User user = u2.orElse(null);
+	public Set<StrategyDto> getAllStrategies(){
+		Set<Strategy> strategies = StrategyRepo.findAll();
+		Set<StrategyDto> strategyDtoS = new HashSet<StrategyDto>();
+		strategies.forEach(str -> {
+			StrategyDto newStrDto = new StrategyDto();
+				newStrDto.setId(str.getId());
+				newStrDto.setName(str.getName());
+				newStrDto.setSimulation(str.isSimulation());
+				newStrDto.setStart(str.getStart());
+				newStrDto.setUser(str.getUser());
+			
+			Set<AssetAllocationDto> allocationDtos = new HashSet<AssetAllocationDto>();
+			Set<AssetAllocation> allocations = AssetAllocationRepo.findByStrategy(str);
+				allocations.forEach(all -> {
+					AssetAllocationDto newAssAllDto = new AssetAllocationDto();
+					newAssAllDto.setId(all.getId());
+					newAssAllDto.setStrategy(str);
+					newAssAllDto.setAsset(this.getAssetById(all.getAsset().getId()));
+					newAssAllDto.setPercentage(all.getPercentage());
+					newAssAllDto.setBuyValue(all.getBuyValue());
+					newAssAllDto.setAmount(all.getAmount());
 
-		Strategy strategy = strategyProvider.getObject();
+					allocationDtos.add(newAssAllDto);
+				});
+			newStrDto.setAssetAllocations(allocationDtos);
+			strategyDtoS.add(newStrDto);
+		});
+		return strategyDtoS;
+	}
+	
+	public Set<StrategyDto> getAllStrategiesByUser(String pK){
+		Optional<User> usr = userRepo.findBypublicKey(pK);
+		User userFound = usr.orElse(null);
+		Set<Strategy> strategies = StrategyRepo.findByUser(userFound);
+		Set<StrategyDto> strategyDtoS = new HashSet<StrategyDto>();
+		strategies.forEach(str -> {
+			StrategyDto newStrDto = new StrategyDto();
+				newStrDto.setId(str.getId());
+				newStrDto.setName(str.getName());
+				newStrDto.setSimulation(str.isSimulation());
+				newStrDto.setStart(str.getStart());
+				newStrDto.setUser(str.getUser());
+			
+			Set<AssetAllocationDto> allocationDtos = new HashSet<AssetAllocationDto>();
+			Set<AssetAllocation> allocations = AssetAllocationRepo.findByStrategy(str);
+				allocations.forEach(all -> {
+					AssetAllocationDto newAssAllDto = new AssetAllocationDto();
+					newAssAllDto.setId(all.getId());
+					newAssAllDto.setStrategy(str);
+					newAssAllDto.setAsset(this.getAssetById(all.getAsset().getId()));
+					newAssAllDto.setPercentage(all.getPercentage());
+					newAssAllDto.setBuyValue(all.getBuyValue());
+					newAssAllDto.setAmount(all.getAmount());
 
-		if(){
+					allocationDtos.add(newAssAllDto);
+				});
+			newStrDto.setAssetAllocations(allocationDtos);
+			strategyDtoS.add(newStrDto);
+		});
+		return strategyDtoS;
+	}
 
-		}
-	} */
 }
