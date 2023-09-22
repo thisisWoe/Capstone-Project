@@ -272,4 +272,9 @@ export class MarketDataService {
     return this.http.put<IAssetDto>(environment.API_BACKEND + 'asset/edit', asset);
   }
 
+  getPriceFromBEbyAsset(id: number) {
+
+    return this.http.get<any[]>(environment.API_BACKEND+'pricing/all/'+id);
+  }
+
 }

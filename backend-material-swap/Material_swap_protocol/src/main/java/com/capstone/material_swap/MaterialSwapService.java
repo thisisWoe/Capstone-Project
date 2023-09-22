@@ -636,7 +636,14 @@ public class MaterialSwapService {
 		return res;
 	}
 	
-	
+	public Set<PricingDto> getPricingDtoByAssetId(Long id){
+		if (AssetRepo.existsById(id)) {
+			Asset asset = AssetRepo.getById(id);
+			return this.getAllPricingByAsset(asset);
+		} else {
+			throw new MyAPIException(HttpStatus.BAD_REQUEST, "Asset not found.");
+		}
+	}
 	
 	
 }

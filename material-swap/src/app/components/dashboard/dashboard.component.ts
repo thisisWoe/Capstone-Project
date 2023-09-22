@@ -48,6 +48,24 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     assetAllocations: [],
     start: ""
   };
+  errorPercentage = false;
+  errorText = '';
+  rangeValue1: number = 0;
+  textValue1: number = 0;
+  rangeValue2: number = 0;
+  textValue2: number = 0;
+  rangeValue3: number = 0;
+  textValue3: number = 0;
+  rangeValue4: number = 0;
+  textValue4: number = 0;
+  rangeValue5: number = 0;
+  textValue5: number = 0;
+  rangeValue6: number = 0;
+  textValue6: number = 0;
+  rangeValue7: number = 0;
+  textValue7: number = 0;
+  rangeValue8: number = 0;
+  textValue8: number = 0;
 
   //chart
   root!: am5.Root;
@@ -255,47 +273,94 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   }
 
   try() {
-    const datePlus1 = this.addDaysToDate(this.formatDate(this.formStrategy.value.start), 1);
-    this.formStrategy.value.start = this.formatDate(this.formStrategy.value.start);
+    console.log("this.formStrategy.value:", this.formStrategy.value)
 
-    this.currentStrategyToAdd.name = this.formStrategy.value.name;
-    this.currentStrategyToAdd.simulation = this.formStrategy.value.simulation;
-    this.currentStrategyToAdd.start = this.formStrategy.value.start;
-    this.currentStrategyToAdd.user = this.formStrategy.value.user;
-    console.log("this.currentStrategyToAdd:", this.currentStrategyToAdd)
-    const arrayAssetForStrategy:any = [];
+    if (this.errorPercentage) {
+      this.errorPercentage = false;
+      this.errorText = '';
+    }
+    if (this.formStrategy.value.name === '') {
+      this.errorPercentage = true;
+      this.errorText = 'Please enter a name for this strategy.';
+    } else {
+      if (this.formStrategy.value.start === '') {
+        this.errorPercentage = true;
+        this.errorText = 'Please choose a date.';
+      } else {
+        const datePlus1 = this.addDaysToDate(this.formatDate(this.formStrategy.value.start), 1);
+        this.formStrategy.value.start = this.formatDate(this.formStrategy.value.start);
+        if (this.formStrategy.value.amount === 0) {
+          this.errorPercentage = true;
+          this.errorText = 'Please select amount.';
+
+        } else {
+
+          this.currentStrategyToAdd.name = this.formStrategy.value.name;
+          this.currentStrategyToAdd.simulation = this.formStrategy.value.simulation;
+          this.currentStrategyToAdd.start = this.formStrategy.value.start;
+          this.currentStrategyToAdd.user = this.formStrategy.value.user;
+          console.log("this.currentStrategyToAdd:", this.currentStrategyToAdd)
+          const arrayAssetForStrategy:any = [];
 
 
 
-    this.allAssets.forEach(asset => {
-      const assetName = asset.name;
-      const targetInput = <HTMLInputElement>document.getElementById(`customRange${assetName}`);
-      let percentage:string|number = targetInput.value;
-      if (targetInput.value === ''){
-        percentage = 50;
-      }
+          let totalPercentage = 0;
+          let counter = 0;
+          this.allAssets.forEach(asset => {
+            const assetName = asset.name;
+            const targetInput = <HTMLInputElement>document.getElementById(`customRange${assetName}`);
+            let percentage:string|number = targetInput.value;
+            if (targetInput.value === ''){
+              percentage = 50;
+            }
+            this.mktSvc.getPriceFromBEbyAsset(asset.id!)
+            .subscribe((data) => {
+              const objXday = data.find(objDay => {
+                return objDay.date === this.currentStrategyToAdd.start
+              });
+              console.log("objXday:", objXday)
 
-      //devo prendere i prezzi dal backend per quel determinato giorno (prima inseriscili)
-      //così posso riempire anche il buyValue
-      //inserire i controlli per le percentuali
-      //correggere l'amount (va calcolato: amountSTRATEGIA/100 * percentuale -> risultato/prezzo di quel giorno)
+              const percentageN = Number(percentage);
+              counter++;
+              totalPercentage += percentageN;
+              const calculateAmount = ((this.formStrategy.value.amount / 100)* Number(percentage));
+              const res = calculateAmount/objXday.open;
 
+              const objAllocation = {
+                percentage: percentage,
+                buyValue: objXday.open,
+                //amount: this.formStrategy.value.amount,
+                amount: res,
+                asset: {
+                  id: asset.id
+                },
+                strategy: {
+                  id:0
+                }
+              }
+              console.log("objAllocation:", objAllocation)
+              if (percentageN > 0) {
+                arrayAssetForStrategy.push(objAllocation);
+              }
+              console.log("totalPercentage:", totalPercentage)
+              if(totalPercentage > 100){
+                this.errorPercentage = true;
+                this.errorText = 'Sum of the percentages must be 100. Actual: '+totalPercentage+'%';
+              }
+              if (this.allAssets.length === counter && totalPercentage<=99) {
+                console.log("totalPercentage:", totalPercentage)
+                console.log("counter:", counter)
+                console.log("this.allAssets.length:", this.allAssets.length)
+                this.errorPercentage = true;
+                this.errorText = 'Sum of the percentages must be 100. Actual: '+totalPercentage+'%';
+              }
+            })
 
-      const objAllocation = {
-        percentage: percentage,
-        buyValue: 0,
-        amount: this.formStrategy.value.amount,
-        asset: {
-          id: asset.id
-        },
-        strategy: {
-          id:0
+          })
+          console.log("arrayAssetForStrategy:", arrayAssetForStrategy)
         }
       }
-      arrayAssetForStrategy.push(objAllocation);
-    })
-    console.log("arrayAssetForStrategy:", arrayAssetForStrategy)
-
+    }
   }
 
   formatDate(dateObj: { year: number, month: number, day: number }): string {
@@ -312,26 +377,18 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       .subscribe(async assets => {
         console.log("assets:", assets)
         this.allAssets = assets;
-
-
-
-
-        /* for (let i = 0; i < this.allAssets.length; i++) {
-          const asset = this.allAssets[i];
-          // Crea un FormControl per l'allocazione dell'asset.
-          const assetAllocationControl = new FormControl('', Validators.required);
-
-          // Aggiungi il nuovo FormControl al FormGroup con una chiave univoca.
-          this.formStrategy.addControl('assetAllocation_' + i, assetAllocationControl);
-        } */
-        /* for (let i = 0; i < this.allAssets.length; i++) {
-          const asset = this.allAssets[i];
-          const assetAllocationControl = new FormControl({ id: asset.id, percentage: '' }, Validators.required);
-          this.formStrategy.addControl('assetAllocation_' + i, assetAllocationControl);
-        } */
       });
   }
 
+  onRangeChange(event: any, assetName:string) {
+    const targetInput = <HTMLInputElement>document.querySelector(`.customRange${assetName}`);
+    targetInput.value = event.target.value;
+  }
 
+  onTextChange(event: any, assetName:string) {
+    const targetInput = <HTMLInputElement>document.getElementById(`customRange${assetName}`);
+    targetInput.value = event.target.value;
+
+  }
 
 }

@@ -1,7 +1,7 @@
 <div #pageContainer class="container-fluid page-container">
   <div class="row">
 
-    <div #strategyInfos class="col-12 col-xxl-6 strategy-infos">
+    <div #strategyInfos class="col-12 col-xxl-5 strategy-infos">
       <h5>Your strategies</h5>
       <h6 class="strategy-quantities">{{strategies.length}}</h6>
       <h5>Performance</h5>
@@ -20,7 +20,7 @@
         </div>
       </div>
 
-      <div #actionStrategy class="col-12 col-xxl-6 actionStrategy">
+      <div #actionStrategy class="col-12 col-xxl-5 actionStrategy">
       <div class="row">
         <div class="col-12">
           <h5>Create new strategy</h5>
@@ -34,7 +34,7 @@
                 aria-describedby="inputGroup-sizing-sm" formControlName="name">
             </div>
 
-            <div class="col-12">
+            <div class="col-12 mb-3">
               <div class="input-group">
                 <input
                   class="form-control"
@@ -53,18 +53,26 @@
               <input type="number" class="form-control" aria-label="Sizing example input"
                 aria-describedby="inputGroup-sizing-sm" formControlName="amount">
             </div>
-            <!-- <ngb-datepicker #dp [(ngModel)]="model" (navigate)="onDateNavigate($event)"></ngb-datepicker> -->
 
-            <button class="btn stn-success" type="submit">try</button>
-
-            <div *ngFor="let asset of this.allAssets">
-              <label for="customRange{{ asset.name }}" class="form-label">{{ asset.name }}</label>
-              <input type="range" class="form-range" min="0" max="100" id="customRange{{ asset.name }}">
+            <div class="alert alert-danger" role="alert" *ngIf="errorPercentage">
+              {{errorText}}
             </div>
-            <!-- <div class="range-container" *ngFor="let asset of this.allAssets; let i = index">
-              <label for="customRange{{ i }}" class="form-label">{{ asset.name }}</label>
-              <input type="range" class="form-range" min="0" max="100" [formControlName]="'assetAllocation_' + i" id="customRange{{ i }}">
-            </div> -->
+
+            <div class="row w-100 flex-row">
+              <div *ngFor="let asset of this.allAssets; let i = index" class="col-6">
+                <div class="row flex-row">
+                  <div class="col-6">
+                    <label for="customRange{{ asset.name }}" class="form-label">{{ asset.name }}</label>
+                  </div>
+                  <div class="col-6">
+                    <input (change)="onTextChange($event, asset.name)" [value]="0" class="customRange{{ asset.name }} img-fluid" step="0.01" type="number" id="customRange{{ asset.name }}_i">
+                  </div>
+                </div>
+                <input (change)="onRangeChange($event, asset.name)" type="range" class="form-range" min="0" max="100" step="0.01" [value]="0" id="customRange{{ asset.name }}">
+              </div>
+            </div>
+
+            <button class="btn btn-success" type="submit">try</button>
 
           </form>
         </div>

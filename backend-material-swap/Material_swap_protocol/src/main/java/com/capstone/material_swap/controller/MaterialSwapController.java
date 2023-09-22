@@ -142,6 +142,15 @@ public class MaterialSwapController {
 		ResponseEntity<Set<PricingDto>> resp = new ResponseEntity<Set<PricingDto>>(pricinglist, HttpStatus.OK);
 		return resp;
 	}
+	//test
+	@GetMapping("/pricing/all/{id}")
+	@PreAuthorize("isAuthenticated()")
+	public ResponseEntity<?> getAllPricingByAssetId(@PathVariable Long id) {
+		
+		Set<PricingDto> pricinglist = mSvc.getPricingDtoByAssetId(id);
+		ResponseEntity<Set<PricingDto>> resp = new ResponseEntity<Set<PricingDto>>(pricinglist, HttpStatus.OK);
+		return resp;
+	}
 	
 	@GetMapping("/pricing/singledate")
 	@PreAuthorize("isAuthenticated()")
