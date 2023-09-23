@@ -16,6 +16,8 @@ import { MarketDataService } from "src/app/market-data.service";
 import { IAssetDto } from "src/app/interfaces/iasset-dto";
 import { forkJoin, map } from "rxjs";
 import { IPricingBackend } from "src/app/interfaces/ipricing-backend";
+import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-dashboard',
@@ -32,6 +34,8 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   }; */
 
   strategies: StrategyDto[] = [];
+  activeStrategy: StrategyDto | null = null;
+  assetsOnActiveStrategy: string = '';
 
   simulatedStrategies: any = [];
   simulatedStrategiesProfitOrLoss: boolean = false;
@@ -52,8 +56,10 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   errorText = '';
 
   //chart
-  root!: am5.Root;
+  root!: am5.Root | null;
   assetAllocations: { [key: string]: FormControl } = {};
+  private chart!: am5xy.XYChart;
+  private series!: am5xy.SmoothedXLineSeries;
 
 
   constructor(private authSvc: AuthService, private fb: FormBuilder, private calendar: NgbCalendar, private mktSvc: MarketDataService) {
@@ -87,7 +93,134 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     return user.username;
   }
 
-  buildChart(root: am5.Root , chartData:any) {
+  buildChart(root: am5.Root, chartData: any) {
+
+    if (!this.chart) {
+      root.setThemes([
+        am5themes_Animated.new(root),
+        am5themes_Dark.new(root)
+      ])
+
+      this.chart = root.container.children.push(
+        am5xy.XYChart.new(root, {
+          wheelY: "zoomX"
+        })
+      )
+    } else {
+      root.setThemes([
+        am5themes_Animated.new(root),
+        am5themes_Dark.new(root)
+      ])
+
+      this.series.data.clear();
+      this.series.chart?.xAxes.clear();
+      this.series.chart?.yAxes.clear();
+      this.series.chart?.series.clear();
+      this.series.chart?.remove("cursor")
+      this.chart = root.container.children.push(
+        am5xy.XYChart.new(root, {
+          wheelY: "zoomX"
+        })
+      );
+    }
+
+    let data = chartData;
+    console.log("data:", data)
+
+    let yAxis = this.chart.yAxes.push(
+      am5xy.ValueAxis.new(root, {
+        extraTooltipPrecision: 1,
+        renderer: am5xy.AxisRendererY.new(root, {
+          minGridDistance: 50
+        })
+      })
+    );
+
+    let xAxis = this.chart.xAxes.push(
+      am5xy.DateAxis.new(root, {
+        baseInterval: { timeUnit: "day", count: 1 },
+        renderer: am5xy.AxisRendererX.new(root, {
+          minGridDistance: 50,
+          cellStartLocation: 0.2,
+          cellEndLocation: 0.8,
+        })
+      })
+    );
+    console.log(xAxis.dataItems)
+
+    this.series = this.chart.series.push(
+      am5xy.SmoothedXLineSeries.new(root, {
+        xAxis: xAxis,
+        yAxis: yAxis,
+        valueYField: "value",
+        valueXField: "date",
+        tooltip: am5.Tooltip.new(root, {
+          labelText: "{valueX.formatDate()}: {valueY}$",
+          pointerOrientation: "horizontal"
+        })
+      })
+    );
+
+    this.series.strokes.template.setAll({
+      stroke: am5.color(0x00ff00),
+      strokeWidth: 3
+    });
+
+    this.series.fills.template.setAll({
+      fillOpacity: 0.5,
+      visible: true
+    });
+
+    this.series.data.setAll(data);
+
+    // Create axis ranges
+
+    let rangeDataItem = yAxis.makeDataItem({
+      value: chartData[0].value,
+      endValue: 0
+    });
+
+    let range = this.series.createAxisRange(rangeDataItem);
+
+    range.strokes!.template.setAll({
+      stroke: am5.color(0xff621f),
+      strokeWidth: 3
+    });
+
+    range.fills!.template.setAll({
+      fill: am5.color(0xff621f),
+      fillOpacity: 0.5,
+      visible: true
+    });
+
+
+    // Add cursor
+    this.chart.set(
+      "cursor",
+      am5xy.XYCursor.new(root, {
+        behavior: "zoomX",
+        xAxis: xAxis
+      })
+    );
+
+    xAxis.set(
+      "tooltip",
+      am5.Tooltip.new(root, {
+        themeTags: ["axis"]
+      })
+    );
+
+    yAxis.set(
+      "tooltip",
+      am5.Tooltip.new(root, {
+        themeTags: ["axis"]
+      })
+    );
+
+  }
+
+  /* buildChart(root: am5.Root, chartData: any) {
+
     root.setThemes([
       am5themes_Animated.new(root),
       am5themes_Dark.new(root)
@@ -192,7 +325,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
       })
     );
 
-  }
+  } */
 
   fromDateStringToTimestamp(date: string): Date {
     const dateString = date;
@@ -205,113 +338,144 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   }
 
 
-/* generateChartData() {
-  let strategyExample = this.strategies[0];
-  console.log("strategyExample:", strategyExample);
+  /* generateChartData() {
+    let strategyExample = this.strategies[0];
+    console.log("strategyExample:", strategyExample);
 
-  let chartData: { date: Date; value: number; }[] = [];
-  const allocations = strategyExample.assetAllocations;
+    let chartData: { date: Date; value: number; }[] = [];
+    const allocations = strategyExample.assetAllocations;
 
-  // Creiamo un array di observable per le chiamate HTTP
-  const observables = allocations.map(asset => {
-    const amount = asset.amount;
-    return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
-      map(pricing => {
+    // Creiamo un array di observable per le chiamate HTTP
+    const observables = allocations.map(asset => {
+      const amount = asset.amount;
+      return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
+        map(pricing => {
 
-        const objPrice = pricing.map(pricePerDay => ({
-          date: (this.fromDateStringToTimestamp(pricePerDay.date)),
-          value: pricePerDay.open * amount
-        }));
-        return objPrice;
+          const objPrice = pricing.map(pricePerDay => ({
+            date: (this.fromDateStringToTimestamp(pricePerDay.date)),
+            value: pricePerDay.open * amount
+          }));
+          return objPrice;
+        })
+      );
+    });
+
+    // Usiamo forkJoin per attendere il completamento di tutte le chiamate
+    forkJoin(observables).subscribe(pricesArray => {
+      // Combina i risultati in un unico array
+      const allObjPrice = pricesArray.reduce((accumulator, currentPrices) => {
+        return accumulator.concat(currentPrices);
+      }, []);
+
+      // Usa la stessa logica di riduzione che hai usato prima
+      chartData = allObjPrice.reduce((accumulator:any, currentObjPrice) => {
+        const existingObjPrice:any = accumulator.find((obj: {date: Date, value: number;}) => obj.date.getTime() === currentObjPrice.date.getTime());
+
+        if (existingObjPrice) {
+          existingObjPrice.value += currentObjPrice.value;
+        } else {
+          accumulator.push({ date: currentObjPrice.date, value: currentObjPrice.value });
+        }
+        return accumulator;
+      }, []);
+
+      chartData.sort((a, b) => a.date.getTime() - b.date.getTime());
+      this.buildChart(this.root, chartData);
+      console.log("chartData:", chartData);
+    });
+
+    return chartData;
+  } */
+
+  fromDateStringToNumber(date: string): number {
+    const dateString = date;
+    const dateParts = dateString.split("-");
+    const year = parseInt(dateParts[0]);
+    const month = parseInt(dateParts[1]) - 1;
+    const day = parseInt(dateParts[2]);
+    const dateObj = new Date(year, month, day).getTime();
+    return dateObj;
+  }
+
+  roundNumber(n: number): number {
+    let m = Number((Math.abs(n) * 100).toPrecision(15));
+    return Math.round(m) / 100 * Math.sign(n);
+  }
+
+  onChangeStrategyTarget(event: Event) {
+    const select = <HTMLSelectElement>event.target;
+    const value = select.value;
+    console.log("event:", value)
+    const strategy = this.mktSvc.getSingleStrategy(Number(value))
+      .subscribe(res => {
+        console.log("res:", res)
+
+        this.generateChartData(res);
       })
-    );
-  });
+  }
 
-  // Usiamo forkJoin per attendere il completamento di tutte le chiamate
-  forkJoin(observables).subscribe(pricesArray => {
-    // Combina i risultati in un unico array
-    const allObjPrice = pricesArray.reduce((accumulator, currentPrices) => {
-      return accumulator.concat(currentPrices);
-    }, []);
+  generateChartData(strategy: StrategyDto) {
+    //let strategyExample = this.strategies[0];
+    //console.log("strategyExample:", strategyExample);
+    let strategyTarget = strategy;/* this.strategies.find(strategy => strategy.simulation === false); */
+    console.log("strategyTarget:", strategyTarget)
 
-    // Usa la stessa logica di riduzione che hai usato prima
-    chartData = allObjPrice.reduce((accumulator:any, currentObjPrice) => {
-      const existingObjPrice:any = accumulator.find((obj: {date: Date, value: number;}) => obj.date.getTime() === currentObjPrice.date.getTime());
+    if (strategyTarget) {
+      this.activeStrategy = strategyTarget;
+      let chartData: { date: number; value: number; }[] = [];
 
-      if (existingObjPrice) {
-        existingObjPrice.value += currentObjPrice.value;
-      } else {
-        accumulator.push({ date: currentObjPrice.date, value: currentObjPrice.value });
-      }
-      return accumulator;
-    }, []);
-
-    chartData.sort((a, b) => a.date.getTime() - b.date.getTime());
-    this.buildChart(this.root, chartData);
-    console.log("chartData:", chartData);
-  });
-
-  return chartData;
-} */
-
-fromDateStringToNumber(date: string): number {
-  const dateString = date;
-  const dateParts = dateString.split("-");
-  const year = parseInt(dateParts[0]);
-  const month = parseInt(dateParts[1]) - 1;
-  const day = parseInt(dateParts[2]);
-  const dateObj = new Date(year, month, day).getTime();
-  return dateObj;
-}
+      const allocations = strategyTarget.assetAllocations;
+      allocations.forEach((allocation: any) => {
+        this.assetsOnActiveStrategy += `${allocation.asset.name}: ${allocation.percentage}%, `;
+      })
 
 
-generateChartData() {
-let strategyExample = this.strategies[0];
-console.log("strategyExample:", strategyExample);
+      // creo un array di observable per le chiamate HTTP
+      const observables = allocations.map(asset => {
+        const amount = asset.amount;
+        return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
+          map(pricing => {
 
-let chartData: { date: number; value: number; }[] = [];
-const allocations = strategyExample.assetAllocations;
+            const objPrice = pricing.map(pricePerDay => ({
+              date: this.fromDateStringToNumber(pricePerDay.date),
+              //value: Math.round(((pricePerDay.open * amount)+Number.EPSILON)*100)/100
+              value: this.roundNumber(pricePerDay.open * amount)
+            }));
+            return objPrice;
+          })
+        );
+      });
 
-// Creiamo un array di observable per le chiamate HTTP
-const observables = allocations.map(asset => {
-  const amount = asset.amount;
-  return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
-    map(pricing => {
-      const objPrice = pricing.map(pricePerDay => ({
-        date: this.fromDateStringToNumber(pricePerDay.date),
-        value: Math.round(pricePerDay.open * amount)
-      }));
-      return objPrice;
-    })
-  );
-});
+      // Usiamo forkJoin per attendere il completamento di tutte le chiamate
+      forkJoin(observables).subscribe(pricesArray => {
+        // Combina i risultati in un unico array
+        const allObjPrice = pricesArray.reduce((accumulator, currentPrices) => {
+          return accumulator.concat(currentPrices);
+        }, []);
 
-// Usiamo forkJoin per attendere il completamento di tutte le chiamate
-forkJoin(observables).subscribe(pricesArray => {
-  // Combina i risultati in un unico array
-  const allObjPrice = pricesArray.reduce((accumulator, currentPrices) => {
-    return accumulator.concat(currentPrices);
-  }, []);
+        // Usa la stessa logica di riduzione che hai usato prima
+        chartData = allObjPrice.reduce((accumulator: any, currentObjPrice) => {
+          const existingObjPrice: any = accumulator.find((obj: { date: number, value: number; }) => obj.date === currentObjPrice.date);
 
-  // Usa la stessa logica di riduzione che hai usato prima
-  chartData = allObjPrice.reduce((accumulator:any, currentObjPrice) => {
-    const existingObjPrice:any = accumulator.find((obj: {date: number, value: number;}) => obj.date === currentObjPrice.date);
+          if (existingObjPrice) {
+            existingObjPrice.value += currentObjPrice.value;
+          } else {
+            accumulator.push({ date: currentObjPrice.date, value: currentObjPrice.value });
+          }
+          return accumulator;
+        }, []);
 
-    if (existingObjPrice) {
-      existingObjPrice.value += currentObjPrice.value;
+        chartData.sort((a, b) => a.date - b.date);
+        this.buildChart(this.root!, chartData);
+        console.log("chartData:", chartData);
+      });
+      return chartData;
+
     } else {
-      accumulator.push({ date: currentObjPrice.date, value: currentObjPrice.value });
+      return null;
     }
-    return accumulator;
-  }, []);
 
-  chartData.sort((a, b) => a.date - b.date);
-  this.buildChart(this.root, chartData);
-  console.log("chartData:", chartData);
-});
-
-return chartData;
-}
+  }
 
   resizePage() {
     const pageContainer = this.pageContainer.nativeElement;
@@ -543,7 +707,7 @@ return chartData;
       .subscribe(data => {
         console.log("data:", data)
         this.strategies = data;
-        this.generateChartData();
+        this.generateChartData(data[0]);
       })
   }
 

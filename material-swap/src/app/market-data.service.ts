@@ -290,4 +290,8 @@ export class MarketDataService {
   getStrategies(publicKey: string){
     return this.http.get<StrategyDto[]>(environment.API_BACKEND+'strategy/getbyuser/'+publicKey);
   }
+
+  getSingleStrategy(id:number){
+    return this.http.get<StrategyDto>(environment.API_BACKEND+'strategy/'+id);
+  }
 }

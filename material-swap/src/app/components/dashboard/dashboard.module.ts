@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgbDatepickerModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { NgbDatepickerModule, NgbAlertModule, NgbPopoverModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+/* import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; */
 
 @NgModule({
   declarations: [
@@ -16,7 +16,11 @@ import { NgbDatepickerModule, NgbAlertModule } from '@ng-bootstrap/ng-bootstrap'
     DashboardRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbDatepickerModule, NgbAlertModule
+    NgbDatepickerModule,
+    NgbAlertModule,
+    NgbPopoverModule,
+    NgbDropdownModule,
+    /* NgbModule */
 
   ]
 })

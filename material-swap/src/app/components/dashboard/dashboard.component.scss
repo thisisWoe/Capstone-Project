@@ -29,6 +29,26 @@ div.page-container {
         font-size: 3rem;
         color: whitesmoke;
       }
+      select{
+        color: whitesmoke;
+        background-color: $backVioletBlack;
+        border: 1px solid #be6dab;
+        width: 50%;
+        text-align: center;
+      }
+      button.btn-info-str{
+        color: #be6dab;
+        border: 1px solid #be6dab;
+        width: 30%;
+        max-height: 50px;
+        justify-content: center;
+        span{
+          flex-grow: 1;
+        }
+        svg{
+          height: 20px;
+        }
+      }
       div.chart-container {
         width: 100%;
         display: flex;
