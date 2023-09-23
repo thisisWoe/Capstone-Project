@@ -101,12 +101,14 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
     //let data = this.generateChartData();
     let data = chartData;
+    console.log("data:", data)
 
     let yAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
         extraTooltipPrecision: 1,
         renderer: am5xy.AxisRendererY.new(root, {
-          minGridDistance: 30
+          //minGridDistance: 30
+          minGridDistance: 50
         })
       })
     );
@@ -117,10 +119,11 @@ export class DashboardComponent implements AfterViewInit, OnInit {
         renderer: am5xy.AxisRendererX.new(root, {
           minGridDistance: 50,
           cellStartLocation: 0.2,
-          cellEndLocation: 0.8
+          cellEndLocation: 0.8,
         })
       })
     );
+    console.log(xAxis.dataItems)
 
     let series = chart.series.push(
       am5xy.SmoothedXLineSeries.new(root, {
@@ -129,7 +132,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
         valueYField: "value",
         valueXField: "date",
         tooltip: am5.Tooltip.new(root, {
-          labelText: "{valueX.formatDate()}: {valueY}",
+          labelText: "{valueX.formatDate()}: {valueY}$",
           pointerOrientation: "horizontal"
         })
       })
@@ -149,7 +152,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     // Create axis ranges
 
     let rangeDataItem = yAxis.makeDataItem({
-      value: -1000,
+      value: chartData[0].value,
       endValue: 0
     });
 
@@ -202,7 +205,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
   }
 
 
-generateChartData() {
+/* generateChartData() {
   let strategyExample = this.strategies[0];
   console.log("strategyExample:", strategyExample);
 
@@ -214,8 +217,9 @@ generateChartData() {
     const amount = asset.amount;
     return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
       map(pricing => {
+
         const objPrice = pricing.map(pricePerDay => ({
-          date: this.fromDateStringToTimestamp(pricePerDay.date),
+          date: (this.fromDateStringToTimestamp(pricePerDay.date)),
           value: pricePerDay.open * amount
         }));
         return objPrice;
@@ -241,92 +245,73 @@ generateChartData() {
       }
       return accumulator;
     }, []);
+
+    chartData.sort((a, b) => a.date.getTime() - b.date.getTime());
     this.buildChart(this.root, chartData);
     console.log("chartData:", chartData);
   });
 
   return chartData;
+} */
+
+fromDateStringToNumber(date: string): number {
+  const dateString = date;
+  const dateParts = dateString.split("-");
+  const year = parseInt(dateParts[0]);
+  const month = parseInt(dateParts[1]) - 1;
+  const day = parseInt(dateParts[2]);
+  const dateObj = new Date(year, month, day).getTime();
+  return dateObj;
 }
 
-/*   generateChartData() {
-    let strategyExample = this.strategies[0];
-    console.log("strategyExample:", strategyExample)
 
-    let chartData: { date: Date; value: number; }[] = [];
-    console.log("chartData:", chartData)
+generateChartData() {
+let strategyExample = this.strategies[0];
+console.log("strategyExample:", strategyExample);
 
+let chartData: { date: number; value: number; }[] = [];
+const allocations = strategyExample.assetAllocations;
 
-    const allocations = strategyExample.assetAllocations;
-    const allObjPrice: {
-      date: Date;
-      //price * amount
-      value: number;
-    }[] = [];
-    //per ogni allocation
-    allocations.forEach((asset) => {
-      //quantità di asset detenuto
-      const amount = asset.amount;
+// Creiamo un array di observable per le chiamate HTTP
+const observables = allocations.map(asset => {
+  const amount = asset.amount;
+  return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
+    map(pricing => {
+      const objPrice = pricing.map(pricePerDay => ({
+        date: this.fromDateStringToNumber(pricePerDay.date),
+        value: Math.round(pricePerDay.open * amount)
+      }));
+      return objPrice;
+    })
+  );
+});
 
-      this.mktSvc.getPriceFromBEbyAsset(asset.asset.id)
-        //tutti i pricing dell'asset singolo
-        .subscribe(pricing => {
-          //per ogni pricing (1 pricing/giorno)
-          pricing.forEach(pricePerDay => {
-            //mi creo l'oggetto che tiene traccia di data e prezzo
-            const objPrice = {
-              date: this.fromDateStringToTimestamp(pricePerDay.date),
-              //price * amount
-              value: pricePerDay.open * amount
-            }
-            //lo salvo nell'array contenente tutti gli objPrice
-            allObjPrice.push(objPrice);
-          })
-          //finito il foreach, filtro allObjPrice e gli oggetti con la stessa data gli sommo il value
-          const reducedObjPrice = allObjPrice.reduce((accumulator:{date: Date, value: number;}[], currentObjPrice) => {
-            const existingObjPrice: any = accumulator.find((obj: {date: Date, value: number;}) => obj.date.getTime() === currentObjPrice.date.getTime());
+// Usiamo forkJoin per attendere il completamento di tutte le chiamate
+forkJoin(observables).subscribe(pricesArray => {
+  // Combina i risultati in un unico array
+  const allObjPrice = pricesArray.reduce((accumulator, currentPrices) => {
+    return accumulator.concat(currentPrices);
+  }, []);
 
-            if (existingObjPrice) {
-              // Se esiste un oggetto con la stessa data, somma il valore
-              existingObjPrice.value += currentObjPrice.value;
-            } else {
-              // Altrimenti, aggiungi un nuovo oggetto all'accumulator
-              accumulator.push({ date: currentObjPrice.date, value: currentObjPrice.value });
-            }
-            return accumulator;
-          }, []);
-          chartData = reducedObjPrice;
-        })
-      });
-      console.log("chartData:", chartData)
-    return chartData;
-  } */
-  /*     let starterValue = 0;
-      let assets: any = []; */
-  /* strategyExample.assetAllocations.forEach((asset) => {
-    this.mktSvc.getPriceFromBEbyAsset(asset.asset.id)
-      .subscribe((prices: any) => {
-        console.log("price:", prices)
-        prices.forEach((element: { open: any; date: string | number | Date; }) => {
-          const $price = element.open * assets.amount;
-          const date = <string>element.date;
-          const dateParts = date.split("-");
-          const year = parseInt(dateParts[0]);
-          const month = parseInt(dateParts[1]) - 1;
-          const day = parseInt(dateParts[2]);
-          const dateObj = new Date(year, month, day);
+  // Usa la stessa logica di riduzione che hai usato prima
+  chartData = allObjPrice.reduce((accumulator:any, currentObjPrice) => {
+    const existingObjPrice:any = accumulator.find((obj: {date: number, value: number;}) => obj.date === currentObjPrice.date);
 
-          chartData.push({
-            date: dateObj,
-            visits: $price
-          });
-        });
-      })
-  }) */
+    if (existingObjPrice) {
+      existingObjPrice.value += currentObjPrice.value;
+    } else {
+      accumulator.push({ date: currentObjPrice.date, value: currentObjPrice.value });
+    }
+    return accumulator;
+  }, []);
 
-  /* console.log("chartData:", chartData)
+  chartData.sort((a, b) => a.date - b.date);
+  this.buildChart(this.root, chartData);
+  console.log("chartData:", chartData);
+});
 
-  return chartData; */
-
+return chartData;
+}
 
   resizePage() {
     const pageContainer = this.pageContainer.nativeElement;
