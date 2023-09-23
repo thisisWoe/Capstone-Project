@@ -190,7 +190,8 @@ export class DashboardComponent implements AfterViewInit, OnInit {
     range.fills!.template.setAll({
       fill: am5.color(0xff621f),
       fillOpacity: 0.5,
-      visible: true
+      visible: true,
+
     });
 
 
@@ -663,6 +664,7 @@ export class DashboardComponent implements AfterViewInit, OnInit {
               this.mktSvc.postStrategy(this.currentStrategyToAdd).subscribe(data => {
                 console.log("data:", data);
                 this.formStrategy.reset();
+                this.getAllStrategiesByUserLogged();
               });
             }
 
@@ -700,9 +702,6 @@ export class DashboardComponent implements AfterViewInit, OnInit {
 
   }
   getAllStrategiesByUserLogged() {
-
-
-
     this.mktSvc.getStrategies(this.readUser())
       .subscribe(data => {
         console.log("data:", data)
