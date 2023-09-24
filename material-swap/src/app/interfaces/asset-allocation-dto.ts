@@ -4,7 +4,9 @@ export interface AssetAllocationDto {
   buyValue: number,
   amount: number,
   asset: {
-    id:number
+    id:number,
+    name?: string,
+    imgUrl?: string,
   }
   strategy:{
     id:number

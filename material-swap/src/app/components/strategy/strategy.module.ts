@@ -5,7 +5,7 @@ import { StrategyRoutingModule } from './strategy-routing.module';
 import { StrategyComponent } from './strategy.component';
 import { ChartComponent } from '../chart/chart.component';
 import { FormsModule } from '@angular/forms';
-import { NgbAlertModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAlertModule, NgbDatepickerModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -19,7 +19,8 @@ import { NgbAlertModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap'
     FormsModule,
     NgbDatepickerModule,
     NgbAlertModule,
-    JsonPipe
+    JsonPipe,
+    NgbDropdownModule
   ]
 })
 export class StrategyModule { }

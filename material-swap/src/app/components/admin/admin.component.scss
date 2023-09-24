@@ -19,6 +19,7 @@ div.page-container {
       display: flex;
       flex-direction: column;
       background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      background-position: center;
       background-size: cover;
       height: 650px;
       max-height: 650px;
@@ -71,6 +72,7 @@ div.page-container {
       height: 650px;
       max-height: 650px;
       background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      background-position: center;
       background-size: cover;
       h5.title-listing {
         text-align: center;
@@ -78,6 +80,7 @@ div.page-container {
           display: flex;
           justify-content: center;
           background-image: url(./../../../assets/imgs/chart-back-pie.png);
+          background-position: center;
           background-size: cover;
           div.asset-wrapper {
             border-radius: 50%;
@@ -95,6 +98,7 @@ div.page-container {
     div.pricing-container {
       border-radius: 2rem;
       background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      background-position: center;
       background-size: cover;
       h5 {
         color: #e08142;

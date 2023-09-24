@@ -7,4 +7,5 @@ export interface IChartData {
   high: number;
   low: number;
   close: number;
+  value?: number;
 }

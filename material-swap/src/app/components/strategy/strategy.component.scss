@@ -1,90 +1,80 @@
-/* @import "./../../../variables";
-div.container-fluid {
+@import "./../../../variables";
+
+div.page-container {
   overflow-y: scroll;
-  div.candle-chart-container {
-    //background-color: $backVioletBlack;
-    //background-image: linear-gradient(180deg, #dd826d 0%, #be6dab 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    border-radius: 2rem;
-    //height: fit-content;
-    //height: $chartCandleHeight + 20px;
-    //width: ($chartCandleHeight + 20px)*2.3;
+  div.row{
+    justify-content: space-between;
     div.candle-chart-wrapper {
-      //background: linear-gradient(214deg, rgba(31,23,57,1) 0%, rgba(190,109,171,1) 100%);
-      //background-color: transparent;
       background-image: url(./../../../assets/imgs/chart-back.png);
       background-size: cover;
-      width: 99%;
-      height: 97%;
       border-radius: 2rem;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      select{
+        color: whitesmoke;
+        background-color: $backVioletBlack;
+        border: 1px solid #be6dab;
+        width: 50%;
+        text-align: center;
+        &:hover{
+          cursor: pointer;
+        }
+      }
     }
-  }
-  div.datepicker-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    border-radius: 2rem;
-    background-image: linear-gradient(180deg, #dd826d 0%, #be6dab 100%);
-    div.datepicker-wrapper {
+    div.pie-chart-wrapper{
       background-image: url(./../../../assets/imgs/chart-back.png);
       background-size: cover;
-      width: 99%;
-      height: 97%;
+      background-position: center;
       border-radius: 2rem;
-      div.row {
-        div.headers {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          p {
-            color: white;
-            margin: 20px 0;
+      h5{
+        color: $greyShadeText;
+        text-align: center;
+        font-size: 2rem;
+      }
+    }
+    div.line-chart-wrapper{
+      background-image: url(./../../../assets/imgs/chart-back.png);
+      background-size: cover;
+      background-position: center;
+      border-radius: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      h5{
+        align-self: flex-start;
+        margin-left: 30px;
+        color: $greyShadeText;
+      }
+      div.select-img{
+        button.btn-select-asset {
+          background-color: $backVioletBlack;
+          color: white;
+          font-weight: bold;
+          border: 1px solid #be6dab;
+          align-self: center;
+          &:hover{
+            background-color: #be6dab5a;
           }
         }
-        form {
-          margin: 20px 0;
-          justify-content: center;
-          input {
-            background-color: $backVioletBlack;
-            border: 1px solid #dd826d;
-            color: white;
-          }
-          input::placeholder {
-            color: $greyShadeText;
-          }
-          ngb-datepicker {
-            background-color: black !important;
-          }
+        div.container-choice {
+          background-color: $backVioletBlack;
           button {
-            border: 1px solid #dd826d;
-            color: #dd826d;
+            a {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              img {
+                height: 50px;
+                border-radius: 50%;
+              }
+              span {
+                color: white;
+              }
+            }
           }
         }
       }
     }
   }
-
-  div.stats-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 500px;
-    border-radius: 2rem;
-    div.stats-wrapper {
-      background-image: url(./../../../assets/imgs/chart-back-pie.png);
-      background-size: cover;
-      width: 100%;
-      height: 100%;
-      border-radius: 2rem;
-    }
-  }
 }
-
- */
