@@ -1,5 +1,5 @@
 import { ICoinApiData } from './../../interfaces/icoin-api-data';
-import { AfterViewInit, Component, ElementRef, Inject, NgZone, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Inject, NgZone, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { NgbAlertModule, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
@@ -12,19 +12,21 @@ import am5themes_Dark from "@amcharts/amcharts5/themes/Dark";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import { IPricingBackend } from 'src/app/interfaces/ipricing-backend';
 import * as am5xy from '@amcharts/amcharts5/xy';
+import { IChartData } from 'src/app/interfaces/ichart-data';
+import { Observable, Subject, forkJoin, map } from 'rxjs';
 
 @Component({
   selector: 'app-strategy',
   templateUrl: './strategy.component.html',
   styleUrls: ['./strategy.component.scss']
 })
-export class StrategyComponent implements AfterViewInit {
+export class StrategyComponent implements AfterViewInit, OnInit {
   @ViewChild('pageContainer', { static: true }) pageContainer!: ElementRef;
   @ViewChild('candleChartContainer', { static: true }) candleChartContainer!: ElementRef;
   @ViewChild('pieChartContainer', { static: true }) pieChartContainer!: ElementRef;
 
   strategies: StrategyDto[] = [];
-  targetStrategy: StrategyDto | null = null;
+  targetStrategy$: Subject<StrategyDto> = new Subject<StrategyDto>();
 
   rootCandle!: am5.Root;
   rootPie!: am5.Root;
@@ -34,6 +36,13 @@ export class StrategyComponent implements AfterViewInit {
 
   constructor(private authSvc: AuthService, @Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone, private mktSvc: MarketDataService, private chartSvc: ChartServiceService) {
 
+  }
+
+  ngOnInit() {
+    this.targetStrategy$.subscribe(value => {
+      console.log("value target strategy:", value)
+      this.getDataforCandle(value);
+    })
   }
 
 
@@ -78,6 +87,9 @@ export class StrategyComponent implements AfterViewInit {
       .subscribe(data => {
         console.log("data:", data)
         this.strategies = data;
+
+        this.targetStrategy$.next(this.strategies[0]);
+
         /* this.generateChartData(data[0]); */
       })
   }
@@ -88,10 +100,76 @@ export class StrategyComponent implements AfterViewInit {
     console.log("event:", value)
     const strategy = this.mktSvc.getSingleStrategy(Number(value))
       .subscribe(res => {
-        console.log("res:", res)
-
+        this.targetStrategy$!.next(res);
+        console.log("targetStrategy:", this.targetStrategy$)
         /* this.generateChartData(res); */
       })
+  }
+
+  roundNumber(n: number, decimalPlaces: number): number {
+    const decimalN = new decimalN(n);
+    const roundedNumber = decimalN.toFixed(decimalPlaces);
+    return parseFloat(roundedNumber);
+  }
+
+  getDataforCandle(strategy: StrategyDto) {
+    console.log('metodo getDataforCandle');
+
+    const allocations = strategy.assetAllocations;
+    const strategyStartDateString = strategy.start;
+    const strategyStartDateDate = new Date(strategyStartDateString);
+    console.log("strategyStartDateDate:", strategyStartDateDate)
+
+    const objAssetPricingArray: Partial<IPricingBackend>[] = [];
+
+    const observables = allocations.map(asset => {
+      const amount = asset.amount;
+      return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
+        // Filtra per ottenere solo i prezzi dalla data di inizio strategia
+        map(res => res.filter(pricingObj => {
+          const date = new Date(pricingObj.date);
+          return date >= strategyStartDateDate;
+        }))
+      );
+    });
+
+    forkJoin(observables).subscribe(pricingArrays => {
+      pricingArrays.forEach(filteredPricingByStartDate => {
+        filteredPricingByStartDate.forEach(asset => {
+          const objAssetPricing: Partial<IPricingBackend> = {
+            date: asset.date,
+            open: this.roundNumber(asset.open, 2),
+            high: this.roundNumber(asset.high, 2),
+            low: this.roundNumber(asset.low, 2),
+            close: this.roundNumber(asset.close, 2)
+          };
+          objAssetPricingArray.push(objAssetPricing);
+        });
+      });
+
+      // Ora objAssetPricingArray è stato riempito con tutti i dati necessari
+      console.log("objAssetPricingArray:", objAssetPricingArray);
+
+      const dataSums: { [date: string]: Partial<IPricingBackend> } = {};
+
+      objAssetPricingArray.forEach(obj => {
+        const date = obj.date;
+        if (!dataSums[date!]) {
+          dataSums[date!] = { date, open: 0, high: 0, low: 0, close: 0 };
+        }
+        dataSums[date!].open! += obj.open!;
+        dataSums[date!].high! += obj.high!;
+        dataSums[date!].low! += obj.low!;
+        dataSums[date!].close! += obj.close!;
+      });
+      // Convertiamo l'oggetto delle somme in un array
+      const newSummedArray = Object.values(dataSums);
+      console.log("newSummedArray:", newSummedArray);
+
+    });
+
+
+
   }
 
   buildCandleChart() {
