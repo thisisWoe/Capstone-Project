@@ -14,6 +14,7 @@ import { IPricingBackend } from 'src/app/interfaces/ipricing-backend';
 import * as am5xy from '@amcharts/amcharts5/xy';
 import { IChartData } from 'src/app/interfaces/ichart-data';
 import { Observable, Subject, forkJoin, map } from 'rxjs';
+import Decimal from 'decimal.js';
 
 @Component({
   selector: 'app-strategy',
@@ -106,10 +107,9 @@ export class StrategyComponent implements AfterViewInit, OnInit {
       })
   }
 
-  roundNumber(n: number, decimalPlaces: number): number {
-    const decimalN = new decimalN(n);
-    const roundedNumber = decimalN.toFixed(decimalPlaces);
-    return parseFloat(roundedNumber);
+  roundNumber(n: number): number {
+    let m = Number((Math.abs(n) * 100).toPrecision(15));
+    return Math.round(m) / 100 * Math.sign(n);
   }
 
   getDataforCandle(strategy: StrategyDto) {
@@ -122,7 +122,7 @@ export class StrategyComponent implements AfterViewInit, OnInit {
 
     const objAssetPricingArray: Partial<IPricingBackend>[] = [];
 
-    const observables = allocations.map(asset => {
+    /* const observables = allocations.map(asset => {
       const amount = asset.amount;
       return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
         // Filtra per ottenere solo i prezzi dalla data di inizio strategia
@@ -131,17 +131,37 @@ export class StrategyComponent implements AfterViewInit, OnInit {
           return date >= strategyStartDateDate;
         }))
       );
+    }); */
+    const observables = allocations.map(asset => {
+      const amount = asset.amount;
+      return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
+        // Filtra per ottenere solo i prezzi dalla data di inizio strategia
+        map(res => res.map(pricingObj => {
+          const date = new Date(pricingObj.date);
+          return {
+            ...pricingObj,
+            open: pricingObj.open * amount,
+            high: pricingObj.high * amount,
+            low: pricingObj.low * amount,
+            close: pricingObj.close * amount,
+          };
+        }).filter(pricingObj => {
+          const date = new Date(pricingObj.date);
+          return date >= strategyStartDateDate;
+        }))
+      );
     });
+
 
     forkJoin(observables).subscribe(pricingArrays => {
       pricingArrays.forEach(filteredPricingByStartDate => {
         filteredPricingByStartDate.forEach(asset => {
           const objAssetPricing: Partial<IPricingBackend> = {
             date: asset.date,
-            open: this.roundNumber(asset.open, 2),
-            high: this.roundNumber(asset.high, 2),
-            low: this.roundNumber(asset.low, 2),
-            close: this.roundNumber(asset.close, 2)
+            open: asset.open,
+            high: asset.high,
+            low: asset.low,
+            close: asset.close
           };
           objAssetPricingArray.push(objAssetPricing);
         });
