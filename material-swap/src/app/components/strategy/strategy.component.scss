@@ -2,7 +2,7 @@
 
 div.page-container {
   overflow-y: scroll;
-  div.row{
+  div.row {
     justify-content: space-between;
     div.candle-chart-wrapper {
       background-image: url(./../../../assets/imgs/chart-back.png);
@@ -11,29 +11,32 @@ div.page-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      select{
+      select {
         color: whitesmoke;
         background-color: $backVioletBlack;
         border: 1px solid #be6dab;
         width: 50%;
         text-align: center;
-        &:hover{
+        &:hover {
           cursor: pointer;
         }
       }
     }
-    div.pie-chart-wrapper{
+    div.pie-chart-wrapper {
       background-image: url(./../../../assets/imgs/chart-back.png);
       background-size: cover;
       background-position: center;
       border-radius: 2rem;
-      h5{
-        color: $greyShadeText;
+      h5 {
+        color: #e08142;
         text-align: center;
         font-size: 2rem;
+        @media screen and (max-width: 600px) {
+          font-size: 1rem;
+        }
       }
     }
-    div.line-chart-wrapper{
+    div.line-chart-wrapper {
       background-image: url(./../../../assets/imgs/chart-back.png);
       background-size: cover;
       background-position: center;
@@ -41,19 +44,22 @@ div.page-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      h5{
+      h5 {
         align-self: flex-start;
         margin-left: 30px;
-        color: $greyShadeText;
+        color: #e08142;
+        @media screen and (max-width: 600px) {
+          font-size: 1rem;
+        }
       }
-      div.select-img{
+      div.select-img {
         button.btn-select-asset {
           background-color: $backVioletBlack;
           color: white;
           font-weight: bold;
           border: 1px solid #be6dab;
           align-self: center;
-          &:hover{
+          &:hover {
             background-color: #be6dab5a;
           }
         }
@@ -76,5 +82,123 @@ div.page-container {
         }
       }
     }
+    div.rebalance-wrapper {
+      min-height: 500px;
+      background-image: url(./../../../assets/imgs/chart-back.png);
+      background-size: cover;
+      background-position: center;
+      border-radius: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      @media screen and (max-width: 600px) {
+        justify-content: space-around;
+        align-items: center;
+      }
+      div.header-rebalance {
+        display: flex;
+        justify-content: space-between;
+        @media screen and (max-width: 600px) {
+          width: 100%;
+        }
+        h5 {
+          font-size: 2rem;
+          color: white;
+          @media screen and (max-width: 600px) {
+            font-size: 1rem;
+          }
+        }
+        &>div{
+          flex-grow: 1;
+          display: flex;
+          justify-content: end;
+          @media screen and (max-width: 600px) {
+            align-self: self-end;
+          }
+          button.btn-delete {
+            color: whitesmoke;
+            background-color: $backVioletBlack;
+            border: 1px solid #be6dab;
+            @media screen and (max-width: 600px) {
+              font-size: 1rem;
+            }
+            &:hover {
+              background-color: #be6dab5a;
+            }
+          }
+          button.btn-rebalance {
+            color: whitesmoke;
+            background-color: $backVioletBlack;
+            border: 1px solid #be6dab;
+            @media screen and (max-width: 600px) {
+              font-size: 1rem;
+            }
+            &:hover {
+              background-color: #be6dab5a;
+            }
+          }
+        }
+      }
+      div.img-name-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        img {
+          height: 50px;
+          border-radius: 50%;
+        }
+        p {
+          margin: 0 0 0 10px;
+          color: white;
+        }
+      }
+      div.profit-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        span {
+          color: white;
+          width: 100%;
+          padding: 5px;
+          border-radius: 0.5rem;
+        }
+      }
+      div.buy-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        span {
+          color: white;
+          width: 100%;
+          padding: 5px;
+          border-radius: 0.5rem;
+        }
+      }
+      div.quantity-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        span {
+          color: white;
+        }
+      }
+
+    }
+  }
+}
+
+div#chartdivcandle{
+  @media screen and (max-width: 600px){
+    height: 400px !important;
+  }
+}
+div#chartdivpie{
+  @media screen and (max-width: 600px){
+    height: 300px !important;
+  }
+}
+div#chartdivline{
+  @media screen and (max-width: 600px){
+    height: 300px !important;
   }
 }

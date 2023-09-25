@@ -119,3 +119,10 @@ div.header{
   background-color: #2c2899;
   border-radius: 5rem;
 }
+
+div.router-manager{
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 20;
+}

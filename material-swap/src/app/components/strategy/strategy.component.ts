@@ -1,3 +1,4 @@
+import { Web3Service } from 'src/app/web3-serv/web3.service';
 import { ICoinApiData } from './../../interfaces/icoin-api-data';
 import { AfterViewInit, Component, ElementRef, Inject, NgZone, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { NgbAlertModule, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -18,6 +19,7 @@ import { Observable, Subject, catchError, forkJoin, map, of, switchMap } from 'r
 import Decimal from 'decimal.js';
 import { IPieDataPercentage } from 'src/app/interfaces/ipie-data-percentage';
 import { AssetAllocationDto } from 'src/app/interfaces/asset-allocation-dto';
+import { IAssetDto } from 'src/app/interfaces/iasset-dto';
 
 @Component({
   selector: 'app-strategy',
@@ -31,9 +33,11 @@ export class StrategyComponent implements AfterViewInit, OnInit {
 
   strategies: StrategyDto[] = [];
   targetStrategy$: Subject<StrategyDto> = new Subject<StrategyDto>();
-  activeStrategy!:StrategyDto;
+  activeStrategy!: StrategyDto;
   targetAssetAllocations: Partial<AssetAllocationDto>[] = [];
   targetAssetName = '';
+
+  allAssets: IAssetDto[] = [];
 
   rootCandle!: am5.Root;
   chart!: am5xy.XYChart;
@@ -50,7 +54,7 @@ export class StrategyComponent implements AfterViewInit, OnInit {
   seriesLine!: am5xy.SmoothedXLineSeries;
 
 
-  constructor(private authSvc: AuthService, @Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone, private mktSvc: MarketDataService, private chartSvc: ChartServiceService) {
+  constructor(private web3Svc: Web3Service, private authSvc: AuthService, @Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone, private mktSvc: MarketDataService, private chartSvc: ChartServiceService) {
 
   }
 
@@ -68,12 +72,26 @@ export class StrategyComponent implements AfterViewInit, OnInit {
           });
         }
       });
+      if (this.activeStrategy.simulation) {
+        const buttonRebalance = <HTMLButtonElement>document.querySelector('.btn-rebalance');
+        buttonRebalance.setAttribute('disabled', 'disabled');
+      } else {
+        const buttonRebalance = <HTMLButtonElement>document.querySelector('.btn-rebalance');
+        if (buttonRebalance.hasAttribute('disabled')) {
+          buttonRebalance.removeAttribute('disabled');
+        }
+      }
 
       this.getDataforCandle(value);
       this.getDataForPie(value);
       console.log(value.assetAllocations[0])
       this.getDataForLine(value, value.assetAllocations[0].asset.id!, value.assetAllocations[0].asset.name);
     })
+    this.mktSvc.getAllAssetAndNetworks()
+      .subscribe(res => {
+        this.allAssets = res;
+        console.log("this.allAssets:", this.allAssets)
+      })
     this.resizePage();
   }
 
@@ -127,12 +145,10 @@ export class StrategyComponent implements AfterViewInit, OnInit {
   }
 
   getDataforCandle(strategy: StrategyDto) {
-    console.log('metodo getDataforCandle');
 
     const allocations = strategy.assetAllocations;
     const strategyStartDateString = strategy.start;
     const strategyStartDateDate = new Date(strategyStartDateString);
-    console.log("strategyStartDateDate:", strategyStartDateDate)
 
     const objAssetPricingArray: Partial<IPricingBackend>[] = [];
 
@@ -171,9 +187,6 @@ export class StrategyComponent implements AfterViewInit, OnInit {
         });
       });
 
-      // Ora objAssetPricingArray è stato riempito con tutti i dati necessari
-      console.log("objAssetPricingArray:", objAssetPricingArray);
-
       const dataSums: { [date: string]: Partial<IPricingBackend> } = {};
 
       objAssetPricingArray.forEach(obj => {
@@ -189,7 +202,6 @@ export class StrategyComponent implements AfterViewInit, OnInit {
       // Convertiamo l'oggetto delle somme in un array
       const newSummedArray: Partial<IPricingBackend>[] = Object.values(dataSums);
       const chartData: Partial<IChartData>[] = [];
-      console.log("newSummedArray:", newSummedArray);
       newSummedArray.forEach((objPrice: any) => {
         const date = objPrice.date;
         const dateNumber = new Date(date!);
@@ -197,7 +209,6 @@ export class StrategyComponent implements AfterViewInit, OnInit {
         objPrice.value = objPrice.close
         chartData.push(objPrice);
       })
-      console.log("chartData:", chartData)
       chartData.sort((a, b) => a.date! - b.date!)
       this.buildCandleChart(chartData);
 
@@ -239,10 +250,7 @@ export class StrategyComponent implements AfterViewInit, OnInit {
       );
     }
 
-
-
     let data = chartData;
-
 
     this.chart = this.rootCandle.container.children.push(
       am5xy.XYChart.new(this.rootCandle, {
@@ -513,23 +521,25 @@ export class StrategyComponent implements AfterViewInit, OnInit {
           chartData.push(chartPieItem); */
         }
       });
-      results.forEach((objUpdated:any) => {
+      results.forEach((objUpdated: any) => {
         const actualPercentage = (objUpdated.actualValue * 100) / summedValue;
 
-          const chartPieItem: IPieDataPercentage = {
-            asset: objUpdated.asset,
-            percentage: objUpdated.percentage,
-            actualPercentage: actualPercentage,
-          };
-          chartData.push(chartPieItem);
+        const chartPieItem: IPieDataPercentage = {
+          asset: objUpdated.asset,
+          percentage: objUpdated.percentage,
+          actualPercentage: actualPercentage,
+          actualValue: objUpdated.actualValue
+        };
+        chartData.push(chartPieItem);
       });
 
       console.log("chartData:", chartData);
-      this.buildPieChart(chartData, summedValue)
+      this.buildPieChart(chartData, summedValue);
+      this.fillRebalance(strategy, chartData, summedValue);
     });
   }
 
-  buildPieChart(chartData:IPieDataPercentage[], total:number) {
+  buildPieChart(chartData: IPieDataPercentage[], total: number) {
 
     if (!this.chartPie) {
       this.rootPie.setThemes([
@@ -542,7 +552,7 @@ export class StrategyComponent implements AfterViewInit, OnInit {
           wheelY: "zoomX"
         })
         ) */
-      } else {
+    } else {
       this.rootPie.setThemes([
         am5themes_Animated.new(this.rootPie),
         am5themes_Dark.new(this.rootPie)
@@ -553,31 +563,9 @@ export class StrategyComponent implements AfterViewInit, OnInit {
       this.series1Pie.data.clear();
       this.series0Pie.chart?.series.clear();
       this.series1Pie.chart?.series.clear();
-      /* this.chartPie = this.rootPie.container.children.push(
-        am5xy.XYChart.new(this.rootPie, {
-          wheelY: "zoomX"
-        })
-        ); */
-      }
+      this.chartPie.seriesContainer.children.clear();
 
-
-      /* this.rootPie = am5.Root.new("chartdivpie"); */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 
     // Set themes
@@ -683,7 +671,6 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     }
 
     let data = chartData;
-    console.log("data:", data)
 
     let yAxis = this.chartLine.yAxes.push(
       am5xy.ValueAxis.new(this.rootLine, {
@@ -778,7 +765,7 @@ export class StrategyComponent implements AfterViewInit, OnInit {
 
   }
 
-  getDataForLine(strategy:StrategyDto, targetAssetAllocationId:number, name:string|undefined){
+  getDataForLine(strategy: StrategyDto, targetAssetAllocationId: number, name: string | undefined) {
     console.log("name:", name)
     console.log("targetAssetAllocationId:", targetAssetAllocationId)
     console.log("strategy:", strategy)
@@ -787,38 +774,153 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     const allPricingData = [];
     const startStrategy = new Date(strategy.start);
     this.mktSvc.getPriceFromBEbyAsset(targetAssetAllocationId)
-    .subscribe(data => {
-      console.log("data:", data)
-      const filteredArrayPerDate = data.filter(price => {
-        const priceDate = new Date(price.date);
-        return priceDate >= startStrategy;
-      });
-      filteredArrayPerDate.sort((a, b) => {
-        const dateA = <number><unknown>new Date(a.date);
-        const dateB = <number><unknown>new Date(b.date);
-        return dateA - dateB;
-      });
-      const objOlderPrice = filteredArrayPerDate[0];
-      const chartData: { date: number; value: number; }[] = [];
-      filteredArrayPerDate.forEach(price_2 => {
-        const objForChart = {
-          date : (new Date(price_2.date)).getTime(),
-          value : Number((price_2.close - objOlderPrice.close).toFixed(2))
-        }
-        chartData.push(objForChart);
+      .subscribe(data => {
+        const filteredArrayPerDate = data.filter(price => {
+          const priceDate = new Date(price.date);
+          return priceDate >= startStrategy;
+        });
+        filteredArrayPerDate.sort((a, b) => {
+          const dateA = <number><unknown>new Date(a.date);
+          const dateB = <number><unknown>new Date(b.date);
+          return dateA - dateB;
+        });
+        const objOlderPrice = filteredArrayPerDate[0];
+        const chartData: { date: number; value: number; }[] = [];
+        filteredArrayPerDate.forEach(price_2 => {
+          const objForChart = {
+            date: (new Date(price_2.date)).getTime(),
+            value: Number((price_2.close - objOlderPrice.close).toFixed(2))
+          }
+          chartData.push(objForChart);
+        })
+        this.buildLineChart(chartData)
       })
-      this.buildLineChart(chartData)
-    })
 
   }
 
+  fillRebalance(strategy: StrategyDto, chartData: IPieDataPercentage[], total: number) {
+    console.log("total:", total)
+    const allocations = strategy.assetAllocations;
+    chartData.forEach(allocation => {
+      const amountToSellOrBuy$ = (total / 100) * (allocation.percentage - allocation.actualPercentage);
+      if (amountToSellOrBuy$ > 0) {
+        const spanProfitLoss = <HTMLSpanElement>document.querySelector(`.span-${allocation.asset}`);
+        spanProfitLoss!.textContent = 'Profit ';
+        const spanToSellBuy = <HTMLSpanElement>document.querySelector(`.sell-buy-${allocation.asset}`);
+        spanToSellBuy!.textContent = 'Sell ';
+        spanProfitLoss!.style.backgroundColor = '#80b5db';
+        spanToSellBuy!.style.backgroundColor = '#80b5db';
+        spanProfitLoss!.style.color = '#000000';
+        spanToSellBuy!.style.color = '#000000';
+
+        const spanQuantity = <HTMLSpanElement>document.querySelector(`.quantity-${allocation.asset}`);
+        const targetAssetAllocation = allocations.find(all => all.asset.name === allocation.asset);
+        const pricePerUnitNow = allocation.actualValue / targetAssetAllocation!.amount;
+        spanQuantity!.textContent = `${(amountToSellOrBuy$ / pricePerUnitNow)} ${allocation.asset} ~ ${amountToSellOrBuy$} $`;
+        spanQuantity!.style.color = '#80b5db';
+
+      } else {
+        const spanProfitLoss = <HTMLSpanElement>document.querySelector(`.span-${allocation.asset}`);
+        spanProfitLoss!.textContent = 'Loss ';
+        const spanToSellBuy = <HTMLSpanElement>document.querySelector(`.sell-buy-${allocation.asset}`);
+        spanToSellBuy!.textContent = 'Buy ';
+        spanProfitLoss!.style.backgroundColor = '#59118d';
+        spanToSellBuy!.style.backgroundColor = '#59118d';
+        spanProfitLoss!.style.color = '#ffffff';
+        spanToSellBuy!.style.color = '#ffffff';
+
+        const spanQuantity = <HTMLSpanElement>document.querySelector(`.quantity-${allocation.asset}`);
+        const targetAssetAllocation = allocations.find(all => all.asset.name === allocation.asset);
+        const pricePerUnitNow = allocation.actualValue / targetAssetAllocation!.amount;
+        spanQuantity!.textContent = `${(amountToSellOrBuy$ / pricePerUnitNow)} ${allocation.asset} ~ ${amountToSellOrBuy$} $`;
+        spanQuantity!.style.color = '#be6dab';
+      }
+    })
+  }
+
+  rebalance() {
+    const message = `Are you sure you want to rebalance your wallet? You will have to accept several transactions, so be sure you have enough ETH and WETH. WETH will serve beacuse every excess asset will be converted to WETH and then reconverted to target asset. Approximately the expected transaction fees should be: ${this.activeStrategy.assetAllocations.length * 0.3} $`;
+    this.web3Svc.signRegisterRequestDynamicMessage(message)
+      .then((response) => {
+        //dati weth
+        const WETH = this.allAssets.find(asset => asset.id === 7);
+        const netWETH = WETH?.addresses.find(address => address.networkName === 'arbitrum');
+
+        const spanQuantities = document.querySelectorAll(`.span-to-find`);
+        const assetToSwap: { amountToSwap: number; tokenFrom: string; tokenTo: string; }[] = [];
+
+        spanQuantities.forEach(span => {
+          const splittedSpan = span.textContent!.split(" ");
+          const amount = Number(splittedSpan[0]);
+          const assetName = splittedSpan[1];
+          const asset = this.allAssets.find(asset => asset.name === assetName);
+          const assetAddress = asset!.addresses.find(address => address.networkName === 'arbitrum');
+
+          if (amount > 0) {
+            const swapObj = {
+              amountToSwap: amount,
+              tokenFrom: assetAddress!.tokenAddress,
+              tokenTo: netWETH!.tokenAddress,
+            }
+            if (swapObj.tokenFrom !== swapObj.tokenTo) {
+              assetToSwap.push(swapObj);
+            }
+          } else {
+            const swapObj = {
+              amountToSwap: Math.abs(amount),
+              tokenFrom: netWETH!.tokenAddress,
+              tokenTo: assetAddress!.tokenAddress,
+            }
+            if (swapObj.tokenFrom !== swapObj.tokenTo) {
+              assetToSwap.push(swapObj);
+            }
+          }
 
 
 
+        })
+        console.log("assetToSell:", assetToSwap)
+        this.tryrebalance(assetToSwap);
 
 
+        /* const scambiDaEffettuare: {
+          amountToSwap: number;
+          tokenFrom: string;
+          tokenTo: string;
+      }[] */
+      });
+  }
 
+  async tryrebalance(swaps: { amountToSwap: number; tokenFrom: string; tokenTo: string; }[]) {
+    const amount = Number((swaps[0].amountToSwap).toFixed(10));
+    console.log("amount:", amount)
+    for (const swap of swaps) {
+      try {
+        await this.web3Svc.getPrice_V2(Number((swap.amountToSwap).toFixed(10)), swap.tokenFrom, swap.tokenTo, 'https://arbitrum.api.0x.org/swap/v1/')
+        .subscribe(res => {
+          console.log("res:", res)
+          const amountTrySwap = Number(res.sellAmount);
+          console.log("amountTrySwap:", amountTrySwap)
+          this.web3Svc.trySwap_V2(Number((swap.amountToSwap).toFixed(10)), swap.tokenFrom, swap.tokenTo, 'https://arbitrum.api.0x.org/swap/v1/')
+          .then((res) => {
+          console.log("res:", res)
+          });
 
+        })
+        console.log(`Scambio effettuato: ${swap.amountToSwap} ${swap.tokenFrom} -> ${swap.tokenTo}`);
+      } catch (error) {
+        console.error(`Errore durante lo scambio: ${error}`);
+      }
+    }
+  }
+
+  deleteStrategy(id:number){
+    this.mktSvc.deleteStrategy(id)
+    .subscribe(res => {
+      console.log("res:", res)
+      this.getAllStrategiesByUserLogged();
+    })
+  }
 
 
 

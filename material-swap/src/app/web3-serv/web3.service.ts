@@ -91,7 +91,7 @@ export class Web3Service {
   getPrice_V2(amountToSwap: number, tokenAddressFrom: string, tokenAddressTo: string, networkZeroX: string): Observable<any> {
     console.log('Getting Price...');
     let amount: number | string = 0;
-    if (amountToSwap > 999) {
+    /* if (amountToSwap > 999) {
       //test
       if (tokenAddressFrom ===
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' ||
@@ -125,7 +125,20 @@ export class Web3Service {
       }
 
 
-    }
+    } */
+    if (
+      tokenAddressFrom === '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' ||
+      tokenAddressFrom === '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6' ||
+      tokenAddressFrom === '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c' ||
+      tokenAddressFrom === '0x68f180fcce6836688e9084f035309e29bf0a2095' ||
+      tokenAddressFrom === '0x321162Cd933E2Be498Cd2267a90534A804051b11' ||
+      tokenAddressFrom === '0x408d4cd0adb7cebd1f1a1c33a0ba2098e1295bab' ||
+      tokenAddressFrom === '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f'
+      ){
+        amount = amountToSwap * 10 ** 8;
+      } else {
+        amount = amountToSwap * 10 ** 18;
+      }
     //let amount = number(amountToSwap * 10 ** 18);
     console.log("🚀 ~ file: web3.service.ts:94 ~ Web3Service ~ getPrice_V2 ~ amount:", amount)
 
@@ -166,26 +179,26 @@ export class Web3Service {
 
     /* if (amountToSwap > 999) {
       let numAmount = amountToSwap * 10 ** 18;
-      amount = this.formatLargeNumber(numAmount);
+      amount = (this.formatLargeNumber(numAmount));
     } else {
     } */
     //test
     let amount = 0;
-    if (tokenAddressFrom ===
-      '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' ||
-      '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6' ||
-      '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c' ||
-      '0x68f180fcce6836688e9084f035309e29bf0a2095' ||
-      '0x321162Cd933E2Be498Cd2267a90534A804051b11' ||
-      '0x408d4cd0adb7cebd1f1a1c33a0ba2098e1295bab' ||
-      '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f'
+     if (
+      tokenAddressFrom === '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' ||
+      tokenAddressFrom === '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6' ||
+      tokenAddressFrom === '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c' ||
+      tokenAddressFrom === '0x68f180fcce6836688e9084f035309e29bf0a2095' ||
+      tokenAddressFrom === '0x321162Cd933E2Be498Cd2267a90534A804051b11' ||
+      tokenAddressFrom === '0x408d4cd0adb7cebd1f1a1c33a0ba2098e1295bab' ||
+      tokenAddressFrom === '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f'
       ){
         amount = amountToSwap * 10 ** 8;
       } else {
         amount = amountToSwap * 10 ** 18;
       }
 
-      //let amount = amountToSwap * 10 ** 18;
+      /* let amount = amountToSwap * 10 ** 18; */
 
 
 
@@ -217,7 +230,8 @@ export class Web3Service {
     const url = `${networkZeroX}quote`;
 
     //return this.http.get<any>(url, { headers, params })/* .subscribe(res => {return res.json()}); */
-    const response = await fetch(`https://arbitrum.api.0x.org/swap/v1/quote?${qs.stringify(params)}`, { headers });
+    //const response = await fetch(`https://arbitrum.api.0x.org/swap/v1/quote?${qs.stringify(params)}`, { headers });
+    const response = await fetch(`${url}?${qs.stringify(params)}`, { headers });
 
     const swapQuoteJSON = await response.json();
     console.log("Quote: ", swapQuoteJSON);
@@ -276,9 +290,21 @@ export class Web3Service {
       return signature;
     } catch (error) {
       console.error('Errore durante la firma:', error);
+
     }
     return '';
   }
 
+  async signRegisterRequestDynamicMessage(messageToSign:string): Promise<string> {
+    try {
+      const accounts = await this.web3wallet.eth.getAccounts();
+      const signature = await this.web3wallet.eth.personal.sign(messageToSign, accounts[0]);
+      console.log('Signed succesfully: ', signature);
+      return signature;
+    } catch (error) {
+      console.error('Error during the sign: ', error);
+      throw error;
+    }
+  }
 
 }

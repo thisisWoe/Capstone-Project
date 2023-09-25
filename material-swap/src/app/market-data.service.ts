@@ -294,4 +294,12 @@ export class MarketDataService {
   getSingleStrategy(id:number){
     return this.http.get<StrategyDto>(environment.API_BACKEND+'strategy/'+id);
   }
+
+  deleteStrategy(id:number){
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.delete(environment.API_BACKEND+'strategy/delete/'+id , {
+      headers,
+      responseType: 'text'
+    });
+  }
 }
