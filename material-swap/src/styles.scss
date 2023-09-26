@@ -14,6 +14,7 @@ body{
   font-family: 'Roboto', sans-serif;
 }
 body::-webkit-scrollbar,*::-webkit-scrollbar {
+  display: none;
   width: 10px;               /* width of the entire scrollbar */
 }
 
