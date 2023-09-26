@@ -6,6 +6,7 @@ const routes: Routes = [
   { path: 'landing-page', loadChildren: () => import('./pages/landing-page/landing-page.module').then(m => m.LandingPageModule) },
   { path: 'home', loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule) },
 
+
   /* { path: 'admin', loadChildren: () => import('./components/admin/admin.module').then(m => m.AdminModule) }, */
   /* { path: 'auth', loadChildren: () => import('./components/auth/auth.module').then(m => m.AuthModule) },
   { path: 'signup', loadChildren: () => import('./components/signup/signup.module').then(m => m.SignupModule) },
