@@ -8,7 +8,7 @@
       <a [routerLink]="['swap-v2']" (click)="animationRouterMenu()" class="link-route route-swap">Swap</a>
       <a [routerLink]="['dashboard']" (click)="animationRouterMenu()" class="link-route route-dashboard">Dashboard</a>
       <a [routerLink]="['strategy']" (click)="animationRouterMenu()" class="link-route route-strategy">Strategies</a>
-      <a [routerLink]="['auth']" (click)="animationRouterMenu()" class="link-route route-login">Login</a>
+      <a [routerLink]="['admin']" (click)="animationRouterMenu()" class="link-route route-admin" *ngIf="isAdmin">Admin</a>
       <a [routerLink]="['/']" (click)="animationRouterMenu(); logout()" class="link-route route-logout">Logout</a>
     </div>
   </div>

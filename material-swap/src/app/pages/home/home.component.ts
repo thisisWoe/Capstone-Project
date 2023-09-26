@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit {
     const swapA = <HTMLAnchorElement>document.querySelector('.route-swap');
     const dashboardA = <HTMLAnchorElement>document.querySelector('.route-dashboard');
     const strategyA = <HTMLAnchorElement>document.querySelector('.route-strategy');
-    const loginA = <HTMLAnchorElement>document.querySelector('.route-login');
+    const loginA = <HTMLAnchorElement>document.querySelector('.route-admin');
     const logoutA = <HTMLAnchorElement>document.querySelector('.route-logout');
 
     if (this.menuHide) {
