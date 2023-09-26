@@ -1,0 +1,44 @@
+<div #pageContainer class="page-container">
+
+  <div class="slider">
+    <ng-container *ngFor="let nft of gallery; let i = index">
+      <span [style.--i]="i + 1" [style.transform]="'rotateY(calc(var(--i) * ' + (360 / gallery.length) + 'deg)) translateZ(350px)'">
+        <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+        <p class="nft-name">{{nft.name}}</p>
+        <p class="nft-description">{{nft.description}}</p>
+      </span>
+    </ng-container>
+    <!-- <span style="--i:2;">
+      <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+    </span>
+    <span style="--i:3;">
+      <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+    </span>
+    <span style="--i:4;">
+      <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+    </span>
+    <span style="--i:5;">
+      <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+    </span>
+    <span style="--i:6;">
+      <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+    </span>
+    <span style="--i:7;">
+      <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+    </span>
+    <span style="--i:8;">
+      <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+    </span> -->
+    <!-- <span style="--i:9;">
+      <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+    </span>
+    <span style="--i:10;">
+      <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+    </span> -->
+  </div>
+
+
+
+
+
+</div>

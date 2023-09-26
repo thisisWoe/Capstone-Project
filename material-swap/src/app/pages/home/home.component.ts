@@ -30,6 +30,8 @@ export class HomeComponent implements OnInit {
 
 
   ngOnInit(): void {
+
+
     this.authSvc.user$.subscribe((user) => {
 
       //const decodedToken = jwt_decode(user?.accessToken);
@@ -195,5 +197,7 @@ export class HomeComponent implements OnInit {
     this.authSvc.logout();
     location.reload();
   }
+
+
 }
 

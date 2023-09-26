@@ -27,6 +27,7 @@ const routes: Routes = [
     { path: 'signup', loadChildren: () => import('./../../components/signup/signup.module').then(m => m.SignupModule) },
     { path: 'dashboard', loadChildren: () => import('./../../components/dashboard/dashboard.module').then(m => m.DashboardModule), canActivate: [AuthGuard]  },
     { path: 'admin', loadChildren: () => import('./../../components/admin/admin.module').then(m => m.AdminModule), canActivate: [AuthGuard]   },
+    { path: 'gallery', loadChildren: () => import('./../../components/gallery/gallery.module').then(m => m.GalleryModule) },
   ]}];
 
 @NgModule({
