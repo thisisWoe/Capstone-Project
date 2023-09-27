@@ -3,7 +3,7 @@
   <div class="slider">
     <ng-container *ngFor="let nft of gallery; let i = index">
       <span [style.--i]="i + 1" [style.transform]="'rotateY(calc(var(--i) * ' + (360 / gallery.length) + 'deg)) translateZ(350px)'">
-        <img src="https://ipfs.io/ipfs/QmefC6adSGfkEMkJdXvxhC21zCvT1nhu65fG6NKMZAKHAX?filename=11.png" alt="">
+        <img src="{{nft.imageURI}}" alt="">
         <p class="nft-name">{{nft.name}}</p>
         <p class="nft-description">{{nft.description}}</p>
       </span>

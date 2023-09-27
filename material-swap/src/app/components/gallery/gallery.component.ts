@@ -22,22 +22,6 @@ export class GalleryComponent implements OnInit, AfterViewInit {
 
   gallery: INft[] = [];
 
-  items = [
-    {
-      src: 'https://picsum.photos/200/200',
-      alt: 'Image 1'
-    },
-    {
-      src: 'https://picsum.photos/200/200',
-      alt: 'Image 2'
-    },
-    {
-      src: 'https://picsum.photos/200/200',
-      alt: 'Image 3'
-    }
-  ];
-
-
   constructor(private authSvc: AuthService, private web3Svc: Web3Service) {
     this.walletAddress$ = this.web3Svc.metamask$;
     this.networkString$ = this.web3Svc.network$

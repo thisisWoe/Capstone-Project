@@ -1,0 +1,135 @@
+@import "./../../../variables";
+
+div.page-container {
+  @media screen and (max-width: 960px) {
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  div.row {
+    justify-content: space-between;
+    width: 100%;
+    div.nft-container {
+      background-image: url(./../../../assets/imgs/chart-back.png);
+      background-size: cover;
+      background-position: center;
+      border-radius: 2rem;
+      @media screen and (max-width: 960px) {
+        order: 2;
+      }
+      img {
+        border-radius: 2rem;
+      }
+      div.card-body {
+        h5 {
+          color: white;
+        }
+        p {
+          color: $greyShadeText;
+          /* Transaction Hash: 0xcf6e12f0b4bfbccdee9dc3518ad0c63a8289c83d3ce35057a5d0c36d20a5555f
+          Transaction confirmed:
+          {
+            "blockHash": "0x5d82a3e931c2158ae244502a31876337bf83f9f658146e79e90863f9cd757ad1",
+            "blockNumber": 135084214,
+            "contractAddress": null,
+            "cumulativeGasUsed": 617334,
+            "effectiveGasPrice": 100000000,
+            "from": "0xcb98a882261e900f68e3d4f514372a25ab6aa847",
+            "gasUsed": 617334,
+            "gasUsedForL1": "0x6bbbd",
+            "l1BlockNumber": "0x1161e2b",
+            "logsBloom": "0x0000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000a000000000000000000040000000000000000000000000000020000000000000000000800000000000000000000000010000000000000000000000000044000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000008000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000",
+            "status": true,
+            "to": "0xafe0ff7ac928f234c0339b56e3f10ece5f55871d",
+            "transactionHash": "0xcf6e12f0b4bfbccdee9dc3518ad0c63a8289c83d3ce35057a5d0c36d20a5555f",
+            "transactionIndex": 1,
+            "type": "0x2",
+            "events": {
+                "Transfer": {
+                    "address": "0xaFE0Ff7ac928F234C0339B56E3F10ECe5F55871d",
+                    "blockHash": "0x5d82a3e931c2158ae244502a31876337bf83f9f658146e79e90863f9cd757ad1",
+                    "blockNumber": 135084214,
+                    "logIndex": 0,
+                    "removed": false,
+                    "transactionHash": "0xcf6e12f0b4bfbccdee9dc3518ad0c63a8289c83d3ce35057a5d0c36d20a5555f",
+                    "transactionIndex": 1,
+                    "id": "log_f6b335ab",
+                    "returnValues": {
+                        "0": "0x0000000000000000000000000000000000000000",
+                        "1": "0xcB98A882261E900f68e3D4f514372a25Ab6Aa847",
+                        "2": "1",
+                        "from": "0x0000000000000000000000000000000000000000",
+                        "to": "0xcB98A882261E900f68e3D4f514372a25Ab6Aa847",
+                        "tokenId": "1"
+                    },
+                    "event": "Transfer",
+                    "signature": "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                    "raw": {
+                        "data": "0x",
+                        "topics": [
+                            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                            "0x0000000000000000000000000000000000000000000000000000000000000000",
+                            "0x000000000000000000000000cb98a882261e900f68e3d4f514372a25ab6aa847",
+                            "0x0000000000000000000000000000000000000000000000000000000000000001"
+                        ]
+                    }
+                }
+            }
+        } */
+        }
+      }
+    }
+    div.nft-create-container {
+      background-image: url(./../../../assets/imgs/chart-back.png);
+      background-size: cover;
+      background-position: center;
+      border-radius: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      @media screen and (max-width: 960px) {
+        order: 1;
+      }
+      h5 {
+        color: #e08142;
+      }
+      button {
+        background-color: $backVioletBlack;
+        color: white;
+        font-weight: bold;
+        border: 1px solid #be6dab;
+        align-self: center;
+        border-radius: 2rem;
+        &:hover {
+          background-color: #be6dab5a;
+        }
+      }
+      form {
+        width: 100%;
+        div.input-group {
+          width: 100%;
+          input {
+            font-size: 1rem;
+            border: 1px solid #be6dab;
+            background-color: $backVioletBlack;
+            color: white;
+            &::placeholder {
+              color: $greyShadeText;
+            }
+          }
+          span.input-group-text {
+            font-size: 1rem;
+            border: 1px solid #be6dab;
+            background-color: $backVioletBlack;
+            background-color: #be6dab5a;
+            color: white;
+            width: 100px;
+            text-align: start;
+            padding-left: 5px;
+          }
+        }
+      }
+    }
+  }
+}

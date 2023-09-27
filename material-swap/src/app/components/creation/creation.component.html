@@ -1,1 +1,49 @@
-<p>creation works!</p>
+<div #pageContainer class="page-container">
+  <div class="row">
+
+    <div class="col-12 col-xxl-5 nft-container mb-3">
+      <img src="{{nftImg}}" class="card-img-top my-3" alt="..." *ngIf="nftValid">
+      <img src="./../../../assets/imgs/nft-placeholder.svg" class="card-img-top my-5" alt="..." *ngIf="!nftValid">
+      <div class="card-body mb-3">
+        <h5 class="card-title">{{nftName}}</h5>
+        <p class="card-text">{{nftDescription}}</p>
+      </div>
+
+      <!-- <div class="card my-3" style="width: 100%;">
+      </div> -->
+
+    </div>
+
+    <div class="col-12 col-xxl-5 nft-create-container mb-3">
+      <h5 class="my-3">Create your own NFT</h5>
+      <form [formGroup]="formNFT" (submit)="createNFT()" *ngIf="targetWalletAddress">
+
+        <div class="input-group input-group-sm mb-3">
+          <input type="text" class="form-control input-name" aria-label="Sizing example input"
+            aria-describedby="inputGroup-sizing-sm" formControlName="name" placeholder="NFT name"
+            (input)="onInputNameChange($event)">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+        </div>
+
+        <div class="input-group input-group-sm mb-3">
+          <input type="text" class="form-control input-description" aria-label="Sizing example input"
+            aria-describedby="inputGroup-sizing-sm" formControlName="description" placeholder="NFT description"
+            (input)="onInputDescriptionChange($event)">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Description</span>
+        </div>
+
+        <div class="input-group input-group-sm mb-3">
+          <input type="text" class="form-control input-imgURL" aria-label="Sizing example input"
+            aria-describedby="inputGroup-sizing-sm" formControlName="imgURI" placeholder="NFT image url"
+            (input)="onInputImgChange($event)">
+          <span class="input-group-text" id="inputGroup-sizing-sm">URL</span>
+        </div>
+
+        <button class="btn btn-success btn-form-submit mb-3" type="submit">Create</button>
+
+      </form>
+      <button type="button" class="btn btn-success btn-form-submit mb-3" *ngIf="!targetWalletAddress" (click)="connectMetamask()">First connect Metamask</button>
+    </div>
+
+  </div>
+</div>
