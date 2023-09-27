@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth.service';
 import { INft } from 'src/app/interfaces/inft';
@@ -21,6 +21,11 @@ export class GalleryComponent implements OnInit, AfterViewInit {
   targetNftAddress: string | null = null;
 
   gallery: INft[] = [];
+
+  @ViewChild('slider', { static: true }) slider!: ElementRef;
+  isDragging = false;
+  startX = 0;
+  slideX = 0;
 
   constructor(private authSvc: AuthService, private web3Svc: Web3Service) {
     this.walletAddress$ = this.web3Svc.metamask$;
@@ -85,6 +90,32 @@ export class GalleryComponent implements OnInit, AfterViewInit {
     return this.web3Svc.getAllNFT(takerAddress, deployedContractAddress);
   }
 
+  @HostListener('document:mouseup', ['$event'])
+  onMouseUp(event: MouseEvent) {
+    if (this.isDragging) {
+      this.isDragging = false;
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent) {
+    if (this.isDragging) {
+      const deltaX = event.clientX - this.startX;
+      this.slideX += deltaX;
+      this.startX = event.clientX;
+      this.slider.nativeElement.style.transition = 'transform 0.2s';
+    }
+  }
+
+  onMouseDown(event: MouseEvent) {
+    this.isDragging = true;
+    this.startX = event.clientX;
+    this.slider.nativeElement.style.transition = 'transform 0.2s';
+    event.preventDefault();
+    event.stopPropagation();
+  }
 
 
 }

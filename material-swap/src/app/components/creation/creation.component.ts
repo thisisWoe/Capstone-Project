@@ -32,6 +32,9 @@ export class CreationComponent implements OnInit, AfterViewInit {
   nftImg:string = '';
   nftValid:boolean = false;
 
+  confirmation:boolean = false;
+
+
   constructor(private fb: FormBuilder, private authSvc: AuthService, private web3Svc: Web3Service, private http: HttpClient) {
     this.walletAddress$ = this.web3Svc.metamask$;
     this.networkString$ = this.web3Svc.network$
@@ -86,11 +89,18 @@ export class CreationComponent implements OnInit, AfterViewInit {
   createNFT() {
     /* name: string, description: string, imgURI: string, contractAddress: string, takerAddress: string */
     this.dataToCreate = this.formNFT.value;
+    if (this.dataToCreate.contractAddress === '' || this.dataToCreate.contractAddress === undefined || this.dataToCreate.contractAddress === null) {
+      if(this.targetNetwork){
+        this.dataToCreate.contractAddress = this.targetNetwork;
+      }
+    }
     console.log("this.dataToCreate:", this.dataToCreate)
     if (this.targetWalletAddress) {
       this.web3Svc.createNFT(this.dataToCreate.name, this.dataToCreate.description, this.dataToCreate.imgURI, this.dataToCreate.contractAddress, this.targetWalletAddress)
         .then(response => {
           console.log("response:", response)
+          this.confirmation = true;
+          this.formNFT.reset();
 
         })
     }
