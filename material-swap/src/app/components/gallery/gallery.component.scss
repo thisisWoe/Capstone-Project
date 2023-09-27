@@ -1,4 +1,4 @@
-@import './../../../variables';
+@import "./../../../variables";
 
 div.page-container {
   display: flex;
@@ -31,7 +31,9 @@ div.page-container {
       }
       &:hover {
         img {
-          transform: translateY(-50px) scale(1.2);
+          @media screen and (min-width: 961px) {
+            transform: translateY(-50px) scale(1.5);
+          }
         }
       }
       img {
@@ -42,16 +44,20 @@ div.page-container {
         height: 100%;
         border-radius: 100px;
         border-radius: 2rem;
+        box-shadow: 0px 0px 11px 3px #ffffff;
         object-fit: cover;
-        transition: 2s;
+        transition: 1s;
       }
+
       p.nft-name {
         bottom: -70px;
+        left: 10px;
         position: absolute;
         color: whitesmoke;
         text-align: center;
       }
-      p.nft-description{
+      p.nft-description {
+        left: 10px;
         font-style: italic;
         font-size: 0.8rem;
         bottom: -100px;

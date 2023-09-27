@@ -2,6 +2,7 @@
 nav {
   /* background-color: #5753c4; */
   background-color: #38359bcb;
+  /* background-color: $backVioletBlack; */
   position: fixed;
   top: 0;
   width: 100%;
@@ -43,6 +44,7 @@ nav {
 main {
   border-bottom: 1px solid #8686a1;
   background-color: #38359b;
+  /* background-color: $backVioletBlack; */
   div.hero-container{
     height: 100vh;
     /* @media screen and (max-width: 575px){
