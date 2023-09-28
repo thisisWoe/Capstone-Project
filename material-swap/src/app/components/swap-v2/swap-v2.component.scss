@@ -2,10 +2,14 @@
 div.swap-container {
   width: $swapWidth;
   height: $swapWidth;
+  /*border-radius: 2rem;
+  background-position: center; */
+  //background-size: contain;
+  /* @media screen and (min-width: 961px) {
+    box-shadow: -5px 5px 50px -11px #000000;
+  } */
+  @include backgroundItem();
   background-image: url(./../../../assets/imgs/sfondo-swap2.png);
-  background-position: center;
-  background-size: contain;
-  border-radius: 2rem;
   @media screen and (max-width: 1349px) and (min-width: 1130px) {
     width: $swapWidth/1.5;
     height: $swapWidth/1.5;

@@ -8,6 +8,7 @@ div.page-container {
   }
   /* overflow-y: scroll; */
   div.row {
+    justify-content: space-around;
     h5.title-listing {
       color: #e08142;
       align-self: center;
@@ -15,12 +16,13 @@ div.page-container {
     }
     div.add-asset-container {
       /* border: 1px solid white; */
-      border-radius: 2rem;
       display: flex;
       flex-direction: column;
-      background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      /* background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      border-radius: 2rem;
       background-position: center;
-      background-size: cover;
+      background-size: cover; */
+      @include backgroundItem();
       height: 650px;
       max-height: 650px;
       /* align-items: center; */
@@ -67,13 +69,14 @@ div.page-container {
     }
     div.edit-asset-container {
       /* border: 1px solid white; */
-      border-radius: 2rem;
       overflow-x: hidden;
       height: 650px;
       max-height: 650px;
-      background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      /* background-image: url(./../../../assets/imgs/chart-back-pie.png);
+      border-radius: 2rem;
       background-position: center;
-      background-size: cover;
+      background-size: cover; */
+      @include backgroundItem();
       h5.title-listing {
         text-align: center;
         div.asset-edit-container {
@@ -96,10 +99,11 @@ div.page-container {
       }
     }
     div.pricing-container {
-      border-radius: 2rem;
+      /* border-radius: 2rem;
       background-image: url(./../../../assets/imgs/chart-back-pie.png);
       background-position: center;
-      background-size: cover;
+      background-size: cover; */
+      @include backgroundItem();
       h5 {
         color: #e08142;
         text-align: center;

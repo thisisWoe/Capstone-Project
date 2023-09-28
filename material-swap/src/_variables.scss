@@ -6,3 +6,13 @@ $swapWidth: 650px;
 $greyShadeText: #8686a1;
 $chartCandleHeight: 500px;
 $backVioletBlack: #1f1739;
+
+@mixin backgroundItem(){
+  background-image: url(./../../../assets/imgs/chart-back.png);
+  background-position: center;
+  border-radius: 2rem;
+  background-size: cover;
+  @media screen and (min-width: 961px) {
+    box-shadow: -5px 5px 50px -11px #000000;
+  }
+}

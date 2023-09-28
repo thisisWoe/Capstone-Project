@@ -16,6 +16,7 @@ div.card-wrapper {
     background-color: #1f1739;
     overflow: hidden;
     position: relative;
+    box-shadow: -5px 5px 50px -1px #000000;
     @media screen and (max-width: 1129px) and (min-width: 500px) {
       height: 600px;
     }

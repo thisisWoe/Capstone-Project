@@ -1,9 +1,10 @@
 @import './../../../variables';
 
 div.form-container{
-  background-image: url(./../../../assets/imgs/chart-back-pie.png);
+  /* background-image: url(./../../../assets/imgs/chart-back-pie.png);
   background-size: cover;
-  border-radius: 2rem;
+  border-radius: 2rem; */
+  @include backgroundItem();
   height: 100%;
   height: 100%;
   overflow: hidden;

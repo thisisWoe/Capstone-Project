@@ -2,7 +2,7 @@
   <div class="row">
 
 
-    <div class="col-12 candle-chart-wrapper mb-5">
+    <div class="col-12 col-xxl-11 candle-chart-wrapper mb-5">
       <select (change)="onChangeStrategyTarget($event)" class="form-select mt-5" aria-label="Default select example">
         <ng-container *ngFor="let strategy of strategies">
           <option value="{{strategy.id}}">{{strategy.name}}</option>
@@ -17,7 +17,7 @@
       <div id="chartdivpie" class="" style="width: 100%; height: 500px;"></div>
     </div>
 
-    <div class="col-12 col-xxl-6 line-chart-wrapper mb-5">
+    <div class="col-12 col-xxl-5 line-chart-wrapper mb-5">
       <div ngbDropdown class="d-inline-block select-img mt-3">
         <button type="button" class="btn btn-outline-primary btn-select-asset" id="dropdownBasic1" ngbDropdownToggle>
           Select asset
@@ -35,7 +35,7 @@
       <div id="chartdivline" class="" style="width: 100%; height: 500px;"></div>
     </div>
 
-    <div class="col-12 rebalance-wrapper mb-5">
+    <div class="col-12 col-xxl-11 rebalance-wrapper mb-5">
       <div class="header-rebalance mt-3">
         <h5 class="mt-3">Rebalance</h5>
         <div>
