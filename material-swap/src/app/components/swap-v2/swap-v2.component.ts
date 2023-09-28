@@ -1,3 +1,4 @@
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MetamaskIconComponent } from './../metamask-icon/metamask-icon.component';
 import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -317,12 +318,25 @@ export class SwapV2Component {
   targetUrlToFetch$: string = '';
 
 
-  constructor(private web3Svc: Web3Service, private mktSvc: MarketDataService) {
+  constructor(private web3Svc: Web3Service, private mktSvc: MarketDataService, private modalService: NgbModal) {
     this.wallet$ = this.web3Svc.metamask$;
     this.catchUrlToFetch$ = this.web3Svc.ZeroXtarget$;
     this.networkString$ = this.web3Svc.network$
     //this.ZERO_x_TARGET$ = this.metamaskData.ZeroXtarget$;
   }
+
+  openLg(content: any) {
+		this.modalService.open(content, { size: 'lg' });
+    const modalContent = <HTMLDivElement>document.querySelector('.modal-content');
+    modalContent.style.backgroundImage = 'url(./../../../assets/imgs/chart-back-pie.png)';
+    modalContent.style.borderRadius = '2rem';
+    const modalHeader = <HTMLDivElement>modalContent.querySelector('.modal-header');
+    modalHeader.style.border = 'none';
+    const button = <HTMLButtonElement>modalContent.querySelector('.btn');
+    button.style.color = 'white';
+    button.style.backgroundColor = '#1f1739';
+    button.style.border = '#1px solid #be6dab';
+	}
 
   ngOnInit(): void {
     this.getAssetData();
@@ -363,6 +377,7 @@ export class SwapV2Component {
       this.swapElement.style.height = (window.innerWidth / 100) * 90 + 'px';
       console.log(this.swapElement.style.width);
       console.log(this.swapElement.style.height);
+
 
     } else {
       console.log('nothing changed');

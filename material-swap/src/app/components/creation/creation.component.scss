@@ -46,6 +46,15 @@ div.page-container {
       h5 {
         color: #e08142;
       }
+      a{
+        cursor: pointer;
+        &:hover{
+          svg{
+            color: grey!important;
+            stroke: grey!important;
+          }
+        }
+      }
       button {
         background-color: $backVioletBlack;
         color: white;
@@ -106,5 +115,14 @@ div.page-container {
         }
       }
     }
+  }
+}
+
+div.modal-body{
+  max-height: 700px;
+  overflow-y: scroll;
+
+  img{
+
   }
 }

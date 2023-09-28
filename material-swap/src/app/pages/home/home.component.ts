@@ -68,6 +68,8 @@ export class HomeComponent implements OnInit {
     const strategyA = <HTMLAnchorElement>document.querySelector('.route-strategy');
     const loginA = <HTMLAnchorElement>document.querySelector('.route-admin');
     const logoutA = <HTMLAnchorElement>document.querySelector('.route-logout');
+    const creationA = <HTMLAnchorElement>document.querySelector('.route-creation');
+    const galleryA = <HTMLAnchorElement>document.querySelector('.route-gallery');
 
     if (this.menuHide) {
       swapA.style.display = 'block';
@@ -75,9 +77,11 @@ export class HomeComponent implements OnInit {
       strategyA.style.display = 'block';
       loginA.style.display = 'block';
       logoutA.style.display = 'block';
+      creationA.style.display = 'block';
+      galleryA.style.display = 'block';
 
       anime({
-        targets: [swapA, dashboardA, strategyA, loginA, logoutA],
+        targets: [swapA, dashboardA, strategyA, loginA, logoutA, creationA, galleryA],
         delay: 0,
         keyframes: [
           { translateX: -150 },
@@ -88,7 +92,7 @@ export class HomeComponent implements OnInit {
         loop: false,
         complete: () => {
           anime({
-            targets: [dashboardA, strategyA, loginA, logoutA],
+            targets: [dashboardA, strategyA, loginA, logoutA, creationA, galleryA],
             delay: 0,
             keyframes: [{ translateY: -50 }],
             duration: 125,
@@ -96,7 +100,7 @@ export class HomeComponent implements OnInit {
             loop: false,
             complete: () => {
               anime({
-                targets: [strategyA, loginA, logoutA],
+                targets: [strategyA, loginA, logoutA, creationA, galleryA],
                 delay: 0,
                 keyframes: [{ translateY: -100 }],
                 duration: 125,
@@ -104,7 +108,7 @@ export class HomeComponent implements OnInit {
                 loop: false,
                 complete: () => {
                   anime({
-                    targets: [loginA, logoutA],
+                    targets: [loginA, logoutA, creationA, galleryA],
                     delay: 0,
                     keyframes: [{ translateY: -150 }],
                     duration: 125,
@@ -112,12 +116,32 @@ export class HomeComponent implements OnInit {
                     loop: false,
                     complete: () => {
                       anime({
-                        targets: [logoutA],
+                        targets: [logoutA, creationA, galleryA],
                         delay: 0,
                         keyframes: [{ translateY: -200 }],
                         duration: 125,
                         easing: 'linear',
                         loop: false,
+                        complete: () => {
+                          anime({
+                            targets: [logoutA, galleryA],
+                            delay: 0,
+                            keyframes: [{ translateY: -250 }],
+                            duration: 125,
+                            easing: 'linear',
+                            loop: false,
+                            complete: () => {
+                              anime({
+                                targets: [logoutA],
+                                delay: 0,
+                                keyframes: [{ translateY: -300 }],
+                                duration: 125,
+                                easing: 'linear',
+                                loop: false,
+                              })
+                            }
+                          })
+                        }
                       })
                     }
                   })
@@ -129,7 +153,7 @@ export class HomeComponent implements OnInit {
       });
       this.toggleRouterMenu();
     } else {
-      anime({
+      /* anime({
         targets: [logoutA],
         delay: 0,
         keyframes: [{ translateY: -150 }],
@@ -186,6 +210,94 @@ export class HomeComponent implements OnInit {
             }
           })
         }
+      }) */
+      anime({
+        targets: [logoutA],
+        delay: 0,
+        keyframes: [{ translateY: -300 }],
+        duration: 125,
+        easing: 'linear',
+        loop: false,
+        complete: () => {
+          anime({
+            targets: [galleryA, logoutA],
+            delay: 0,
+            keyframes: [{ translateY: -250 }],
+            duration: 125,
+            easing: 'linear',
+            loop: false,
+            complete: () => {
+              anime({
+                targets: [logoutA, galleryA, creationA],
+                delay: 0,
+                keyframes: [{ translateY: -200 }],
+                duration: 125,
+                easing: 'linear',
+                loop: false,
+                complete: () => {
+                  anime({
+                    targets: [logoutA, galleryA, creationA, loginA],
+                    delay: 0,
+                    keyframes: [{ translateY: -150 }],
+                    duration: 125,
+                    easing: 'linear',
+                    loop: false,
+                    complete: () => {
+                      anime({
+                        targets: [logoutA, galleryA, creationA, loginA, strategyA],
+                        delay: 0,
+                        keyframes: [{ translateY: -100 }],
+                        duration: 125,
+                        easing: 'linear',
+                        loop: false,
+                        complete: () => {
+                          anime({
+                            targets: [logoutA, galleryA, creationA, loginA, dashboardA, strategyA],
+                            delay: 0,
+                            keyframes: [{ translateY: -50 }],
+                            duration: 125,
+                            easing: 'linear',
+                            loop: false,
+                            complete: () => {
+                              anime({
+                                targets: [logoutA, galleryA, creationA, loginA, logoutA, strategyA, dashboardA],
+                                delay: 0,
+                                keyframes: [{ translateY: -0 }],
+                                duration: 125,
+                                easing: 'linear',
+                                loop: false,
+                                complete: () => {
+                                  anime({
+                                    targets: [logoutA, galleryA, creationA, loginA, logoutA, strategyA, dashboardA, swapA],
+                                    delay: 0,
+                                    keyframes: [
+                                      { translateX: -250 },
+                                      { translateX: -125, opacity: 0 },
+                                    ],
+                                    duration: 250,
+                                    easing: 'linear',
+                                    loop: false,
+                                    complete: () => {
+                                      swapA.style.display = 'none';
+                                      dashboardA.style.display = 'none';
+                                      strategyA.style.display = 'none';
+                                      loginA.style.display = 'none';
+                                      logoutA.style.display = 'none';
+                                    }
+                                  })
+                                }
+                              })
+                            }
+                          })
+                        }
+                      })
+                    }
+                  })
+                }
+              })
+            }
+          })
+        }
       })
       this.toggleRouterMenu();
     }
@@ -199,5 +311,103 @@ export class HomeComponent implements OnInit {
   }
 
 
+  prova(){
+    const swapA = <HTMLAnchorElement>document.querySelector('.route-swap');
+    const dashboardA = <HTMLAnchorElement>document.querySelector('.route-dashboard');
+    const strategyA = <HTMLAnchorElement>document.querySelector('.route-strategy');
+    const loginA = <HTMLAnchorElement>document.querySelector('.route-admin');
+    const logoutA = <HTMLAnchorElement>document.querySelector('.route-logout');
+    const creationA = <HTMLAnchorElement>document.querySelector('.route-creation');
+    const galleryA = <HTMLAnchorElement>document.querySelector('.route-gallery');
+
+    anime({
+      targets: [logoutA],
+      delay: 0,
+      keyframes: [{ translateY: -3000 }],
+      duration: 125,
+      easing: 'linear',
+      loop: false,
+      complete: () => {
+        anime({
+          targets: [galleryA, logoutA],
+          delay: 0,
+          keyframes: [{ translateY: -250 }],
+          duration: 125,
+          easing: 'linear',
+          loop: false,
+          complete: () => {
+            anime({
+              targets: [logoutA, galleryA, creationA],
+              delay: 0,
+              keyframes: [{ translateY: -200 }],
+              duration: 125,
+              easing: 'linear',
+              loop: false,
+              complete: () => {
+                anime({
+                  targets: [logoutA, dashboardA, strategyA, loginA],
+                  delay: 0,
+                  keyframes: [{ translateY: -150 }],
+                  duration: 125,
+                  easing: 'linear',
+                  loop: false,
+                  complete: () => {
+                    anime({
+                      targets: [logoutA, galleryA, creationA, loginA, logoutA],
+                      delay: 0,
+                      keyframes: [{ translateY: -100 }],
+                      duration: 250,
+                      easing: 'linear',
+                      loop: false,
+                      complete: () => {
+                        anime({
+                          targets: [logoutA, galleryA, creationA, loginA, logoutA, strategyA],
+                          delay: 0,
+                          keyframes: [{ translateY: -50 }],
+                          duration: 250,
+                          easing: 'linear',
+                          loop: false,
+                          complete: () => {
+                            anime({
+                              targets: [logoutA, galleryA, creationA, loginA, logoutA, strategyA, dashboardA],
+                              delay: 0,
+                              keyframes: [{ translateY: -0 }],
+                              duration: 250,
+                              easing: 'linear',
+                              loop: false,
+                              complete: () => {
+                                anime({
+                                  targets: [logoutA, galleryA, creationA, loginA, logoutA, strategyA, dashboardA, swapA],
+                                  delay: 0,
+                                  keyframes: [
+                                    { translateX: -250 },
+                                    { translateX: -125, opacity: 0 },
+                                  ],
+                                  duration: 250,
+                                  easing: 'linear',
+                                  loop: false,
+                                  complete: () => {
+                                    swapA.style.display = 'none';
+                                    dashboardA.style.display = 'none';
+                                    strategyA.style.display = 'none';
+                                    loginA.style.display = 'none';
+                                    logoutA.style.display = 'none';
+                                  }
+                                })
+                              }
+                            })
+                          }
+                        })
+                      }
+                    })
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
+    })
+  }
 }
 

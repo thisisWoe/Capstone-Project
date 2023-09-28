@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, catchError, map, of } from 'rxjs';
 import { AuthService } from 'src/app/auth.service';
 import { Web3Service } from 'src/app/web3-serv/web3.service';
@@ -35,7 +36,7 @@ export class CreationComponent implements OnInit, AfterViewInit {
   confirmation:boolean = false;
 
 
-  constructor(private fb: FormBuilder, private authSvc: AuthService, private web3Svc: Web3Service, private http: HttpClient) {
+  constructor(private fb: FormBuilder, private authSvc: AuthService, private web3Svc: Web3Service, private http: HttpClient, private modalService: NgbModal) {
     this.walletAddress$ = this.web3Svc.metamask$;
     this.networkString$ = this.web3Svc.network$
   }
@@ -85,6 +86,19 @@ export class CreationComponent implements OnInit, AfterViewInit {
     const pageContainer = this.pageContainer.nativeElement;
     pageContainer.style.height = this.authSvc.sizingRouterApp();
   }
+
+  openLg(content: any) {
+		this.modalService.open(content, { size: 'lg' });
+    const modalContent = <HTMLDivElement>document.querySelector('.modal-content');
+    modalContent.style.backgroundImage = 'url(./../../../assets/imgs/chart-back-pie.png)';
+    modalContent.style.borderRadius = '2rem';
+    const modalHeader = <HTMLDivElement>modalContent.querySelector('.modal-header');
+    modalHeader.style.border = 'none';
+    const button = <HTMLButtonElement>modalContent.querySelector('.btn');
+    button.style.color = 'white';
+    button.style.backgroundColor = '#1f1739';
+    button.style.border = '#1px solid #be6dab';
+	}
 
   createNFT() {
     /* name: string, description: string, imgURI: string, contractAddress: string, takerAddress: string */

@@ -37,6 +37,7 @@ div.swap-container {
             align-items: center;
             & > div.svg-cont a {
               color: white !important;
+              cursor: pointer;
               &:hover {
                 svg {
                   padding: 10px;
@@ -46,6 +47,7 @@ div.swap-container {
                   max-height: 50px;
                   path {
                     fill: white !important;
+                    stroke: white !important;
                   }
                 }
               }
@@ -56,6 +58,11 @@ div.swap-container {
                 border-radius: 25%;
                 max-height: 50px;
                 transition: background-color 0.5s ease;
+                @media screen and (max-width: 960px) {
+                  padding: 5px;
+                  width: 30px!important;
+                  height: 30px!important;
+                }
                 path {
                   fill: #626277 !important;
                 }

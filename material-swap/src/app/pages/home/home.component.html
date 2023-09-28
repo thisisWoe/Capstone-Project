@@ -29,7 +29,9 @@
       <a [routerLink]="['dashboard']" (click)="animationRouterMenu()" class="link-route route-dashboard">Dashboard</a>
       <a [routerLink]="['strategy']" (click)="animationRouterMenu()" class="link-route route-strategy">Strategies</a>
       <a [routerLink]="['admin']" (click)="animationRouterMenu()" class="link-route route-admin"
-        *ngIf="isAdmin">Admin</a>
+      *ngIf="isAdmin">Admin</a>
+      <a [routerLink]="['creation']" (click)="animationRouterMenu()" class="link-route route-creation">Creation</a>
+      <a [routerLink]="['gallery']" (click)="animationRouterMenu()" class="link-route route-gallery">Gallery</a>
       <a [routerLink]="['auth']" (click)="animationRouterMenu(); logout()" class="link-route route-logout">Logout</a>
     </div>
   </div>
