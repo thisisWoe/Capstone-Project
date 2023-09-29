@@ -142,10 +142,12 @@ div.router-manager {
   div.router-wrapper {
     position: relative;
     a.menu-icon {
+
       &:active {
         svg {
           border-radius: 50%;
-          box-shadow: 0px 0px 15px 5px #e08142;
+          box-shadow: 0px 0px 15px 5px #be6dab;
+
         }
       }
     }
@@ -155,15 +157,19 @@ div.router-manager {
       top: 16px;
       /* left: -200px; */
       opacity: 0;
-      background-color: #e08142;
+      /* background-color: #e08142; */
       padding: 5px 10px;
       border-radius: 2rem;
       text-decoration: none;
-      color: #2c2899;
+      /* color: #2c2899; */
       font-weight: bold;
-      border: 2px solid #dc5d07;
+      /* border: 2px solid #dc5d07; */
+
+      border: 2px solid #be6dab;
+      background-color: #4f365c;
+      color: white;
       &:active {
-        background-color: #e0814250;
+        background-color: #be6dab;
       }
     }
     a.route-swap {
@@ -180,8 +186,8 @@ div.router-manager {
     }
     a.route-logout {
       z-index: 15;
-      background-color: #dc5d07;
-      border: 2px solid #833806;
+      background-color: #be6dab;
+      border: 2px solid #e30cb1;
     }
   }
 }

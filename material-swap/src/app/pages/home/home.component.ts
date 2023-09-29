@@ -153,64 +153,6 @@ export class HomeComponent implements OnInit {
       });
       this.toggleRouterMenu();
     } else {
-      /* anime({
-        targets: [logoutA],
-        delay: 0,
-        keyframes: [{ translateY: -150 }],
-        duration: 125,
-        easing: 'linear',
-        loop: false,
-        complete: () => {
-          anime({
-            targets: [loginA, logoutA],
-            delay: 0,
-            keyframes: [{ translateY: -100 }],
-            duration: 125,
-            easing: 'linear',
-            loop: false,
-            complete: () => {
-              anime({
-                targets: [logoutA, strategyA, loginA],
-                delay: 0,
-                keyframes: [{ translateY: -50 }],
-                duration: 125,
-                easing: 'linear',
-                loop: false,
-                complete: () => {
-                  anime({
-                    targets: [logoutA, dashboardA, strategyA, loginA],
-                    delay: 0,
-                    keyframes: [{ translateY: -0 }],
-                    duration: 125,
-                    easing: 'linear',
-                    loop: false,
-                    complete: () => {
-                      anime({
-                        targets: [swapA, dashboardA, strategyA, loginA, logoutA],
-                        delay: 0,
-                        keyframes: [
-                          { translateX: -250 },
-                          { translateX: -125, opacity: 0 },
-                        ],
-                        duration: 250,
-                        easing: 'linear',
-                        loop: false,
-                        complete: () => {
-                          swapA.style.display = 'none';
-                          dashboardA.style.display = 'none';
-                          strategyA.style.display = 'none';
-                          loginA.style.display = 'none';
-                          logoutA.style.display = 'none';
-                        }
-                      })
-                    }
-                  })
-                }
-              })
-            }
-          })
-        }
-      }) */
       anime({
         targets: [logoutA],
         delay: 0,
