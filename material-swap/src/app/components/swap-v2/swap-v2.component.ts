@@ -1,22 +1,17 @@
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { MetamaskIconComponent } from './../metamask-icon/metamask-icon.component';
-import { AfterViewInit, Component, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
-import { INetwork } from 'src/app/interfaces/Inetwork';
 import { IAssetDto } from 'src/app/interfaces/iasset-dto';
-import { ICryptoData } from 'src/app/interfaces/icrypto-data';
 import { IObjInEntrance } from 'src/app/interfaces/iobj-in-entrance';
-import { ITokenAddressData } from 'src/app/interfaces/itoken-address-data';
 import { MarketDataService } from 'src/app/market-data.service';
 import { Web3Service } from 'src/app/web3-serv/web3.service';
-import Web3 from 'web3';
 
 @Component({
   selector: 'app-swap-v2',
   templateUrl: './swap-v2.component.html',
   styleUrls: ['./swap-v2.component.scss']
 })
-export class SwapV2Component {
+export class SwapV2Component implements AfterViewInit, OnInit{
   @ViewChild('swap') private swapRef!: ElementRef;
   swapElement!: HTMLDivElement;
   @ViewChild('btnConnectSwap') private swapBtnRef!: ElementRef;

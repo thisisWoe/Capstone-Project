@@ -1,9 +1,6 @@
 @import './../../../variables';
 
 div.form-container{
-  /* background-image: url(./../../../assets/imgs/chart-back-pie.png);
-  background-size: cover;
-  border-radius: 2rem; */
   @include backgroundItem();
   height: 100%;
   height: 100%;
@@ -17,15 +14,10 @@ div.form-container{
       div.btn-group{
         height: 50px;
         width: 70%;
-        /* border: 1px solid #be6dab; */
-        /* border: 1px solid white; */
         input{
         }
         .btn-check:checked{
           background-color: white !important;
-        }
-        label{
-
         }
       }
     }
@@ -97,7 +89,6 @@ div.form-container{
 div#registerTab{
   position: absolute;
   bottom: 0px;
-  /* right: -800px; */
 }
 
 p#secret{

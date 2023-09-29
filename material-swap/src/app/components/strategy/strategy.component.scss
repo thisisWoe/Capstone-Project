@@ -5,9 +5,6 @@ div.page-container {
   div.row {
     justify-content: space-around;
     div.candle-chart-wrapper {
-      /* background-image: url(./../../../assets/imgs/chart-back.png);
-      background-size: cover;
-      border-radius: 2rem; */
       @include backgroundItem();
       display: flex;
       flex-direction: column;
@@ -24,10 +21,6 @@ div.page-container {
       }
     }
     div.pie-chart-wrapper {
-      /* background-image: url(./../../../assets/imgs/chart-back.png);
-      background-size: cover;
-      border-radius: 2rem;
-      background-position: center; */
       @include backgroundItem();
       h5 {
         color: #e08142;
@@ -39,10 +32,6 @@ div.page-container {
       }
     }
     div.line-chart-wrapper {
-      /* background-image: url(./../../../assets/imgs/chart-back.png);
-      background-size: cover;
-      background-position: center;
-      border-radius: 2rem; */
       @include backgroundItem();
       display: flex;
       flex-direction: column;
@@ -87,10 +76,6 @@ div.page-container {
     }
     div.rebalance-wrapper {
       min-height: 500px;
-      /* background-image: url(./../../../assets/imgs/chart-back.png);
-      background-size: cover;
-      background-position: center;
-      border-radius: 2rem; */
       @include backgroundItem();
       display: flex;
       flex-direction: column;
@@ -112,7 +97,7 @@ div.page-container {
             font-size: 1rem;
           }
         }
-        &>div{
+        & > div {
           flex-grow: 1;
           display: flex;
           justify-content: end;
@@ -186,23 +171,22 @@ div.page-container {
           color: white;
         }
       }
-
     }
   }
 }
 
-div#chartdivcandle{
-  @media screen and (max-width: 600px){
+div#chartdivcandle {
+  @media screen and (max-width: 600px) {
     height: 400px !important;
   }
 }
-div#chartdivpie{
-  @media screen and (max-width: 600px){
+div#chartdivpie {
+  @media screen and (max-width: 600px) {
     height: 300px !important;
   }
 }
-div#chartdivline{
-  @media screen and (max-width: 600px){
+div#chartdivline {
+  @media screen and (max-width: 600px) {
     height: 300px !important;
   }
 }

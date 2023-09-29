@@ -50,6 +50,7 @@ export class CreationComponent implements OnInit, AfterViewInit {
     });
     this.walletAddress$.subscribe(wallet => {
       if (wallet) {
+        // Imposto l'indirizzo del portafoglio attivo
         this.targetWalletAddress = wallet.selectedAddress;
         this.networkString$.subscribe(network => {
           this.targetNetwork = network!.toLowerCase();
@@ -87,6 +88,7 @@ export class CreationComponent implements OnInit, AfterViewInit {
     pageContainer.style.height = this.authSvc.sizingRouterApp();
   }
 
+  //modale
   openLg(content: any) {
 		this.modalService.open(content, { size: 'lg' });
     const modalContent = <HTMLDivElement>document.querySelector('.modal-content');
@@ -100,19 +102,19 @@ export class CreationComponent implements OnInit, AfterViewInit {
     button.style.border = '#1px solid #be6dab';
 	}
 
+  // Metodo per mintare un nuovo NFT
   createNFT() {
-    /* name: string, description: string, imgURI: string, contractAddress: string, takerAddress: string */
+    // Ottiene i dati per creare il nuovo NFT dal form
     this.dataToCreate = this.formNFT.value;
     if (this.dataToCreate.contractAddress === '' || this.dataToCreate.contractAddress === undefined || this.dataToCreate.contractAddress === null) {
       if(this.targetNetwork){
         this.dataToCreate.contractAddress = this.targetNetwork;
       }
     }
-    console.log("this.dataToCreate:", this.dataToCreate)
+
     if (this.targetWalletAddress) {
       this.web3Svc.createNFT(this.dataToCreate.name, this.dataToCreate.description, this.dataToCreate.imgURI, this.dataToCreate.contractAddress, this.targetWalletAddress)
         .then(response => {
-          console.log("response:", response)
           this.confirmation = true;
           this.formNFT.reset();
 
@@ -124,15 +126,20 @@ export class CreationComponent implements OnInit, AfterViewInit {
     this.web3Svc.connect();
   }
 
+  //Inserimento dinamico del nome
   onInputNameChange(event: Event) {
-  const inputValue = (event.target as HTMLInputElement).value;
-  this.nftName = inputValue;
+    const inputValue = (event.target as HTMLInputElement).value;
+    this.nftName = inputValue;
   }
+
+  //Inserimento dinamico della descrizione
   onInputDescriptionChange(event: Event) {
   const inputValue = (event.target as HTMLInputElement).value;
   this.nftDescription = inputValue;
 
   }
+
+  //inserimento dinamico dell'URL
   onInputImgChange(event: Event) {
     //this.nftValid = false;
     const inputValue = (event.target as HTMLInputElement).value;
@@ -154,6 +161,7 @@ export class CreationComponent implements OnInit, AfterViewInit {
 
   }
 
+  // Metodo per verificare se l'URL dell'immagine è valido
   isImageUrlValid(imageUrl: string): Observable<boolean> {
     // Fai una richiesta HTTP HEAD all'URL dell'immagine
     return this.http.head(imageUrl).pipe(
@@ -161,9 +169,4 @@ export class CreationComponent implements OnInit, AfterViewInit {
       catchError(() => of(false)) // Se la richiesta fallisce, restituisci false
     );
   }
-
-
-
-
-
 }

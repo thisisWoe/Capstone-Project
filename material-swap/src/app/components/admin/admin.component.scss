@@ -6,7 +6,6 @@ div.page-container {
   @media screen and (max-height: 1270px) {
     overflow-y: scroll;
   }
-  /* overflow-y: scroll; */
   div.row {
     justify-content: space-around;
     h5.title-listing {
@@ -15,17 +14,11 @@ div.page-container {
       font-size: 2rem;
     }
     div.add-asset-container {
-      /* border: 1px solid white; */
       display: flex;
       flex-direction: column;
-      /* background-image: url(./../../../assets/imgs/chart-back-pie.png);
-      border-radius: 2rem;
-      background-position: center;
-      background-size: cover; */
       @include backgroundItem();
       height: 650px;
       max-height: 650px;
-      /* align-items: center; */
       form {
         border-bottom: 1px solid #be6dab;
         input {
@@ -68,14 +61,9 @@ div.page-container {
       }
     }
     div.edit-asset-container {
-      /* border: 1px solid white; */
       overflow-x: hidden;
       height: 650px;
       max-height: 650px;
-      /* background-image: url(./../../../assets/imgs/chart-back-pie.png);
-      border-radius: 2rem;
-      background-position: center;
-      background-size: cover; */
       @include backgroundItem();
       h5.title-listing {
         text-align: center;
@@ -99,10 +87,6 @@ div.page-container {
       }
     }
     div.pricing-container {
-      /* border-radius: 2rem;
-      background-image: url(./../../../assets/imgs/chart-back-pie.png);
-      background-position: center;
-      background-size: cover; */
       @include backgroundItem();
       h5 {
         color: #e08142;
@@ -110,12 +94,9 @@ div.page-container {
         font-size: 2rem;
       }
       div.r1 {
-        & > div.date-wrapper {
-        }
         & > div.select-wrapper {
           display: flex;
           flex-direction: column;
-          /* justify-content: end; */
           @media screen and (min-width: 992px) {
             flex-direction: column;
             justify-content: start;
@@ -126,11 +107,11 @@ div.page-container {
             font-weight: bold;
             border: 1px solid #be6dab;
             border-radius: 2rem;
-            &:hover{
+            &:hover {
               background-color: #be6dab5a;
             }
           }
-          button.btn-confirm-fetch{
+          button.btn-confirm-fetch {
             font-weight: bold;
             border-radius: 2rem;
             background-color: #e08142;
@@ -206,7 +187,6 @@ div.page-container {
 ngb-datepicker {
   border: 1px solid #be6dab;
 }
-/* ngb-dp-months */
 ::ng-deep div.ngb-dp-months {
   @media screen and (max-width: 1199px) {
     flex-direction: column;
@@ -215,30 +195,3 @@ ngb-datepicker {
     flex-direction: row;
   }
 }
-/* .ngb-dp-month {
-  width: 100%;
-}
-::ng-deep .ngb-dp-weekdays,
-::ng-deep .ngb-dp-week {
-  justify-content: space-evenly;
-} */
-
-/* div.toast{
-  border: #be6dab 1px solid;
-  div.toast-header{
-    background-color: #be6dab5a !important;
-  }
-  div.toast-body{
-    background-color: $backVioletBlack !important;
-  }
-} */
-
-/* <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" style="display: inline-block; width: 33%;">
-  <div class="toast-header">
-    <strong class="me-auto">polygon</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-  </div>
-  <div class="toast-body" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;">
-    sdfsdf
-  </div>
-</div> */

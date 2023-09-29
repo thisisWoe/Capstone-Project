@@ -1,7 +1,6 @@
 @import "./../../../variables";
 
 div.page-container {
-  //da togliere
   @media screen and (max-width: 1399px) {
     overflow-y: scroll;
   }
@@ -13,7 +12,6 @@ div.page-container {
     }
     div.strategy-infos {
       background-image: url(./../../../assets/imgs/chart-back-pie.png);
-      //box-shadow: -5px 5px 15px 5px #000000;
       box-shadow: -5px 5px 50px -11px #000000;
       background-position: center;
       border-radius: 2rem;
@@ -32,23 +30,23 @@ div.page-container {
         font-size: 3rem;
         color: whitesmoke;
       }
-      select{
+      select {
         color: whitesmoke;
         background-color: $backVioletBlack;
         border: 1px solid #be6dab;
         width: 50%;
         text-align: center;
       }
-      button.btn-info-str{
+      button.btn-info-str {
         color: #be6dab;
         border: 1px solid #be6dab;
         width: 30%;
         max-height: 50px;
         justify-content: center;
-        span{
+        span {
           flex-grow: 1;
         }
-        svg{
+        svg {
           height: 20px;
         }
       }
@@ -109,7 +107,7 @@ div.page-container {
             color: $greyShadeText;
           }
         }
-        input.mini-form{
+        input.mini-form {
           font-size: 1rem;
           border: 1px solid #be6dab;
           background-color: $backVioletBlack;
@@ -134,18 +132,17 @@ div.page-container {
             max-height: 30px;
           }
         }
-        label.form-label{
+        label.form-label {
           @media screen and (max-width: 1440px) {
             display: none;
           }
-
         }
-        label.form-check-label{
+        label.form-check-label {
           color: $greyShadeText;
         }
         .form-check-input[type="checkbox"]:checked {
-          background-color: #be6dab; /* Cambia il colore di sfondo quando è attivato (switched on) */
-          border-color: #be6dab; /* Cambia il colore del bordo quando è attivato */
+          background-color: #be6dab;
+          border-color: #be6dab;
         }
         div.create-wrapper,
         div.edit-wrapper {
@@ -166,7 +163,7 @@ div.page-container {
     }
   }
 }
-div.alert-danger{
+div.alert-danger {
   background-color: #c60298;
   border: none;
   border-left: 5px solid #be6dab;

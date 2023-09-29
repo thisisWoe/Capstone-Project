@@ -1,8 +1,8 @@
-import { AfterViewInit, Component, ElementRef, NgZone, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as THREE from 'three';
-import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from '@avatsaev/three-orbitcontrols-ts';
-import { AnimationMixer, AnimationAction, Clock } from 'three';
+import { AnimationMixer, Clock } from 'three';
 
 
 @Component({
@@ -33,14 +33,14 @@ export class ModelEthComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit() {
+    // Configurazione della scena, della camera, del renderer, dei controlli e creazione di luce e mesh
     this.configScene();
     this.configCamera();
     this.configRenderer();
     this.configControls();
-
     this.createLight();
     this.createMesh();
-
+    //avvio animazione
     this.animate();
   }
 
@@ -56,7 +56,6 @@ export class ModelEthComponent implements AfterViewInit, OnInit {
   }
 
   private get canvas(): HTMLCanvasElement {
-    //this.canvasRef.nativeElement.style.height = this.canvasRef.nativeElement.style.width;
     return this.canvasRef.nativeElement;
   }
 
@@ -66,7 +65,6 @@ export class ModelEthComponent implements AfterViewInit, OnInit {
   }
 
   configCamera() {
-    //this.camera.aspect = this.calculateAspectRatio();
     this.camera.aspect = 1;
 
 
@@ -82,22 +80,9 @@ export class ModelEthComponent implements AfterViewInit, OnInit {
       alpha: true
     });
     this.renderer.setPixelRatio(devicePixelRatio);
-    // setClearColor for transparent background
-    // i.e. scene or canvas background shows through
-    this.renderer.setClearColor(0x000000, 0);
-    //grandezza in base al client
-    /* this.renderer.setSize(this.canvas.clientWidth*2, this.canvas.clientHeight*2); */
 
-    //grandezza in base al'elemento genitore
-    // Ottenere l'elemento genitore
-    /* const parentElement = this.canvas.parentElement; */
-    // Verifica se l'elemento genitore esiste e ottiene la sua larghezza e altezza
-    /* if (parentElement) {
-      const { width, height } = parentElement.getBoundingClientRect();
-      this.renderer.setSize(width, height);
-      this.camera.aspect = width / height;
-      this.camera.updateProjectionMatrix();
-    } */
+    this.renderer.setClearColor(0x000000, 0);
+    // Adattamento delle dimensioni del canvas in base alla larghezza del dispositivo
     if (this.deviceWidth < 992) {
       const canvasSize = Math.max(this.canvas.clientWidth, this.canvas.clientHeight);
       this.renderer.setSize(canvasSize, canvasSize);
@@ -105,14 +90,15 @@ export class ModelEthComponent implements AfterViewInit, OnInit {
 
       console.log('clientWidth', this.canvas.clientWidth);
       console.log('clientHeight', this.canvas.clientHeight);
-    } else if((this.deviceWidth > 991)) {
-      // Imposta la canvas come quadrata
+    } else if ((this.deviceWidth > 991)) {
+
       const canvasSize = Math.min(this.canvas.clientWidth, this.canvas.clientHeight);
       this.renderer.setSize(canvasSize, canvasSize);
 
       console.log('clientWidth', this.canvas.clientWidth);
       console.log('clientHeight', this.canvas.clientHeight);
     }
+    // Aggiunta di luce ambientale alla scena
     const ambientLight = new THREE.AmbientLight(0xffffff, 5); // Luce ambientale
     this.scene.add(ambientLight);
   }
@@ -132,26 +118,27 @@ export class ModelEthComponent implements AfterViewInit, OnInit {
   }
 
   createMesh() {
+    // Caricamento del modello usando il loader GLTF
     const loader = new GLTFLoader();
     loader.load('./../../../assets/3d-model/ethereum_logo.glb', (gltf) => {
       this.mesh = gltf.scene;
 
-
+      // Adattamento delle dimensioni e posizione del modello in base alla larghezza del dispositivo
       if (this.deviceWidth < 575) {
-        // Imposta la grandezza del modello
+        // Imposto la grandezza del modello
         const grandezza: number = 3;
         this.mesh.scale.set(grandezza, grandezza, grandezza);
-        // Posiziona il modello al centro della scena
+        // Posiziono il modello al centro della scena
         this.mesh.position.set(0, -2, 0);
       } else {
-        // Imposta la grandezza del modello
+        // Imposto la grandezza del modello
         const grandezza: number = 2;
         this.mesh.scale.set(grandezza, grandezza, grandezza);
-        // Posiziona il modello al centro della scena
+        // Posiziono il modello al centro della scena
         this.mesh.position.set(0, 0, 0);
       }
 
-
+      // Aggiunta del modello alla scena
       this.scene.add(this.mesh);
     }, undefined, (error) => {
       console.error(error);
@@ -159,15 +146,17 @@ export class ModelEthComponent implements AfterViewInit, OnInit {
   }
 
   animate() {
+    // Richiesta del frame successivo per l'animazione
     window.requestAnimationFrame(() => this.animate());
-    // this.mesh.rotation.x += 0.01;
+
     /* this.mesh.rotation.y += 0.02; */
 
-    // Aggiorna il mixer dell'animazione con il delta di tempo
+    // Aggiorno il mixer dell'animazione con il delta di tempo
     if (this.mixer) {
       this.mixer.update(this.clock.getDelta());
     }
 
+    // Aggiornamento dei controlli e rendering della scena
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }

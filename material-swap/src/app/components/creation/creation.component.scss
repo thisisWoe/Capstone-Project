@@ -11,10 +11,6 @@ div.page-container {
     justify-content: space-around;
     width: 100%;
     div.nft-container {
-      /* background-image: url(./../../../assets/imgs/chart-back.png);
-      background-size: cover;
-      background-position: center;
-      border-radius: 2rem; */
       @include backgroundItem();
       @media screen and (max-width: 960px) {
         order: 2;
@@ -32,10 +28,6 @@ div.page-container {
       }
     }
     div.nft-create-container {
-      /* background-image: url(./../../../assets/imgs/chart-back.png);
-      background-size: cover;
-      background-position: center;
-      border-radius: 2rem; */
       @include backgroundItem();
       display: flex;
       flex-direction: column;
@@ -46,12 +38,12 @@ div.page-container {
       h5 {
         color: #e08142;
       }
-      a{
+      a {
         cursor: pointer;
-        &:hover{
-          svg{
-            color: grey!important;
-            stroke: grey!important;
+        &:hover {
+          svg {
+            color: grey !important;
+            stroke: grey !important;
           }
         }
       }
@@ -91,7 +83,7 @@ div.page-container {
           }
         }
       }
-      div.confirmation{
+      div.confirmation {
         background-color: greenyellow;
         border-left: 10px solid green;
         margin-top: auto;
@@ -103,13 +95,13 @@ div.page-container {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        p{
+        p {
           font-size: 1.5rem;
         }
-        a{
+        a {
           font-size: 1.5rem;
           text-decoration: none;
-          svg{
+          svg {
             height: 1.5rem;
           }
         }
@@ -118,11 +110,7 @@ div.page-container {
   }
 }
 
-div.modal-body{
+div.modal-body {
   max-height: 700px;
   overflow-y: scroll;
-
-  img{
-
-  }
 }

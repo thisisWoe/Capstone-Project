@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import anime from 'animejs';
 import { Observable } from 'rxjs';
@@ -42,7 +42,6 @@ export class AuthComponent implements OnInit,AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    /* this.resizeForm(); */
   }
 
   ngOnInit(): void {
@@ -171,15 +170,6 @@ export class AuthComponent implements OnInit,AfterViewInit {
     }
   }
 
-
-  /* resizeForm(){
-    const form = <HTMLDivElement>this.formElement.nativeElement;
-
-
-    const width = form.offsetWidth;
-
-    form.style.height = `${width*1.2}px`;
-  } */
 }
 
 

@@ -57,15 +57,15 @@ export class AdminComponent implements AfterViewInit, OnInit {
   //datepicker
   hoveredDate: NgbDate | null = null;
 
-	fromDate: NgbDate;
-	toDate: NgbDate | null = null;
+  fromDate: NgbDate;
+  toDate: NgbDate | null = null;
 
-  tokenToFetch:string | null = null;
-  tokenToFetchId:number | null = null;
+  tokenToFetch: string | null = null;
+  tokenToFetchId: number | null = null;
 
   constructor(private authSvc: AuthService, private fb: FormBuilder, private mktSvc: MarketDataService, calendar: NgbCalendar) {
     this.fromDate = calendar.getToday();
-		this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
+    this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
   }
   ngOnInit(): void {
     this.formAssetAndNetwork = this.fb.group({
@@ -73,10 +73,10 @@ export class AdminComponent implements AfterViewInit, OnInit {
       imgUrl: ['', Validators.required],
     });
     this.formEditAsset = this.fb.group({
-      id: [null], // Puoi impostare il valore iniziale a null se non hai un valore predefinito
-      name: ['', Validators.required], // Aggiungi altri validatori, se necessario
-      imgUrl: ['', Validators.required], // Aggiungi altri validatori, se necessario
-      addresses: this.fb.array([]) // Puoi inizializzare un form array vuoto
+      id: [null],
+      name: ['', Validators.required],
+      imgUrl: ['', Validators.required],
+      addresses: this.fb.array([])
     })
 
     this.getAssets();
@@ -93,23 +93,15 @@ export class AdminComponent implements AfterViewInit, OnInit {
   }
 
   onChangeNetworkToAdd(event: Event) {
-    console.log("event:", event)
     const selectedValue = (event.target as HTMLSelectElement).value;
-    console.log("selectedValue:", selectedValue)
     this.newObjNetwork.asset = null;
     this.newObjNetwork.networkName = selectedValue;
-    console.log("this.newObjNetwork:", this.newObjNetwork)
-    console.log("selectedValue:", selectedValue)
-
-
   }
 
   onChangeTokenAddress(event: Event) {
     const selectedValue = (event.target as HTMLInputElement).value;
     this.newObjNetwork.asset = null;
     this.newObjNetwork.tokenAddress = selectedValue;
-    console.log("this.newObjNetwork:", this.newObjNetwork)
-    console.log("selectedValue:", selectedValue)
   }
 
   createButtonNetwork() {
@@ -130,15 +122,12 @@ export class AdminComponent implements AfterViewInit, OnInit {
     this.networkAvailable = newArray;
 
     this.networks.push(newObj);
-    console.log("this.networks:", this.networks)
 
     const target = <HTMLDivElement>this.networkCreation.nativeElement;
     const toast = this.createToasts(newObj);
 
     target.appendChild(toast);
-    console.log("target:", target)
     const maxWidthText = toast.offsetWidth;
-    console.log("maxWidthText:", maxWidthText)
     const allDiv = document.querySelectorAll('.toast-body') as NodeListOf<HTMLElement>;
     allDiv.forEach(strong => {
       strong.style.whiteSpace = 'nowrap';
@@ -188,7 +177,6 @@ export class AdminComponent implements AfterViewInit, OnInit {
       par?.remove();
       const newNetwork = this.networks.filter(obj => obj.networkName !== networkName);
       this.networks = newNetwork;
-      console.log("this.networks:", this.networks)
     })
 
     // Aggiunta di tutti gli elementi all'intestazione del toast
@@ -207,18 +195,15 @@ export class AdminComponent implements AfterViewInit, OnInit {
     toastDiv.appendChild(toastBody);
 
     const inputAddress = <HTMLInputElement>document.querySelector('.input-token-address');
-    console.log("inputAddress:", inputAddress)
     inputAddress!.value = '';
     this.getAssets();
     return toastDiv;
   }
 
   listAsset() {
-    console.log(this.formAssetAndNetwork.value);
     this.newAsset = this.formAssetAndNetwork.value;
 
     this.mktSvc.addAsset(this.newAsset).subscribe(data => {
-      console.log("data:", data)
       this.addNetwork(data);
     });
     this.formAssetAndNetwork.reset();
@@ -228,9 +213,7 @@ export class AdminComponent implements AfterViewInit, OnInit {
   addNetwork(asset: IAssetDto,) {
     this.networks.forEach(network => {
       network.asset = asset;
-      console.log(network);
       this.mktSvc.addObjNetwork(network).subscribe(res => {
-        console.log("res:", res);
         this.networks = [];
         this.networkAvailable = [
           'ethereum',
@@ -307,7 +290,6 @@ export class AdminComponent implements AfterViewInit, OnInit {
             const p = assetWrapper.querySelector('p');
             const pText = p?.textContent;
             targetAssetId = Number(assetWrapper.getAttribute('data-asset'));
-            console.log("p?.textContent:", p?.textContent)
 
             const allAssetWrapper = assetTargetReceiver.querySelectorAll('.asset-wrapper');
             const assetWrapperArray = Array.from(allAssetWrapper) as HTMLDivElement[];
@@ -340,7 +322,6 @@ export class AdminComponent implements AfterViewInit, OnInit {
               loop: false
             })
             setTimeout(() => {
-              console.log('ciao');
               assetWrapperArray.forEach(el => {
                 el.remove();
 
@@ -402,7 +383,6 @@ export class AdminComponent implements AfterViewInit, OnInit {
       formHtml!.innerHTML = formParts;
       const button = <HTMLButtonElement>document.querySelector('.btn-submit-edit');
       button.addEventListener('click', () => {
-        /* this.submitEdit(); */
         this.updateAsset();
       })
       const buttonBack = <HTMLButtonElement>document.querySelector('.btn-back-edit');
@@ -424,7 +404,6 @@ export class AdminComponent implements AfterViewInit, OnInit {
     const targetNetworkReceiver = document.querySelector('.target-input-network');
     targetNetworkReceiver?.classList.add('mt-5')
     this.mktSvc.getSingleAsset(id).subscribe(data => {
-      console.log("signle asset fetch:", data)
 
       this.compileForm(id, this.formEditAsset, data)
 
@@ -465,31 +444,27 @@ export class AdminComponent implements AfterViewInit, OnInit {
       addressesFormArray.push(addressFormGroup);
 
     });
-    console.log('edit form: ', form.value);
   }
 
   submitEdit(): {} {
     const objectToPut: any = {
       id: 0,
-      name : '',
-      imgUrl : '',
-      addresses : [],
+      name: '',
+      imgUrl: '',
+      addresses: [],
     }
     this.allStoredAssets.forEach(asset => {
       const inputElementName = <HTMLInputElement>document.getElementById(`input-${asset.name}`);
       const inputElementImg = <HTMLInputElement>document.getElementById(`input-${asset.imgUrl}`);
       const addresses = document.querySelectorAll(`.div-addresses-${asset.name}`);
       const assetWrapperArray = Array.from(addresses) as HTMLDivElement[];
-      const objNetworksArray:any = [];
+      const objNetworksArray: any = [];
       if (inputElementName && inputElementImg && addresses) {
-        console.log("inputElement trovato:", inputElementName.value)
-        console.log("inputElement trovato:", inputElementImg.value)
         objectToPut.name = inputElementName.value;
         objectToPut.imgUrl = inputElementImg.value;
         assetWrapperArray.forEach(div => {
           this.networkAvailable.forEach(net => {
             const obj = {
-              /* asset: {id: 0}, */
               id: 0,
               networkName: '',
               tokenAddress: ''
@@ -501,19 +476,13 @@ export class AdminComponent implements AfterViewInit, OnInit {
               obj.id = Number(elementId);
               obj.networkName = elementNetwork!.value;
               obj.tokenAddress = elementAddress!.value;
-              /* if(asset.id){
-                obj.asset = {id:asset.id}
-              } */
               objNetworksArray.push(obj);
             }
           })
         })
-        console.log("objNetworksArray:", objNetworksArray)
         objectToPut.addresses = objNetworksArray;
         objectToPut.id = asset.id;
-        console.log("objectToPut:", objectToPut)
       } else {
-        console.log('nessun inputElement trovato');
       }
     })
     return objectToPut;
@@ -521,54 +490,51 @@ export class AdminComponent implements AfterViewInit, OnInit {
 
   }
 
-  back(){
+  back() {
     const targetNetworkReceiver = document.querySelector('.asset-edit-container');
     targetNetworkReceiver!.innerHTML = '';
     this.getAssets();
   }
 
-  updateAsset(){
+  updateAsset() {
     const asset = this.submitEdit();
     this.mktSvc.editAssetAndNetwork(asset)
-    .subscribe(assetDto => {
-      console.log("assetDto:", assetDto)
-      this.back();
-    })
+      .subscribe(assetDto => {
+        this.back();
+      })
   }
 
   onDateSelection(date: NgbDate) {
-		if (!this.fromDate && !this.toDate) {
-			this.fromDate = date;
-		} else if (this.fromDate && !this.toDate && date.after(this.fromDate)) {
-			this.toDate = date;
-		} else {
-			this.toDate = null;
-			this.fromDate = date;
-		}
-	}
+    if (!this.fromDate && !this.toDate) {
+      this.fromDate = date;
+    } else if (this.fromDate && !this.toDate && date.after(this.fromDate)) {
+      this.toDate = date;
+    } else {
+      this.toDate = null;
+      this.fromDate = date;
+    }
+  }
 
-	isHovered(date: NgbDate) {
-		return (
-			this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate)
-		);
-	}
+  isHovered(date: NgbDate) {
+    return (
+      this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate)
+    );
+  }
 
-	isInside(date: NgbDate) {
-		return this.toDate && date.after(this.fromDate) && date.before(this.toDate);
-	}
+  isInside(date: NgbDate) {
+    return this.toDate && date.after(this.fromDate) && date.before(this.toDate);
+  }
 
-	isRange(date: NgbDate) {
-		return (
-			date.equals(this.fromDate) ||
-			(this.toDate && date.equals(this.toDate)) ||
-			this.isInside(date) ||
-			this.isHovered(date)
-		);
-	}
+  isRange(date: NgbDate) {
+    return (
+      date.equals(this.fromDate) ||
+      (this.toDate && date.equals(this.toDate)) ||
+      this.isInside(date) ||
+      this.isHovered(date)
+    );
+  }
 
-  confirmselectionDate():{from:string, to:string}{
-    console.log("from:", this.fromDate);
-    console.log("to:", this.toDate);
+  confirmselectionDate(): { from: string, to: string } {
     this.toDate!.day = this.toDate!.day;
     const fromDate = new Date(`${this.fromDate.year}-${(this.fromDate.month.toString()).padStart(2, '0')}-${(this.fromDate.day.toString()).padStart(2, '0')}T00:00:00`);
     const toDate = new Date(`${this.toDate!.year}-${(this.toDate!.month.toString()).padStart(2, '0')}-${(this.toDate!.day.toString()).padStart(2, '0')}T00:00:00`);
@@ -579,39 +545,28 @@ export class AdminComponent implements AfterViewInit, OnInit {
     const monthTo = (toDate.getMonth().toString()).padStart(2, '0');
     const dayFrom = (fromDate.getDate().toString()).padStart(2, '0');
     const monthFrom = (fromDate.getMonth().toString()).padStart(2, '0');
-    console.log("fromDate:", fromDate)
-    console.log("toDate:", toDate)
-
 
     let from = `${this.fromDate.year}-${monthFrom}-${dayFrom}`;
     let to = `${this.toDate!.year}-${monthTo}-${dayTo}`;
-    //from = `${this.fromDate.year}-${(this.fromDate.month.toString()).padStart(2, '0')}-${(this.fromDate.day.toString()).padStart(2, '0')}`;
-    //to = `${this.toDate!.year}-${(this.toDate!.month.toString()).padStart(2, '0')}-${(this.toDate!.day.toString()).padStart(2, '0')}`;
-    console.log("from:", from)
-    console.log("to:", to)
-    return {from: from, to: to};
+    return { from: from, to: to };
   }
 
-  sendTokenToFetch(symbol:string, assetId:number){
+  sendTokenToFetch(symbol: string, assetId: number) {
     this.tokenToFetch = symbol;
     this.tokenToFetchId = assetId;
-    console.log("this.tokenToFetchId:", this.tokenToFetchId)
-    console.log("this.tokenToFetch:", this.tokenToFetch)
   }
 
-  getPricingData(){
+  getPricingData() {
     const date = this.confirmselectionDate();
     const from = date.from;
     const to = date.to;
 
-    this.mktSvc.getPeriodData(`${this.tokenToFetch}`,'USD', from, to)
-    .subscribe(data => {
-      console.log("data:", data)
-      this.mktSvc.saveDataBackend(data, this.tokenToFetchId!).subscribe(data => {
-        console.log("data:", data)
-
+    this.mktSvc.getPeriodData(`${this.tokenToFetch}`, 'USD', from, to)
+      .subscribe(data => {
+        this.mktSvc.saveDataBackend(data, this.tokenToFetchId!).subscribe(data => {
+          console.log("data:", data)
+        });
       });
-    });
   }
 
 }

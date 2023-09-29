@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { INetwork } from 'src/app/interfaces/Inetwork';
+import { Observable } from 'rxjs';
 import { INetworks } from 'src/app/interfaces/inetworks';
 import { Web3Service } from 'src/app/web3-serv/web3.service';
 import { environment } from 'src/environments/environment.development';
@@ -17,8 +15,6 @@ export class MetamaskIconComponent implements OnInit {
 
   Network_ID: number;
   ZERO_x_TARGET: string;
-
-
 
   network = {
     Ethereum:
@@ -64,13 +60,12 @@ export class MetamaskIconComponent implements OnInit {
     this.Network_ID = this.network.Arbitrum.id;
     this.ZERO_x_TARGET = this.network.Arbitrum.ZERO_x_URL;
   }
+
   ngOnInit(): void {
     this.wallet$.subscribe((wallet) => {
       this.walletLogged = wallet;
     });
-
     this.switchMetamaskNetwork(this.network.Arbitrum.id);
-
   }
 
   connectMetamask() {
@@ -81,13 +76,14 @@ export class MetamaskIconComponent implements OnInit {
     try {
       const stringId = id.toString();
       console.log("🚀 ~ file: metamask-icon.component.ts:75 ~ MetamaskIconComponent ~ switchMetamaskNetwork ~ stringId:", stringId)
+      // Invio una richiesta a Metamask per cambiare la rete
       this.web3Svc.switchNetwork(stringId)
         .then(res => {
           console.log('Network Switched: ', res);
+          // Se il cambio di rete è riuscito, aggiorno l'interfaccia utente con la nuova rete selezionata
           if (res) {
             this.updateNetworkSubject(Number(id));
           }
-
           if (!res) {
             this.Network_ID = this.network.Arbitrum.id;
           }
@@ -97,55 +93,10 @@ export class MetamaskIconComponent implements OnInit {
     }
   }
 
+  // Metodo per aggiornare l'observable della rete selezionata nel servizio Web3Service
   updateNetworkSubject(id: number) {
-    /* type Network = {
-      id: number;
-      ZERO_x_URL: string;
-    };
-
-    type Networks = {
-      [key: string]: INetwork;
-    }; */
-
     const X: INetworks = this.network;
-    /* const X: Networks = {
-      Ethereum:
-      {
-        id: 1,
-        ZERO_x_URL: environment.ZERO_x_URL_ETHEREUM
-      },
-      Polygon:
-      {
-        id: 137,
-        ZERO_x_URL: environment.ZERO_x_URL_POLYGON
-      },
-      BSC:
-      {
-        id: 56,
-        ZERO_x_URL: environment.ZERO_x_URL_BSC
-      },
-      Optimism:
-      {
-        id: 10,
-        ZERO_x_URL: environment.ZERO_x_URL_OPTIMISM
-      },
-      Fantom:
-      {
-        id: 250,
-        ZERO_x_URL: environment.ZERO_x_URL_FANTOM
-      },
-      Avalance:
-      {
-        id: 43114,
-        ZERO_x_URL: environment.ZERO_x_URL_AVALANCHE
-      },
-      Arbitrum:
-      {
-        id: 42161,
-        ZERO_x_URL: environment.ZERO_x_URL_ARBITRUM
-      },
-    }; */
-
+    // Itero attraverso gli oggetti di rete per trovare la rete corrispondente all'ID fornito
     for (const key in X) {
       if (X.hasOwnProperty(key)) {
 
@@ -154,19 +105,16 @@ export class MetamaskIconComponent implements OnInit {
           console.log(`Network with id ${id} found in ${key}.`);
           this.web3Svc.ZERO_x_TARGET_subject.next(currentObj.ZERO_x_URL);
           this.web3Svc.targetNetworkSubject.next(key);
-          /* console.log(this.web3Svc.ZeroXtarget$);
-          console.log(this.web3Svc.ZERO_x_TARGET_subject); */
-
           break;
         }
 
       } else {
-        console.log('Nessun Oggetto Trovato.');
-
+        console.log('Network not found.');
       }
     }
   }
 
+  // Metodo chiamato quando l'utente seleziona una nuova rete
   onSelectNetworkChange(newValue: number) {
     console.log("New Network ID: ", newValue)
     this.switchMetamaskNetwork(newValue);

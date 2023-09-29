@@ -1,9 +1,5 @@
 import { Web3Service } from 'src/app/web3-serv/web3.service';
-import { ICoinApiData } from './../../interfaces/icoin-api-data';
 import { AfterViewInit, Component, ElementRef, Inject, NgZone, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
-import { NgbAlertModule, NgbDatepickerModule, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule } from '@angular/forms';
-import { JsonPipe } from '@angular/common';
 import { MarketDataService } from 'src/app/market-data.service';
 import * as am5 from '@amcharts/amcharts5';
 import * as am5percent from "@amcharts/amcharts5/percent";
@@ -15,8 +11,7 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import { IPricingBackend } from 'src/app/interfaces/ipricing-backend';
 import * as am5xy from '@amcharts/amcharts5/xy';
 import { IChartData } from 'src/app/interfaces/ichart-data';
-import { Observable, Subject, catchError, forkJoin, map, of, switchMap } from 'rxjs';
-import Decimal from 'decimal.js';
+import { Subject, catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { IPieDataPercentage } from 'src/app/interfaces/ipie-data-percentage';
 import { AssetAllocationDto } from 'src/app/interfaces/asset-allocation-dto';
 import { IAssetDto } from 'src/app/interfaces/iasset-dto';
@@ -59,14 +54,15 @@ export class StrategyComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit() {
+    // Sottoscrizione all'observable per ricevere la strategia target
     this.targetStrategy$.subscribe(value => {
-      console.log("value target strategy:", value)
+      // Imposto la strategia attiva e ottengo i dati per i grafici
       this.activeStrategy = value;
       this.targetAssetAllocations = value.assetAllocations;
       this.targetAssetAllocations.forEach(asset => {
         if (asset.asset && asset.asset.id) {
+          // Ottengo tutti gli asset e le reti disponibili
           this.mktSvc.getSingleAsset(asset.asset.id).subscribe(assetFound => {
-            console.log("assetFound:", assetFound)
             asset.asset!.name = assetFound.name;
             asset.asset!.imgUrl = assetFound.imgUrl;
           });
@@ -84,24 +80,23 @@ export class StrategyComponent implements AfterViewInit, OnInit {
 
       this.getDataforCandle(value);
       this.getDataForPie(value);
-      console.log(value.assetAllocations[0])
       this.getDataForLine(value, value.assetAllocations[0].asset.id!, value.assetAllocations[0].asset.name);
     })
     this.mktSvc.getAllAssetAndNetworks()
       .subscribe(res => {
         this.allAssets = res;
-        console.log("this.allAssets:", this.allAssets)
       })
     this.resizePage();
   }
 
 
   ngAfterViewInit(): void {
+    // Ottengo tutte le strategie per l'utente loggato
     this.getAllStrategiesByUserLogged();
+    // Inizializzo i grafici
     this.rootCandle = am5.Root.new("chartdivcandle");
     this.rootPie = am5.Root.new("chartdivpie");
     this.rootLine = am5.Root.new("chartdivline");
-    /* this.buildPieChart(); */
   }
 
   resizePage() {
@@ -115,27 +110,22 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     return user.username;
   }
 
+  // Metodo per ottenere tutte le strategie dell'utente loggato
   getAllStrategiesByUserLogged() {
     this.mktSvc.getStrategies(this.readUser())
       .subscribe(data => {
-        console.log("data:", data)
         this.strategies = data;
 
         this.targetStrategy$.next(this.strategies[0]);
-
-        /* this.generateChartData(data[0]); */
       })
   }
 
   onChangeStrategyTarget(event: Event) {
     const select = <HTMLSelectElement>event.target;
     const value = select.value;
-    console.log("event:", value)
     const strategy = this.mktSvc.getSingleStrategy(Number(value))
       .subscribe(res => {
         this.targetStrategy$!.next(res);
-        console.log("targetStrategy:", this.targetStrategy$)
-        /* this.generateChartData(res); */
       })
   }
 
@@ -143,7 +133,7 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     let m = Number((Math.abs(n) * 100).toPrecision(15));
     return Math.round(m) / 100 * Math.sign(n);
   }
-
+  //metodo per ricevere ed elaborare i dati per il grafico
   getDataforCandle(strategy: StrategyDto) {
 
     const allocations = strategy.assetAllocations;
@@ -155,7 +145,6 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     const observables = allocations.map(asset => {
       const amount = asset.amount;
       return this.mktSvc.getPriceFromBEbyAsset(asset.asset.id).pipe(
-        // Filtra per ottenere solo i prezzi dalla data di inizio strategia
         map(res => res.map(pricingObj => {
           const date = new Date(pricingObj.date);
           return {
@@ -199,7 +188,7 @@ export class StrategyComponent implements AfterViewInit, OnInit {
         dataSums[date!].low! += obj.low!;
         dataSums[date!].close! += obj.close!;
       });
-      // Convertiamo l'oggetto delle somme in un array
+
       const newSummedArray: Partial<IPricingBackend>[] = Object.values(dataSums);
       const chartData: Partial<IChartData>[] = [];
       newSummedArray.forEach((objPrice: any) => {
@@ -217,7 +206,7 @@ export class StrategyComponent implements AfterViewInit, OnInit {
 
 
   }
-
+  //construzione grafico
   buildCandleChart(chartData: Partial<IChartData>[]) {
 
     if (!this.chart) {
@@ -309,16 +298,16 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     );
 
     this.series.columns.template.states.create("riseFromOpen", {
-      //interno candela +
+
       fill: am5.color(0xbe6dab),
-      //bordo candela +
+
       stroke: am5.color(0xbe6dab)
     });
 
     this.series.columns.template.states.create("dropFromOpen", {
-      //interno candela -
+
       fill: am5.color(0x59118d),
-      //bordo candela -
+
       stroke: am5.color(0x59118d)
     });
 
@@ -388,77 +377,7 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     this.chart.appear(1000, 100);
 
   }
-
-  /* getDataForPie(strategy: StrategyDto) {
-    const allocations = strategy.assetAllocations;
-    const pieChartObjS: any = [];
-
-    allocations.forEach(assetAll => {
-      const objChart = {
-        asset: assetAll.asset.id,
-        percentage: assetAll.percentage,
-        actualPercentage: 0,
-        amount: assetAll.amount,
-      }
-      pieChartObjS.push(objChart);
-    })
-
-    const temporaryArray: any = [];
-    const chartData:IPieDataPercentage[] = [];
-    pieChartObjS.forEach((asset: any) => {
-      this.mktSvc.getPriceFromBEbyAsset(<number>asset.asset)
-        .subscribe((pricing: any) => {
-          let singlePrice = pricing[0];
-          let lastObj = singlePrice;
-          this.mktSvc.getSingleAsset(singlePrice.targetAsset.id)
-            .subscribe(crypto => {
-
-              for (let i = 1; i < pricing.length; i++) {
-                const currentObj = pricing[i];
-                const currentDate = new Date(currentObj.date);
-                const lastObjDate = new Date(lastObj.date);
-
-                if (currentDate > lastObjDate) {
-                  lastObj = currentObj;
-                }
-              }
-
-              const target = pricing.find((pricingTargetDate: any) => pricingTargetDate.date === lastObj.date)
-
-
-              const objUpdated = {
-                asset: crypto.name,
-                percentage: asset.percentage,
-                actualPercentage: lastObj.date,
-                actualValue: target.close * asset.amount
-
-              }
-              console.log("objUpdated:", objUpdated)
-
-              temporaryArray.push(objUpdated);
-              console.log("temporaryArray:", temporaryArray)
-              let summedValue = 0;
-              temporaryArray.forEach((obj: any) => {
-                summedValue += obj.actualValue;
-              });
-              temporaryArray.forEach((obj:any) => {
-                const actualPercentage = (obj.actualValue * 100) / summedValue;
-
-                const chartPieItem:IPieDataPercentage = {
-                  asset: obj.asset,
-                  percentage: obj.percentage,
-                  actualPercentage: actualPercentage
-                }
-                chartData.push(chartPieItem);
-              });
-              console.log("chartData:", chartData)
-
-            })
-        })
-    })
-
-  } */
-
+  //metodo per ricevere ed elaborare i dati per il grafico
   getDataForPie(strategy: StrategyDto) {
     const allocations = strategy.assetAllocations;
     const pieChartObjS: any[] = [];
@@ -475,7 +394,6 @@ export class StrategyComponent implements AfterViewInit, OnInit {
 
     const observables = pieChartObjS.map((asset: any) => {
       return this.mktSvc.getPriceFromBEbyAsset(asset.asset).pipe(
-        // Restituisci solo l'oggetto con la data più recente
         switchMap(pricing => {
           const lastObj = pricing.reduce((prev: any, current: any) => {
             const currentDate = new Date(current.date);
@@ -503,22 +421,12 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     });
 
     forkJoin(observables).subscribe((results: any) => {
-      console.log("results:", results);
       const chartData: IPieDataPercentage[] = [];
       let summedValue = 0;
 
       results.forEach((objUpdated: any) => {
-        if (objUpdated) { // Assicurati che l'oggetto sia definito
+        if (objUpdated) {
           summedValue += objUpdated.actualValue;
-
-          /* const actualPercentage = (objUpdated.actualValue * 100) / summedValue;
-
-          const chartPieItem: IPieDataPercentage = {
-            asset: objUpdated.asset,
-            percentage: objUpdated.percentage,
-            actualPercentage: actualPercentage,
-          };
-          chartData.push(chartPieItem); */
         }
       });
       results.forEach((objUpdated: any) => {
@@ -533,12 +441,11 @@ export class StrategyComponent implements AfterViewInit, OnInit {
         chartData.push(chartPieItem);
       });
 
-      console.log("chartData:", chartData);
       this.buildPieChart(chartData, summedValue);
       this.fillRebalance(strategy, chartData, summedValue);
     });
   }
-
+  //construzione grafico
   buildPieChart(chartData: IPieDataPercentage[], total: number) {
 
     if (!this.chartPie) {
@@ -547,11 +454,6 @@ export class StrategyComponent implements AfterViewInit, OnInit {
         am5themes_Dark.new(this.rootPie)
       ])
 
-      /* this.chartPie = this.rootPie.container.children.push(
-        am5xy.XYChart.new(this.rootPie, {
-          wheelY: "zoomX"
-        })
-        ) */
     } else {
       this.rootPie.setThemes([
         am5themes_Animated.new(this.rootPie),
@@ -567,24 +469,17 @@ export class StrategyComponent implements AfterViewInit, OnInit {
 
     }
 
-
-    // Set themes
-    // https://www.amcharts.com/docs/v5/concepts/themes/
     this.rootPie.setThemes([
       am5themes_Animated.new(this.rootPie),
       am5themes_Dark.new(this.rootPie)
     ]);
 
-    // Create chart
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
     this.chartPie = this.rootPie.container.children.push(
       am5percent.PieChart.new(this.rootPie, {
         startAngle: 160, endAngle: 380
       })
     );
 
-    // Create series
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
     this.series0Pie = this.chartPie.series.push(
       am5percent.PieSeries.new(this.rootPie, {
         valueField: "percentage",
@@ -633,12 +528,10 @@ export class StrategyComponent implements AfterViewInit, OnInit {
 
     let data = chartData;
 
-    // Set data
-    // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
     this.series0Pie.data.setAll(data);
     this.series1Pie.data.setAll(data);
   }
-
+  //construzione grafico
   buildLineChart(chartData: any) {
 
     if (!this.chartLine) {
@@ -718,8 +611,6 @@ export class StrategyComponent implements AfterViewInit, OnInit {
 
     this.seriesLine.data.setAll(data);
 
-    // Create axis ranges
-
     let rangeDataItem = yAxis.makeDataItem({
       value: -1000,
       endValue: 0
@@ -739,8 +630,6 @@ export class StrategyComponent implements AfterViewInit, OnInit {
 
     });
 
-
-    // Add cursor
     this.chartLine.set(
       "cursor",
       am5xy.XYCursor.new(this.rootLine, {
@@ -764,11 +653,8 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     );
 
   }
-
+  //metodo per ricevere ed elaborare i dati per il grafico
   getDataForLine(strategy: StrategyDto, targetAssetAllocationId: number, name: string | undefined) {
-    console.log("name:", name)
-    console.log("targetAssetAllocationId:", targetAssetAllocationId)
-    console.log("strategy:", strategy)
     this.targetAssetName = <string>name;
 
     const allPricingData = [];
@@ -799,7 +685,6 @@ export class StrategyComponent implements AfterViewInit, OnInit {
   }
 
   fillRebalance(strategy: StrategyDto, chartData: IPieDataPercentage[], total: number) {
-    console.log("total:", total)
     const allocations = strategy.assetAllocations;
     chartData.forEach(allocation => {
       const amountToSellOrBuy$ = (total / 100) * (allocation.percentage - allocation.actualPercentage);
@@ -838,11 +723,13 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     })
   }
 
+  // Metodo per avviare il rebalance del portafoglio
   rebalance() {
     const message = `Are you sure you want to rebalance your wallet? You will have to accept several transactions, so be sure you have enough ETH and WETH. WETH will serve beacuse every excess asset will be converted to WETH and then reconverted to target asset. Approximately the expected transaction fees should be: ${this.activeStrategy.assetAllocations.length * 0.3} $`;
+    // Richiede la firma del messaggio al servizio Web3 per confermare il riequilibrio
     this.web3Svc.signRegisterRequestDynamicMessage(message)
       .then((response) => {
-        //dati weth
+
         const WETH = this.allAssets.find(asset => asset.id === 7);
         const netWETH = WETH?.addresses.find(address => address.networkName === 'arbitrum');
 
@@ -875,38 +762,28 @@ export class StrategyComponent implements AfterViewInit, OnInit {
               assetToSwap.push(swapObj);
             }
           }
-
-
-
         })
-        console.log("assetToSell:", assetToSwap)
         this.tryrebalance(assetToSwap);
 
-
-        /* const scambiDaEffettuare: {
-          amountToSwap: number;
-          tokenFrom: string;
-          tokenTo: string;
-      }[] */
       });
   }
 
+  // Metodo per eseguire il rebalance effettivo del portafoglio
   async tryrebalance(swaps: { amountToSwap: number; tokenFrom: string; tokenTo: string; }[]) {
     const amount = Number((swaps[0].amountToSwap).toFixed(10));
-    console.log("amount:", amount)
+    // Itero attraverso gli scambi necessari e provo ad eseguirli
     for (const swap of swaps) {
       try {
+        // Ottengo il prezzo attuale per lo scambio
         await this.web3Svc.getPrice_V2(Number((swap.amountToSwap).toFixed(10)), swap.tokenFrom, swap.tokenTo, 'https://arbitrum.api.0x.org/swap/v1/')
-        .subscribe(res => {
-          console.log("res:", res)
-          const amountTrySwap = Number(res.sellAmount);
-          console.log("amountTrySwap:", amountTrySwap)
-          this.web3Svc.trySwap_V2(Number((swap.amountToSwap).toFixed(10)), swap.tokenFrom, swap.tokenTo, 'https://arbitrum.api.0x.org/swap/v1/')
-          .then((res) => {
-          console.log("res:", res)
-          });
+          .subscribe(res => {
+            const amountTrySwap = Number(res.sellAmount);
+            this.web3Svc.trySwap_V2(Number((swap.amountToSwap).toFixed(10)), swap.tokenFrom, swap.tokenTo, 'https://arbitrum.api.0x.org/swap/v1/')
+              .then((res) => {
+                console.log("res:", res)
+              });
 
-        })
+          })
         console.log(`Scambio effettuato: ${swap.amountToSwap} ${swap.tokenFrom} -> ${swap.tokenTo}`);
       } catch (error) {
         console.error(`Errore durante lo scambio: ${error}`);
@@ -914,42 +791,12 @@ export class StrategyComponent implements AfterViewInit, OnInit {
     }
   }
 
-  deleteStrategy(id:number){
+  // Metodo per eliminare una strategia
+  deleteStrategy(id: number) {
     this.mktSvc.deleteStrategy(id)
-    .subscribe(res => {
-      console.log("res:", res)
-      this.getAllStrategiesByUserLogged();
-    })
+      .subscribe(res => {
+        this.getAllStrategiesByUserLogged();
+      })
   }
-
-
-
-
-
-
-
-  /*   resizeCandleChart() {
-      const chart: HTMLDivElement = this.candleChartContainer.nativeElement;
-
-      const width = chart.clientWidth;
-
-      chart.style.height = `${width / 2.3}px`;
-
-      const height = chart.clientHeight;
-    }
-
-    resizePieChart() {
-      const chart: HTMLDivElement = this.pieChartContainer.nativeElement;
-      console.log("chart:", chart)
-
-      const width = chart.clientWidth;
-      console.log("width:", width)
-
-      chart.style.height = `${width}px`;
-
-      const height = chart.clientHeight;
-      console.log("height:", height)
-    } */
-
 
 }
