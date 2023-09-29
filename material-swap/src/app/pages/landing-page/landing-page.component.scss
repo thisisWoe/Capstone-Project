@@ -1,9 +1,7 @@
 @import "./../../../variables";
 nav {
-  /* background-color: #5753c4; */
   background-color: #38359bcb;
   background-color: transparent;
-  /* background-color: $backVioletBlack; */
   position: fixed;
   top: 0;
   width: 100%;
@@ -18,7 +16,6 @@ nav {
       }
     }
     button {
-      /* background-color: #44a6c2; */
       box-shadow: 0px 10px 14px -7px #ca5737;
       background: linear-gradient(to bottom, #e08142 5%, #cf6537 100%);
       background-color: #dd852d;
@@ -28,7 +25,6 @@ nav {
       color: #ffffff;
       font-family: "Roboto", sans-serif;
       font-size: 20px;
-      /* padding: 13px 32px; */
       text-decoration: none;
       text-shadow: 0px 1px 0px #ca5837;
       @media screen and (max-width: 575px) {
@@ -45,14 +41,9 @@ nav {
 main {
   border-bottom: 1px solid #8686a1;
   background-color: #38359b;
-  /* background-color: $backVioletBlack; */
   div.hero-container {
     height: 100vh;
-    /* @media screen and (max-width: 575px){
-      height: 100%;
-    } */
     div.hero {
-      //test
       position: relative;
       overflow-x: hidden;
       overflow-y: hidden;
@@ -91,15 +82,8 @@ main {
         animation: wave 20s -1s reverse infinite;
         opacity: 0.7;
       }
-      //fine test
       padding-top: $navbarLogoHeight + 16px + 10px;
-      /* background-image: url(./../../../assets/imgs/sfondo-modello-eth.png);
-      background-size:cover;
-      background-position:center; */
       height: 100%;
-      /*       @media screen and (max-width: 575px){
-        align-items: start;
-      } */
 
       div.hero-img-container {
         display: flex;
@@ -125,8 +109,8 @@ main {
           font-family: "Roboto", sans-serif;
           color: white;
           align-self: flex-start;
-          text-shadow: -1px -1px 10px rgba(0,0,0,0.6);
-          text-shadow: -1px 4px 10px rgba(0,0,0,0.76);
+          text-shadow: -1px -1px 10px rgba(0, 0, 0, 0.6);
+          text-shadow: -1px 4px 10px rgba(0, 0, 0, 0.76);
         }
       }
       div.model-container {
@@ -159,7 +143,6 @@ main {
       div.strategy {
         margin-bottom: 10px;
         p {
-          /* color: #ea8d8d; */
           color: #7675a1;
           font-size: 2rem;
           font-family: "Roboto", sans-serif;

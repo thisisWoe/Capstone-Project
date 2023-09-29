@@ -18,9 +18,7 @@ export class HomeComponent implements OnInit {
   userCheck$: Observable<IAuthData | null>;
   isAdmin: boolean = false;
   isLogged: boolean = false;
-
   menuHide: boolean = true;
-
   activeLink = 'swap-v2';
 
 
@@ -30,32 +28,23 @@ export class HomeComponent implements OnInit {
 
 
   ngOnInit(): void {
-
-
+    // Sottoscrizione all'observable dell'utente per gestire lo stato di login/logout
     this.authSvc.user$.subscribe((user) => {
 
-      //const decodedToken = jwt_decode(user?.accessToken);
       if (user) {
-        console.log('Logged user: ', user);
         this.isLogged = true;
         if (user.username === '0xcb98a882261e900f68e3d4f514372a25ab6aa847') {
           this.isAdmin = true;
         }
       } else {
         this.isLogged = false;
-        console.log('No logged user.');
       }
     });
 
     const header = <HTMLDivElement>document.querySelector('div.header');
     const routerWrapper = <HTMLDivElement>document.querySelector('.main-wrapper');
-
     routerWrapper.style.height = this.authSvc.sizingRouterApp();
     routerWrapper.style.maxHeight = this.authSvc.sizingRouterApp();
-
-    /* this.marketSvc.getDataBTC('UNI', 'USD').subscribe(); */
-    //this.web3Svc.connect();
-    //this.web3Svc.checkConnection();
   }
 
   toggleRouterMenu() {
@@ -247,13 +236,13 @@ export class HomeComponent implements OnInit {
 
   }
 
-  logout(){
+  logout() {
     this.authSvc.logout();
     location.reload();
   }
 
 
-  prova(){
+  prova() {
     const swapA = <HTMLAnchorElement>document.querySelector('.route-swap');
     const dashboardA = <HTMLAnchorElement>document.querySelector('.route-dashboard');
     const strategyA = <HTMLAnchorElement>document.querySelector('.route-strategy');

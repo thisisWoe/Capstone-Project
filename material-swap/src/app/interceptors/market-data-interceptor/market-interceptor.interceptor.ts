@@ -16,9 +16,9 @@ export class MarketInterceptor implements HttpInterceptor {
   constructor(private mktSvc: MarketDataService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    // Verifico se l'URL della richiesta inizia con l'URL del servizio Coin API
     if (request.url.startsWith(environment.coinApi_url)) {
-      console.log('interceptor funziona');
-
+      // Clono la richiesta originale e aggiungo l'header di autorizzazione X-CoinAPI-Key con la chiave API fornita dal servizio
       this.modifiedRequest = request.clone({
         headers:request.headers.append('X-CoinAPI-Key',`${environment.api_key_coinApi}`)
       });
