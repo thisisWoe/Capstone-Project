@@ -3,7 +3,6 @@ import { CommonModule, JsonPipe } from '@angular/common';
 
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
-import { SwapComponent } from 'src/app/components/swap/swap.component';
 
 import { FormsModule } from '@angular/forms';
 import { MetamaskIconComponent } from './../../components/metamask-icon/metamask-icon.component';
@@ -13,7 +12,6 @@ import { CardProfileComponent } from 'src/app/components/card-profile/card-profi
 @NgModule({
   declarations: [
     HomeComponent,
-    SwapComponent,
     MetamaskIconComponent,
     CardProfileComponent,
   ],
