@@ -65,8 +65,3 @@ If you want to test admin features, you can add role ADMIN to your own user.
 
 [![Static Badge](https://img.shields.io/badge/GitHub-black?style=for-the-badge&logo=github)](https://www.github.com/thisisWoe)[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/alessandro-rondolini/)
 [![Static Badge](https://img.shields.io/badge/Mail%20Me-violet?style=for-the-badge&logo=gmail)](mailto:alessandro.rondolini.96@gmail.com?subject=Job_Offer)
-
-## Screenshots
-
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
