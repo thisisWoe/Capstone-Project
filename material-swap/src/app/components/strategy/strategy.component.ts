@@ -3,7 +3,6 @@ import { AfterViewInit, Component, ElementRef, Inject, NgZone, OnInit, PLATFORM_
 import { MarketDataService } from 'src/app/market-data.service';
 import * as am5 from '@amcharts/amcharts5';
 import * as am5percent from "@amcharts/amcharts5/percent";
-import { ChartServiceService } from 'src/app/chart-service.service';
 import { AuthService } from 'src/app/auth.service';
 import { StrategyDto } from 'src/app/interfaces/strategy-dto';
 import am5themes_Dark from "@amcharts/amcharts5/themes/Dark";
@@ -49,7 +48,7 @@ export class StrategyComponent implements AfterViewInit, OnInit {
   seriesLine!: am5xy.SmoothedXLineSeries;
 
 
-  constructor(private web3Svc: Web3Service, private authSvc: AuthService, @Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone, private mktSvc: MarketDataService, private chartSvc: ChartServiceService) {
+  constructor(private web3Svc: Web3Service, private authSvc: AuthService, @Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone, private mktSvc: MarketDataService) {
 
   }
 
