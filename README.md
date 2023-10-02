@@ -38,7 +38,7 @@ Install with npm:
 If you want to test admin features, you can add role ADMIN to your own user.
 ## Tech Stack
 
-**Client:** 
+**Client:**  \n
 ![Angular](https://img.shields.io/badge/angular-%23DD0031.svg?style=for-the-badge&logo=angular&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
 ![SASS](https://img.shields.io/badge/SASS-hotpink.svg?style=for-the-badge&logo=SASS&logoColor=white)
@@ -53,7 +53,8 @@ If you want to test admin features, you can add role ADMIN to your own user.
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 
 **Smart Contract:**
-![Solidity](https://img.shields.io/badge/Solidity-%23363636.svg?style=for-the-badge&logo=solidity&logoColor=white)
+![Solidity](https://img.shields.io/badge/Solidity-%23363636.svg?style=for-the-badge&logo=solidity&logoColor=white) \n
+
 ![App Screenshot](https://i.postimg.cc/mDpSFNLP/solidity-final.png)
 
 ## Author
