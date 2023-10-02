@@ -100,7 +100,6 @@ public class MaterialSwapController {
 	
 	//GET
 	@GetMapping("/asset/{id}")
-	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<?> getAssetById(@PathVariable Long id) {
 		AssetDto asset = mSvc.getAssetById(id);
 		ResponseEntity<AssetDto> resp = new ResponseEntity<AssetDto>(asset, HttpStatus.OK);
@@ -108,7 +107,6 @@ public class MaterialSwapController {
 	}
 
 	@GetMapping("/asset")
-	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<?> getAssets() {
 		Set<AssetDto> assets = mSvc.getAssets();
 		ResponseEntity<Set<AssetDto>> resp = new ResponseEntity<Set<AssetDto>>(assets, HttpStatus.OK);

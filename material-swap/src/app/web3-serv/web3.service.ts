@@ -33,17 +33,16 @@ export class Web3Service {
 
   }
 
+  // Metodo per connettersi a MetaMask e ottenere il portafoglio
   connect(): Promise<any | null> {
     return new Promise(async (resolve, reject) => {
       if (typeof window.ethereum !== "undefined") {
         try {
-          console.log("connecting");
           if (window.ethereum) {
             this.web3wallet = new Web3(window.ethereum
               .request({ method: "eth_requestAccounts" })
               .then((res: string[]) => {
                 //aspetto che il client accetti di collegarsi
-                console.log(res);
                 this.web3wallet.setProvider(window.ethereum);
                 this.accounts = this.web3wallet.eth.getAccounts();
                 this.walletAddress = this.accounts[0];
@@ -52,7 +51,7 @@ export class Web3Service {
               }));
           } else {
             // MetaMask non è collegato
-            console.log('MetaMask nis not connected.');
+            console.log('MetaMask is not connected.');
           }
         } catch (error) {
           console.log(error);
@@ -63,6 +62,7 @@ export class Web3Service {
     })
   }
 
+  // Metodo per cambiare la rete
   switchNetwork(networkId: string): Promise<boolean> {
     return new Promise((resolve) => {
       if (typeof window.ethereum !== "undefined") {
@@ -86,6 +86,7 @@ export class Web3Service {
     });
   }
 
+  // Metodo per ottenere il prezzo di uno scambio su 0x API
   getPrice_V2(amountToSwap: number, tokenAddressFrom: string, tokenAddressTo: string, networkZeroX: string): Observable<any> {
     let amount: number | string = 0;
     if (
@@ -116,7 +117,7 @@ export class Web3Service {
 
     return this.http.get(url, { headers, params });
   }
-
+  // Formatta un grande numero dividendo la notazione scientifica
   formatLargeNumber(num: number) {
     const numStr = num.toString();
     // Divido la notazione scientifica
@@ -133,7 +134,9 @@ export class Web3Service {
     }
   }
 
+  // Metodo per ritornare il JSON con i dati dello smart contract da 0x
   async getQuote_V2(amountToSwap: number, tokenAddressFrom: string, tokenAddressTo: string, networkZeroX: string, takerAddress: string): Promise<any> {
+    // Calcola l'importo in base alla precisione del token (WBTC ha 8 decimali invece di 18)
     let amount = 0;
     if (
       tokenAddressFrom === '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599' ||
@@ -163,21 +166,23 @@ export class Web3Service {
 
     const url = `${networkZeroX}quote`;
 
-    //const response = await fetch(`https://arbitrum.api.0x.org/swap/v1/quote?${qs.stringify(params)}`, { headers });
+    // Effettua una richiesta HTTP per ottenere il preventivo da 0x API
     const response = await fetch(`${url}?${qs.stringify(params)}`, { headers });
 
     const swapQuoteJSON = await response.json();
-    console.log("Quote: ", swapQuoteJSON);
-
+    // Restituisco il preventivo ottenuto + dettagli necessari per lo swap
     return swapQuoteJSON;
   }
 
   async trySwap_V2(amountToSwap: number, tokenAddressFrom: string, tokenAddressTo: string, networkZeroX: string) {
+    // Carico l'ABI del token ERC-20
     const abi = require('erc-20-abi')
-    //Mi connetto a metamask
+    //creo un'istanza di Web3 utilizzando il provider di MetaMask già connesso
     const web3 = new Web3(Web3.givenProvider);
+    // Ottengo l'indirizzo dell'utente (taker) da MetaMask
     let accounts = await window.ethereum.request({ method: "eth_accounts" });
     let takerAddress = accounts[0];
+    // Ottengo i dati per lo scambio utilizzando 0x
     const swapQuoteJSON = await this.getQuote_V2(amountToSwap, tokenAddressFrom, tokenAddressTo, networkZeroX, takerAddress);
 
     // Set Token Allowance
@@ -201,6 +206,7 @@ export class Web3Service {
     console.log("receipt: ", receipt);
   }
 
+  // Metodo per richiedere la firma per una richiesta di registrazione
   async signRegisterRequest(): Promise<string> {
     const messageToSign = 'Are you sure to sign up to MaterialSwap? No sensitive data will be saved.';
     try {
@@ -212,6 +218,7 @@ export class Web3Service {
     }
   }
 
+  //Firma
   async signRegisterRequestDynamicMessage(messageToSign: string): Promise<string> {
     try {
       const accounts = await this.web3wallet.eth.getAccounts();
@@ -222,11 +229,11 @@ export class Web3Service {
     }
   }
 
-
+  // Sfrutto la funzione scritta in solidity nello smart contract per ottenere i dettagli dell'NFT
   async getNFTDetails(tokenId: number, contractAddress: string): Promise<INft> {
     try {
       const web3 = new Web3(Web3.givenProvider);
-      //polygon abi
+      //contract ABI
       const abi: any = [
         {
           "inputs": [],
@@ -735,6 +742,7 @@ export class Web3Service {
 
   }
 
+  // Metodo per ottenere il numero totale di NFT di un utente partendo da uno specifico smart contract
   async getAllNFT(takerAddress: string, contractAddress: string): Promise<number> {
     try {
       const web3 = new Web3(Web3.givenProvider);
@@ -1240,6 +1248,7 @@ export class Web3Service {
     }
   }
 
+  // Metodo per mintare un nuovo NFT sfruttando la funzione scritta in solidity nello smart contract per creare un NFT
   async createNFT(name: string, description: string, imgURI: string, contractAddress: string, takerAddress: string) {
     const web3 = new Web3(Web3.givenProvider);
 

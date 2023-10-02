@@ -25,22 +25,7 @@ export class MarketDataService {
   getDataBTC(coin1: string, coin2: string) {
     return this.http.get<ICoinApiData[]>(this.merketDataApi + coin1 + this.slash + coin2)
       .pipe(tap(data => {
-
-        console.log("🚀 ~ file: market-data.service.ts:21 ~ MarketDataService ~ getDataBTC ~ data:", data)
-
-        /*  asset_id_base:  "BTC"
-            asset_id_quote: "USD"
-            rate: 25706.38437426484
-            time: "2023-09-07T11:28:00.0000000Z" */
-
-        /* {
-          "period_id": "1DAY",
-          "length_seconds": 86400,
-          "length_months": 0,
-          "unit_count": 1,
-          "unit_name": "day",
-          "display_name": "1 Day"
-        }, */
+        console.log("data:", data)
       }))
   }
 
@@ -52,16 +37,10 @@ export class MarketDataService {
 
 
     const url = `${this.merketDataApi}${coin1}/${coin2}/history`;
-    /* https://rest.coinapi.io/v1/exchangerate/BTC/USD/history?period_id=1DAY&time_start=10-09-202300:00:00&time_end=15-09-202300:00:00
-    https://rest.coinapi.io/v1/exchangerate/BTC/USD/history?period_id=1DAY&time_start=2023-07-20T00:00:00&time_end=2023-09-07T00:00:00 */
 
-    /* const headers = {
-      'X-CoinAPI-Key': environment.api_key_coinApi,
-    }; */
     return this.http.get<ICoinApiData[]>(url, { params })
       .pipe(tap(data => {
-        //console.log(data);
-
+        console.log(data);
       }));
   }
 
@@ -275,10 +254,10 @@ export class MarketDataService {
 
   getPriceFromBEbyAsset(id: number) {
 
-    return this.http.get<IPricingBackend[]>(environment.API_BACKEND+'pricing/all/'+id);
+    return this.http.get<IPricingBackend[]>(environment.API_BACKEND + 'pricing/all/' + id);
   }
 
-  postStrategy(strategy:StrategyDto){
+  postStrategy(strategy: StrategyDto) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
     return this.http.post(environment.API_BACKEND + 'strategy/new', strategy, {
@@ -287,17 +266,17 @@ export class MarketDataService {
     });
   }
 
-  getStrategies(publicKey: string){
-    return this.http.get<StrategyDto[]>(environment.API_BACKEND+'strategy/getbyuser/'+publicKey);
+  getStrategies(publicKey: string) {
+    return this.http.get<StrategyDto[]>(environment.API_BACKEND + 'strategy/getbyuser/' + publicKey);
   }
 
-  getSingleStrategy(id:number){
-    return this.http.get<StrategyDto>(environment.API_BACKEND+'strategy/'+id);
+  getSingleStrategy(id: number) {
+    return this.http.get<StrategyDto>(environment.API_BACKEND + 'strategy/' + id);
   }
 
-  deleteStrategy(id:number){
+  deleteStrategy(id: number) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.http.delete(environment.API_BACKEND+'strategy/delete/'+id , {
+    return this.http.delete(environment.API_BACKEND + 'strategy/delete/' + id, {
       headers,
       responseType: 'text'
     });

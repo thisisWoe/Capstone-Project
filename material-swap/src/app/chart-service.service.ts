@@ -1,9 +1,6 @@
 import am5themes_Dark from "@amcharts/amcharts5/themes/Dark";
 import { Injectable } from '@angular/core';
-import { Inject, NgZone, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import * as am5percent from "@amcharts/amcharts5/percent";
-// amCharts imports
 import * as am5 from '@amcharts/amcharts5';
 import * as am5xy from '@amcharts/amcharts5/xy';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
@@ -15,8 +12,7 @@ import { IChartData } from 'src/app/interfaces/ichart-data';
 })
 export class ChartServiceService {
 
-  //proprietà da inserire nel costruttore
-  constructor(/* @Inject(PLATFORM_ID) private platformId: Object, private zone: NgZone */) { }
+  constructor() { }
 
   chartInit(root: am5.Root, onOffPanY: boolean, zoom: IXYChartSettings["wheelY"]): am5xy.XYChart {
     let chart = root.container.children.push(
@@ -24,7 +20,6 @@ export class ChartServiceService {
         // Disabilita il panning sull'asse Y
         panY: onOffPanY,
         // Abilita lo zoom sull'asse X usando la rotella del mouse
-        //wheelY: "zoomX",
         wheelY: zoom,
         // Utilizza un layout verticale
         layout: root.verticalLayout,
@@ -125,15 +120,6 @@ export class ChartServiceService {
     }));
   }
 
-  /* browserOnly(f: () => void) {
-    if (isPlatformBrowser(this.platformId)) {
-      this.zone.runOutsideAngular(() => {
-        f();
-      });
-    }
-  } */
-
-
   //pieChart
   pieSetTheme(root: am5.Root) {
     root.setThemes([
@@ -204,11 +190,6 @@ export class ChartServiceService {
 
   pieData(): object[] {
     let data = [
-      /* {
-        Asset: "Lithuania",
-        litres: 501.9,
-        bottles: 1500
-      }, */
       {
         Asset: "BTC",
         currentValue: 26000, // Valore percentuale attuale
@@ -240,28 +221,4 @@ export class ChartServiceService {
     series0.data.setAll(data);
     series1.data.setAll(data);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

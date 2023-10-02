@@ -62,7 +62,6 @@ public class MaterialSwapService {
 	}
 	
 	public String addObjectNetwork(ObjNetwork object) {
-//		Asset assetEdit = AssetRepo.getById(asset.getId());
 
 		ObjNetwork obj = objNetworkProvider.getObject();
 		obj.setAsset(object.getAsset());
@@ -107,7 +106,6 @@ public class MaterialSwapService {
 					strategy.setName(strategyInEntrance.getName());
 					strategy.setUser(user);
 					strategy.setStart(strategyInEntrance.getStart());
-					//strategy.setAssetAllocations(controlPercentage);
 					StrategyRepo.save(strategy);
 					
 					controlPercentage.forEach(all -> {
@@ -131,11 +129,9 @@ public class MaterialSwapService {
 				strategy.setName(strategyInEntrance.getName());
 				strategy.setUser(user);
 				strategy.setStart(strategyInEntrance.getStart());
-				//strategy.setAssetAllocations(controlPercentage);
 				StrategyRepo.save(strategy);
 				
 				controlPercentage.forEach(all -> {
-					//all.setStrategy(strategy);
 					all.setStrategy(StrategyRepo.getById(strategy.getId()));
 					this.addAllocation(all);					
 				});
@@ -143,12 +139,6 @@ public class MaterialSwapService {
 			} else {
 				throw new MyAPIException(HttpStatus.BAD_REQUEST, "Your asset allocation percentage is not 100% (rounding margin: 0.01).");
 			}
-			
-//			strategy.setSimulation(strategyInEntrance.isSimulation());
-//			strategy.setName(strategyInEntrance.getName());
-//			strategy.setUser(user);
-//			StrategyRepo.save(strategy);
-//			return "Strategy successfully created. Please set allocations.";
 		}
 	}
 	
@@ -284,7 +274,6 @@ public class MaterialSwapService {
 		return assetDtos;
 	}
 	
-	//lazy
 	public ObjNetwork getObjNetworkById(Long id) {
 		if(objNetworkRepo.existsById(id)) {
 			return objNetworkRepo.getById(id);
@@ -366,7 +355,6 @@ public class MaterialSwapService {
 			});
 			System.out.println(allocationListInEntrance);
 			
-			//Set<AssetAllocation> newAllocationList = new HashSet<>();
 			Set<AssetAllocation> toCreateList = new HashSet<>();
 			
 			allocationListInEntrance.forEach(allocationInEntrance -> {
@@ -378,13 +366,10 @@ public class MaterialSwapService {
 						   allocationInEntrance.getPercentage() == allocationPresent.getPercentage() && 
 						   allocationInEntrance.getBuyValue() == allocationPresent.getBuyValue() &&
 						   allocationInEntrance.getAmount() == allocationPresent.getAmount()) {
-							//li aggiungo alla lista
-							//newAllocationList.add(allocationPresent);
 						} else {
 							//li modifico nel database e li aggiungo alla lista
 							System.out.println("verrà modificata: "+allocationInEntrance);
 							this.editAllocation(allocationInEntrance);
-							//newAllocationList.add(allocationInEntrance);
 						}
 					} else if(allocationInEntrance.getId() == null) {
 						//se non esiste già, la salvo nella lista per salvarla successivamente nel database
@@ -414,23 +399,7 @@ public class MaterialSwapService {
 				} else {
 				    // Nessuna Strategy nel Set ha simulation impostata su false
 					//faccio l'ultimo controllo sulle percentuali
-//					double lastControlPercentage = 0;
 					Set<AssetAllocation> controlPercentage = AssetAllocationRepo.findByStrategy(newStrategy);
-
-//					for (AssetAllocation allocation : controlPercentage) {
-//					    double amountPercentage = allocation.getPercentage();
-//					    lastControlPercentage += amountPercentage;
-//					}
-//					
-//					if(Math.abs(lastControlPercentage - 100.0) > 0.01) {
-//						throw new MyAPIException(HttpStatus.BAD_REQUEST, "Your asset allocation percentage is not 100% (rounding margin: 0.01).");
-//					} else {
-//						newStrategy.setSimulation(strategyDto.isSimulation());
-//						newStrategy.setName(strategyDto.getName());
-//						newStrategy.setUser(user);
-//					}
-//					StrategyRepo.save(newStrategy);
-//					return "Strategy succesfully updated.";
 					if(this.controlPercentageAllocation(controlPercentage)) {
 						StrategyRepo.save(newStrategy);
 						return "Strategy succesfully updated.";					
@@ -439,26 +408,7 @@ public class MaterialSwapService {
 					}
 				}
 			} else {
-//				double lastControlPercentage = 0;
 				Set<AssetAllocation> controlPercentage = AssetAllocationRepo.findByStrategy(newStrategy);
-
-//				for (AssetAllocation allocation : controlPercentage) {
-//				    double amountPercentage = allocation.getPercentage();
-//				    lastControlPercentage += amountPercentage;
-//				}
-//				BigDecimal lastControlPercentageBigDecimal = BigDecimal.valueOf(lastControlPercentage);
-//				BigDecimal margin = new BigDecimal("0.01");
-//				
-//				//if(Math.abs(lastControlPercentage - 100.0) > 0.01) {
-//				if (lastControlPercentageBigDecimal.compareTo(BigDecimal.ZERO) >= 0 && lastControlPercentageBigDecimal.subtract(new BigDecimal("100.0")).abs().compareTo(margin) > 0) {
-//					System.out.println(Math.abs(lastControlPercentage - 100.0));
-//					System.out.println(lastControlPercentage);
-//					throw new MyAPIException(HttpStatus.BAD_REQUEST, "Your asset allocation percentage is not 100% (rounding margin: 0.01).");
-//				} else {
-//					newStrategy.setSimulation(strategyDto.isSimulation());
-//					newStrategy.setName(strategyDto.getName());
-//					newStrategy.setUser(user);
-//				}
 				if(this.controlPercentageAllocation(controlPercentage)) {
 					StrategyRepo.save(newStrategy);
 					return "Strategy succesfully updated.";					

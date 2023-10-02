@@ -21,13 +21,5 @@ public class AssetDto {
 	private String imgUrl;
 
 	private Set<ObjNetworkDto> addresses;
-	
-//	public String addAssetToAddresses(ObjNetwork network) {
-//		if (this.addresses == null) {
-//			this.addresses = new HashSet<>();
-//			System.out.println(this.addresses);
-//		}
-//		this.addresses.add(network);
-//		return "New network added to this AssetDto.";
-//	}
+
 }

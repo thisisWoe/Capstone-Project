@@ -49,14 +49,5 @@ public class AuthController {
         String response = authService.register(registerDto);
         return new ResponseEntity<String>(response, HttpStatus.CREATED);
     }
-    
-    // JSON inviato dal Client
-    /*{
-        "name": "Giuseppe",
-        "lastname": "Verdi",
-        "username": "giuseppevardi",
-        "email": "g.verdi@example.com",
-        "password": "qwerty",
-        "roles": ["MODERATOR", "ADMIN"]
-    }*/
+
 }
